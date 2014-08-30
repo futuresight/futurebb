@@ -45,6 +45,7 @@ function enhanced_error($text, $db_error = false) {
 			background-color:#000;
 			color:#FFF;
 			margin-top:0px;
+			padding-left:10px;
 		}
 		#debuginfo {
 			padding-left:3px;
