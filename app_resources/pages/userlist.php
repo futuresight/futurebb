@@ -4,8 +4,11 @@ if (!$futurebb_user['g_user_list']) {
 	httperror(404);
 }
 $visible_groups = array();
-foreach (explode(',', $futurebb_user['g_user_list_groups']) as $val) {
-	$visible_groups[] = intval($val);
+if ($futurebb_user['g_user_list_groups'] != '') {
+	foreach (explode(',', $futurebb_user['g_user_list_groups']) as $val) {
+		$visible_groups[] = intval($val);
+	}
+} else {
 }
 $visible_groups = implode(',', $visible_groups);
 $per_page = 25;
@@ -16,7 +19,7 @@ $per_page = 25;
 			<tr>
 				<td><?php echo translate('username'); ?>: <input type="text" name="username" value="<?php if (isset($_GET['username'])) echo htmlspecialchars($_GET['username']); ?>" /></td>
 				<td><?php echo translate('usergroup'); ?>: <select name="group"><option value="0">Any</option><?php
-				$q = new DBSelect('user_groups', array('g_id,g_name'), 'g_id IN(' . $visible_groups . ')', 'Failed to form user group list');
+				$q = new DBSelect('user_groups', array('g_id,g_name'), ($visible_groups == '' ? '' : 'g_id IN(' . $visible_groups . ')'), 'Failed to form user group list');
 				$q->set_order('g_name ASC');
 				$result = $q->commit();
 				unset($q);
@@ -73,7 +76,7 @@ $per_page = 25;
 		$page = isset($_GET['p']) ? intval($_GET['p']) : 1;
 		//$result = $db->query('SELECT u.username,u.num_posts,u.registered,g.g_title AS title FROM `#^users` AS u LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE id>0 ' . $sql . ' AND u.group_id IN(' . $visible_groups . ') AND u.deleted=0') or error('Failed to get users', __FILE__, __LINE__, $db->error());
 		
-		$q = new DBSelect('users', array('u.username','u.num_posts','u.registered','g.g_title AS title'), ' u.id>0 AND u.username<>\'Guest\' ' . $sql . ' AND u.group_id IN(' . $visible_groups . ') AND u.deleted=0 AND u.username<>\'Guest\'', 'Failed to get users');
+		$q = new DBSelect('users', array('u.username','u.num_posts','u.registered','g.g_title AS title'), 'u.id>0 AND u.username<>\'Guest\' ' . $sql . ' ' . ($visible_groups == '' ? '' : 'AND u.group_id IN(' . $visible_groups . ')') . ' AND u.deleted=0 AND u.username<>\'Guest\'', 'Failed to get users');
 		$q->table_as('u');
 		$join = new DBLeftJoin('user_groups', 'g', 'g.g_id=u.group_id');
 		$q->add_join($join);

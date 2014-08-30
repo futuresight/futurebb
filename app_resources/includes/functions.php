@@ -39,29 +39,39 @@ function enhanced_error($text, $db_error = false) {
 			margin-right: 20%;
 			margin-top:10%;
 			border: 3px solid #000;
-			padding:3px;
+			padding:0px;
+		}
+		h1 {
+			background-color:#000;
+			color:#FFF;
+			margin-top:0px;
+		}
+		#debuginfo {
+			padding-left:3px;
 		}
 		</style>
 	</head>
 	<body>
 		<div id="content">
 			<h1>Error</h1>
-			<p id="errormsg"><?php echo $text; ?></p>
-			<h2>Debug information</h2>
-			<table border="0">
-				<tr>
-					<th>File</th>
-					<th>Line</th>
-					<th>Function</th>
-				</tr>
-			<?php
-			$debug = debug_backtrace();
-			foreach ($debug as $key => $val) {
-				echo '<tr><td>' . str_replace(FORUM_ROOT, '<i>[ROOT]</i>', $val['file']) . '</td><td>' . $val['line'] . '</td><td>' . $val['function'] . '</tr>';
-			}
-			?>
-			</table>
-			<?php if ($db_error && isset($db) && $db->error() != null) { ?><p>The database reported: <b><?php echo $db->error(); ?></b>.</p><?php } ?>
+            <div id="debuginfo">
+                <p id="errormsg"><?php echo $text; ?></p>
+                <h2>Debug information</h2>
+                <table border="0">
+                    <tr>
+                        <th>File</th>
+                        <th>Line</th>
+                        <th>Function</th>
+                    </tr>
+                <?php
+                $debug = debug_backtrace();
+                foreach ($debug as $key => $val) {
+                    echo '<tr><td>' . str_replace(FORUM_ROOT, '<i>[ROOT]</i>', $val['file']) . '</td><td>' . $val['line'] . '</td><td>' . $val['function'] . '</tr>';
+                }
+                ?>
+                </table>
+                <?php if ($db_error && isset($db) && $db->error() != null) { ?><p>The database reported: <b><?php echo $db->error(); ?></b>.</p><?php } ?>
+            </div>
 		</div>
 	</body>
 </html>

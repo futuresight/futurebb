@@ -6,26 +6,35 @@ $page_title = 'User groups';
 include FORUM_ROOT . '/app_resources/includes/admin.php';
 if (isset($_POST['form_sent_update'])) {
 	$_POST['config']['g_user_list_groups'] = isset($_POST['user_list']) ? implode($_POST['user_list'], ',') : '';
+	$group_id = intval($_POST['group_id']);
 	$cfg_list = array(
 		//format: 'name'		=> 'type'
 		'g_name'				=> 'string',
 		'g_title'				=> 'string',
-		'g_user_list_groups'	=> 'string',
-		'g_promote_group'		=> 'int',
-		'g_promote_posts'		=> 'int',
-		'g_promote_operator'	=> 'int',
-		'g_promote_days'		=> 'int',
-		'g_post_flood'			=> 'int',
-		'g_posts_per_hour'		=> 'int',
-		'g_edit_posts'			=> 'bool',
-		'g_delete_posts'		=> 'bool',
-		'g_mod_privs'			=> 'bool',
-		'g_admin_privs'		=> 'bool',
-		'g_signature'			=> 'bool',
-		'g_user_list'			=> 'bool',
-		'g_post_links'			=> 'bool',
-		'g_post_images'		=> 'bool'
 	);
+	if ($group_id != 1) { //stuff not for admins
+		$cfg_list = array_merge($cfg_list, array(
+			'g_user_list_groups'	=> 'string',
+			'g_user_list'			=> 'bool',
+		));
+	}
+	if ($group_id != 1 && $group_id != 2) { //stuff not for admins or guests
+		$cfg_list = array_merge($cfg_list, array(
+			'g_promote_group'		=> 'int',
+			'g_promote_posts'		=> 'int',
+			'g_promote_operator'	=> 'int',
+			'g_promote_days'		=> 'int',
+			'g_post_flood'			=> 'int',
+			'g_posts_per_hour'		=> 'int',
+			'g_edit_posts'			=> 'bool',
+			'g_delete_posts'		=> 'bool',
+			'g_mod_privs'			=> 'bool',
+			'g_admin_privs'			=> 'bool',
+			'g_signature'			=> 'bool',
+			'g_post_links'			=> 'bool',
+			'g_post_images'			=> 'bool'
+		));
+	}
 	$sql = '';
 	foreach ($cfg_list as $name => $type) {
 		switch ($type) {
@@ -88,7 +97,8 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 		?>
 		</table>
 		<?php } else if ($dirs[3] == intval($dirs[3]) && $dirs[4] == 'edit') {
-			$result = $db->query('SELECT * FROM `#^user_groups` WHERE g_id=' . intval($dirs[3])) or error('Failed to get group info', __FILE__, __LINE__, $db->error());
+			$group_id = intval($dirs[3]);
+			$result = $db->query('SELECT * FROM `#^user_groups` WHERE g_id=' . $group_id) or error('Failed to get group info', __FILE__, __LINE__, $db->error());
 			if (!$db->num_rows($result)) {
 				httperror(404);
 			}
@@ -108,6 +118,7 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 					<td><?php echo translate('usertitle'); ?></td>
 					<td><input type="text" name="config[g_title]" value="<?php echo $cur_group['g_title']; ?>" /><br /><?php echo translate('usertitledesc'); ?></td>
 				</tr>
+                <?php if ($group_id != 2 && $group_id != 1) { //hide for guests/admins ?>
 				<tr>
 					<td><?php echo translate('editposts'); ?></td>
 					<td><input type="checkbox" name="config[g_edit_posts]" id="g_edit_posts" <?php if ($cur_group['g_edit_posts']) echo 'checked="checked" '; ?>/> <label for="g_edit_posts"><?php echo translate('enable?'); ?></label><br /><?php echo translate('editpostsdesc'); ?></td>
@@ -128,10 +139,14 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 					<td><?php echo translate('allowsig'); ?></td>
 					<td><input type="checkbox" name="config[g_signature]" id="g_signature" <?php if ($cur_group['g_signature']) echo 'checked="checked" '; ?>/> <label for="g_signature"><?php echo translate('enable?'); ?></label><br /><?php echo translate('allowsigdesc'); ?></td>
 				</tr>
+                <?php } ?>
+                <?php if ($group_id != 1) { //hide for admins ?>
 				<tr>
 					<td><?php echo translate('viewuserlist'); ?></td>
 					<td><input type="checkbox" name="config[g_user_list]" id="g_user_list" <?php if ($cur_group['g_user_list']) echo 'checked="checked" '; ?>/> <label for="g_user_list"><?php echo translate('enable?'); ?></label><br /><?php echo translate('viewuserlistdesc'); ?></td>
 				</tr>
+                <?php } ?>
+                 <?php if ($group_id != 2 && $group_id != 1) { //hide for guests/admins ?>
 				<tr>
 					<td><?php echo translate('postlinks'); ?></td>
 					<td><input type="checkbox" name="config[g_post_links]" id="g_post_links" <?php if ($cur_group['g_post_links']) echo 'checked="checked" '; ?>/> <label for="g_post_links"><?php echo translate('enable?'); ?></label><br /><?php echo translate('postlinksdesc'); ?></td>
@@ -148,6 +163,8 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 					<td><?php echo translate('maxpostsperhour'); ?></td>
 					<td><input type="text" name="config[g_posts_per_hour]" value="<?php echo $cur_group['g_posts_per_hour']; ?>" size="5" /><br /><?php echo translate('maxpostsperhourdesc'); ?></td>
 				</tr>
+                <?php } ?>
+                <?php if ($group_id != 1) { //hide for admins ?>
 				<tr>
 					<td><?php echo translate('userlistvisgrps'); ?></td>
 					<td>
@@ -162,7 +179,9 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 					?><br /><?php echo translate('userlistvisgrpsdesc'); ?>
 					</td>
 				</tr>
+                <?php } ?>
 			</table>
+            <?php if ($group_id != 2 && $group_id != 1) { //hide for guests/admins ?>
 			<p><?php echo translate('promoteto'); ?> <select name="config[g_promote_group]"><option value="0"><?php echo translate('dontpromote'); ?></option><?php
 			foreach ($user_groups as $id => $name) {
 				if ($id != intval($dirs[3])) {
@@ -174,6 +193,7 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 				}
 			}
 			?></select> <?php echo strtolower(translate('after')); ?> <input type="text" name="config[g_promote_days]" value="<?php echo $cur_group['g_promote_days']; ?>" size="3" /> <?php echo strtolower(translate('days')); ?> <select name="config[g_promote_operator]"><option value="1"<?php if ($cur_group['g_promote_operator'] == 1) echo ' selected="selected"'; ?>><?php echo translate('and'); ?></option><option value="2"<?php if ($cur_group['g_promote_operator'] == 2) echo ' selected="selected"'; ?>><?php echo translate('or'); ?></option></select> <input type="text" name="config[g_promote_posts]" value="<?php echo $cur_group['g_promote_posts']; ?>" size="3" /> <?php echo strtolower(translate('posts')); ?>.</p>
+            <?php } ?>
 			<p><input type="hidden" name="group_id" value="<?php echo intval($dirs[3]); ?>" /><input type="submit" name="form_sent_update" value="<?php echo translate('save'); ?>" /></p>
 		</form>
 		<?php } else if ($dirs[3] == intval($dirs[3]) && $dirs[4] == 'delete') {
