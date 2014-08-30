@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docname="New document 1" inkscape:version="0.48.4 r9939"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="14px" height="14px"
+	 viewBox="0 0 14 14" enable-background="new 0 0 14 14" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_x="0 : 300 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_z="525 : 300 : 1" sodipodi:type="inkscape:persp3d" id="perspective11" inkscape:persp3d-origin="262.5 : 200 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="false" inkscape:cy="4.4125071" inkscape:cx="4.6943889" inkscape:zoom="18.535714" borderopacity="1.0" bordercolor="#666666" pagecolor="#ffffff" id="base" inkscape:window-maximized="1" inkscape:window-y="-8" inkscape:current-layer="layer1" inkscape:document-units="px" inkscape:pageopacity="0.0" inkscape:window-x="-8" inkscape:window-height="706" inkscape:window-width="1366" inkscape:pageshadow="2">
+	</sodipodi:namedview>
+<g id="layer1" transform="translate(0,-1038.3622)" inkscape:label="Layer 1" inkscape:groupmode="layer">
+	
+		<radialGradient id="X_1_" cx="10497.1016" cy="-13831.0713" r="246.9441" gradientTransform="matrix(0.0283 0 0 -0.0283 -290.5546 653.303)" gradientUnits="userSpaceOnUse">
+		<stop  offset="0" style="stop-color:#0A08FF"/>
+		<stop  offset="1" style="stop-color:#A685FF"/>
+	</radialGradient>
+	<path id="X" inkscape:connector-curvature="0" fill="url(#X_1_)" d="M0,1050.069c0-0.222,0.956-1.331,2.123-2.466
+		c1.168-1.135,2.293-2.237,2.501-2.449c0.208-0.212-0.008-1.442-0.479-2.733c-0.977-2.676-1.066-3.565-0.392-3.913
+		c0.921-0.475,2.186,0.226,3.248,1.8l1.075,1.595l2.02-1.652c1.328-1.086,2.275-1.57,2.768-1.413c0.974,0.312,1.535,1.53,0.8,1.734
+		c-0.835,0.232-4.291,4.615-4.284,5.434c0.003,0.389,0.494,1.417,1.091,2.287c0.421,0.613,0.987,1.098,0.763,1.43l-1.201,1.779
+		c-0.233,0.346-1.094-0.574-2.113-1.467l-1.778-1.559l-1.972,1.949c-1.084,1.07-2.097,1.942-2.25,1.936S0,1050.29,0,1050.069z"/>
+</g>
+</svg>

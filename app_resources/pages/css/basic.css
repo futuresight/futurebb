@@ -1,0 +1,81 @@
+<?php
+header('Content-type: text/css');
+?>
+
+/* Dynamic CSS Document */
+
+/* general rules */
+
+#futurebb {
+	font-family: Arial, Tahoma, Geneva, sans-serif;
+}
+
+.in_form th {
+	text-align:left
+}
+
+a, a:visited {
+	color:#00F;
+}
+
+/* header */
+#futurebb .forum_header {
+	background-color:#999;
+	border:1px solid #000;
+	text-align: center;
+}
+#headerinfo {
+	min-height:1px;
+}
+
+/* header/nav */
+
+ul#navlist {
+	list-style:none;
+	margin:0px;
+	padding: 0px;
+	text-align:center;
+}
+ul#navlist li {
+	display:inline;
+	padding:0px;
+	margin:0px;
+	margin-left: 6px;
+	margin-right:6px;
+}
+
+a:hover {
+	color:#06F;
+}
+
+#navlistwrap {
+	width:100%;
+	background-color:#000;
+}
+
+/* footer */
+#futurebb .forum_footer {
+	background-color:#999;
+	border:1px solid #000;
+}
+
+/* content */
+.forum_content {
+	border: 1px solid #000;
+	margin: 5px 0px;
+	background-color:#AAA;
+}
+
+/* index */
+
+#futurebb .cat_body {
+	background-color:#999;
+	border:1px solid #000;
+	margin-bottom: 5px;
+}
+
+#futurebb h2.cat_header {
+	background-color:#39F;
+	border:1px solid #000;
+	margin-bottom: 0px;
+}

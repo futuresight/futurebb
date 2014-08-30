@@ -1,0 +1,2 @@
+<?php
+define('FUTUREBB_VERSION', '1.0');
