@@ -85,7 +85,7 @@ $per_page = 25;
 		$num_users = $db->num_rows($result);
 		
 		//$result = $db->query('SELECT u.username,u.num_posts,u.registered,g.g_title AS title FROM `#^users` AS u LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE id>0 ' . $sql . ' AND u.group_id IN(' . $visible_groups . ') AND u.deleted=0 ORDER BY ' . $order . ' LIMIT ' . (($page - 1) * $per_page) . ',' . $per_page) or error('Failed to get users', __FILE__, __LINE__, $db->error());
-		$q = new DBSelect('users', array('u.username','u.num_posts','u.registered','g.g_title AS title'), ' u.id>0 AND u.username<>\'Guest\' ' . $sql . ' AND u.group_id IN(' . $visible_groups . ') AND u.deleted=0', 'Failed to get users');
+		$q = new DBSelect('users', array('u.username','u.num_posts','u.registered','g.g_title AS title'), ' u.id>0 AND u.username<>\'Guest\' ' . $sql . ($visible_groups == '' ? '' : ' AND u.group_id IN(' . $visible_groups . ')') . ' AND u.deleted=0', 'Failed to get users');
 		$q->table_as('u');
 		$join = new DBLeftJoin('user_groups', 'g', 'g.g_id=u.group_id');
 		$q->add_join($join);

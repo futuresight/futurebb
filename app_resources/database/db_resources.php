@@ -135,7 +135,7 @@ class DBSelect {
 		if ($this->limit != '') {
 			$sql .= ' LIMIT ' . $this->limit;
 		}
-		$result = $db->query($sql) or enhanced_error($this->error, true);
+		$result = $db->query($sql) or enhanced_error($this->error . '<br />Query: ' . $sql, true);
 		return $result;
 	}
 }
