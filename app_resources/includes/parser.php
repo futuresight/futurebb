@@ -14,12 +14,12 @@ abstract class BBCodeController {
 			self::add_bbcode('%\[u\](.*?)\[/u\]%ms', '<u>$1</u>');
 			self::add_bbcode('%\[s\](.*?)\[/s\]%ms', '<del>$1</del>');
 			self::add_bbcode('%\[quote\](.*?)\[/quote\]%ms', '</p><div class="quotebox">$1</div><p>');
-			self::add_bbcode('%\[quote=(.*?)\](.*?)\[/quote\]%ms', '</p><div class="quotebox"><p><b>$1 wrote</b><br />$2</p></div><p>');
-			self::add_bbcode('%\[colou?r=(white|black|red|green|blue|orange|yellow|pink|gray|#[0-9a-fA-F]{6}|\#[0-9a-fA-F]{3})\](.*?)\[/colou?r\]%m', '<span style="color:$1">$2</span>');
+			self::add_bbcode('%\[quote=(.*?)\](.*?)\[/quote\]%ms', '</p><div class="quotebox"><p><b>$1 ' . translate('wrote') . '</b><br />$2</p></div><p>');
+			self::add_bbcode('%\[colou?r=(white|black|red|green|blue|orange|yellow|pink|gray|magenta|#[0-9a-fA-F]{6}|\#[0-9a-fA-F]{3})\](.*?)\[/colou?r\]%m', '<span style="color:$1">$2</span>');
 			self::add_bbcode('%\[url=?(.*?)\](.*?)\[/url\]%se', 'self::handle_url_tag(\'$1\',\'$2\');');
 			self::add_bbcode('%\[img\](.*?)\[/img\]%se', 'self::handle_img_tag(\'$1\');');
-			
 		}
+		
 		$text = htmlspecialchars($text);
 
 		$text = preg_replace('%\[code\](.*?)\[/code\]%msie', 'self::handle_code_tag(\'$1\', 1);', $text);

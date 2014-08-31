@@ -130,6 +130,12 @@ $pages = array (
     'nocontentbox' => true,
     'admin' => true,
   ),
+  '/bbcodehelp' => 
+  array (
+    'file' => 'bbcodehelp.php',
+    'template' => true,
+	'nocontentbox' => true,
+  ),
 );
 $pagessubdirs = array (
   '/users' => 
