@@ -105,6 +105,18 @@ if (isset($_GET['downloadconfigxml'])) {
 	header('Content-disposition: attachment; filename=config.xml');
 	echo $xml->asXML();
 	die;
+} else if (isset($_GET['downloadhtaccess'])) {
+	//download the default .htaccess file
+	header('Content-type: text/plain');
+	if (!strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
+		echo 'You are not running Apache, therefore the .htaccess file is useless to you.'; die;
+	}
+	header('Content-disposition: attachment; filename=.htaccess');
+	echo 'RewriteEngine On' . "\n";
+	echo 'RewriteBase ' . get_cookie_data('basepath') . "\n";
+	echo 'RewriteRule ^static/(.*?)$ static/$1 [L]' . "\n";
+	echo 'RewriteRule ^(.*)$ dispatcher.php';
+	die;
 } else if (isset($_POST['install'])) {
 	include 'app_resources/database/db_resources.php';
 	include 'app_resources/includes/functions.php';
@@ -757,6 +769,7 @@ if (isset($_GET['downloadconfigxml'])) {
 					case 'welcome':
 						?>
 						<h2>Welcome to FutureBB</h2>
+                        <p>Please note that translations of this page are not currently available. They will be available in a future version.</p>
 						<p>Before you can start using your forum, you are going to need to set a few things up. This installer will make it easy for you.</p>
 						<?php
 						$ok = true;
@@ -769,6 +782,7 @@ if (isset($_GET['downloadconfigxml'])) {
 							unlink($path . '/' . $rnd . '.tmp');
 							return true;
 						}
+						//check if necessary directories are writable
 						if (!file_exists(FORUM_ROOT . '/temp') || !is_dir(FORUM_ROOT . '/temp')) {
 							$ok = false;
 							echo '<p style="color:#F00; font-weight:bold">The directory &quot;temp&quot; does not exist in the forum root directory. Please create it.</p>';
@@ -780,6 +794,13 @@ if (isset($_GET['downloadconfigxml'])) {
 						if (!writable(FORUM_ROOT . '/temp/')) {
 							$ok = false;
 							echo '<p style="color:#F00; font-weight:bold">The directory &quot;temp&quot; is not writable. Please change the permissions so that it is (chmod to 0777 if in doubt)</p>';
+						}
+						if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache') && !in_array('mod_rewrite', apache_get_modules())) { //check for mod_rewrite
+							$ok = false;
+							echo '<p style="color:#F00; font-weight:bold">mod_rewrite is not installed in Apache. This means that the URL system will not work. Please install it.</p>';
+						}
+						if (!strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
+							echo '<p style="color:#A00; font-weight:bold">You are not running Apache. This means the automatic rewrite configuration is not available. You will have to set it up yourself.</p>';
 						}
 						?>
 						<form action="install.php" method="post" enctype="multipart/form-data">
@@ -830,16 +851,17 @@ if (isset($_GET['downloadconfigxml'])) {
 					case 'syscfg':
 						?>
 						<h2>System configuration</h2>
-						<p>The database information worked.</p>
+						<p>Connecting to the database was successful.</p>
+                        <p>Please set the URL information below. Please note that the pre-entered values are only educated guesses. Please verify them yourself before continuing. Also please verify that there are no trailing slashes.</p>
 						<form action="install.php" method="post" enctype="multipart/form-data">
 							<table border="0">
 								<tr>
 									<td>Base URL</td>
-									<td><input type="text" name="baseurl" value="<?php if (isset($_SERVER['HTTPS'])) echo 'https://'; else echo 'http://'; echo $_SERVER['HTTP_HOST']; echo str_replace('install.php', 'dispatcher.php', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
+									<td><input type="text" name="baseurl" value="<?php if (isset($_SERVER['HTTPS'])) echo 'https://'; else echo 'http://'; echo $_SERVER['HTTP_HOST']; echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
 								</tr>
 								<tr>
 									<td>Base URL path</td>
-									<td><input type="text" name="basepath" value="<?php echo str_replace('install.php', 'dispatcher.php', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
+									<td><input type="text" name="basepath" value="<?php echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
 								</tr>
 							</table>
 							<p><input type="submit" name="syscfg" value="Continue &rarr;" /></p>
@@ -961,9 +983,21 @@ if (isset($_GET['downloadconfigxml'])) {
 					case 'complete':
 						?>
 						<h2>Installation complete!</h2>
-						<p>Please just download the config.xml file and place it in the forum root directory. Then everything should work! Click <a href="<?php echo get_cookie_data('baseurl'); ?>">here</a> to test it out.</p>
+						<p>Please follow the steps below to finish setting up your forum. When done, click <a href="<?php echo get_cookie_data('baseurl'); ?>" target="_blank">here</a> to test it out.</p>
+                        <ol>
+                        	<li>Download the config.xml file from the link below and place it in your forum root directory</li>
+                            <?php if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) { ?>
+                            <li>Make sure AllowOverride is set to ON for your forum directory. If it is not, then you need to enable it.</li>
+                            <li>Download the .htaccess file below and place it in your forum root directory</li>
+                        	<?php } else { ?>
+                            <li>Rewrite all HTTP requests to the root directory of your forum to dispatcher.php</li>
+                            <?php } ?>
+                        </ol>
 						<p style="font-size:30px"><a href="install.php?downloadconfigxml">Download config.xml</a></p>
+                        <?php if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) { ?>
+                        <p style="font-size:30px"><a href="install.php?downloadhtaccess">Download .htaccess</a></p>
 						<?php
+						}
 						break;
 					default:
 						echo '<p>Installation error of some sort. We don&apos;t know why. Sorry!</p>';
