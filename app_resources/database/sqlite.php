@@ -2,6 +2,7 @@
 class Database {
 	public $link;
 	var $prefix;
+	var $errorno;
 	
 	function __construct(array $info) {
 		//error('Invalid table prefix; contact board administrator', __FILE__, __LINE__, '');
@@ -21,7 +22,7 @@ class Database {
 	}
 	
 	function error() {
-		return sqlite_error_string(SQLITE_ERROR);
+		return sqlite_error_string($this->errorno);
 	}
 	
 	function num_rows($result) {
@@ -49,6 +50,7 @@ class Database {
 			echo "\n\n" . 'Debug info:';
 			print_r(debug_backtrace()); die;
 		}
+		$this->errorno = sqlite_last_error($this->link);
 		return sqlite_query($this->link,str_replace('#^', $this->prefix, $q));
 	}
 	
@@ -57,11 +59,11 @@ class Database {
 	}
 	
 	function fetch_row($result) {
-		return sqlite_fetch($result);
+		return sqlite_fetch_array($result);
 	}
 	
 	function insert_id() {
-		return sqlite_($this->link);
+		return sqlite_last_insert_rowid($this->link);
 	}
 	
 	function close() {

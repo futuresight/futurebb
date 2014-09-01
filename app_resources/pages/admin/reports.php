@@ -38,7 +38,7 @@ include FORUM_ROOT . '/app_resources/includes/parser.php';
 		or error('Failed to get new reports', __FILE__, __LINE__, $db->error());
 		if ($db->num_rows($result)) {
 			while ($cur_report = $db->fetch_assoc($result)) {
-				echo '<div clas="reportbox">
+				echo '<div class="reportbox">
 					<p>';
 					if($cur_report['post_type'] == 'post') {
 					echo '<a href="' . $base_config['baseurl'] . '/' . $cur_report['furl'] . '">' . htmlspecialchars($cur_report['fname']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $cur_report['furl'] . '/' . $cur_report['turl'] . '">' . htmlspecialchars($cur_report['subject']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/posts/' . $cur_report['post_id'] . '">' . translate('post') . ' #' . $cur_report['post_id'] . '</a><br />';
@@ -69,11 +69,21 @@ include FORUM_ROOT . '/app_resources/includes/parser.php';
 						if ($cur_report['send_time'] != 0) echo '<br /><em>' . translate('sent') . ' ' . user_date($cur_report['send_time']) . '</em>';
 						echo '</p><p>';
 					}
-					echo translate('reportedby', htmlspecialchars($cur_report['reported_by']), user_date($cur_report['time_reported']));
+					if ($cur_report['post_type'] == 'special') {
+						echo translate('systemreportmsg');
+					} else {
+						echo translate('reportedby', htmlspecialchars($cur_report['reported_by']), user_date($cur_report['time_reported']));
+					}
 					if ($cur_report['status'] == 'review') {
 						echo '<br />' . translate('furtherreview', $cur_report['zapped_by']);
 					}
-					echo '</p><p>' . translate('reason') . '<br /><b>' . htmlspecialchars($cur_report['reason']) . '</b></p>
+					echo '</p><p>' . translate('reason') . '<br /><b>';
+					if ($cur_report['post_type'] == 'special') { //parse HTML for system reports
+						echo $cur_report['reason'];
+					} else {
+						echo htmlspecialchars($cur_report['reason']);
+					}
+					echo '</b></p>
 					<p><input type="submit" name="zap[' . $cur_report['id'] . '][noresp]" value="' . translate('donotresp') . '" /> <input type="submit" name="zap[' . $cur_report['id'] . '][accept]" value="' . translate('accept') . '" /> <input type="submit" name="zap[' . $cur_report['id'] . '][reject]" value="' . translate('reject') . '" /> <input type="submit" name="review[' . $cur_report['id'] . ']" value="' . translate('markreview') . '"';
 					if ($cur_report['status'] == 'review') {
 						echo 'disabled="disabled"';
@@ -138,24 +148,36 @@ include FORUM_ROOT . '/app_resources/includes/parser.php';
 						if ($cur_report['send_time'] != 0) echo '<br /><em>' . translate('sent') . ' ' . user_date($cur_report['send_time']) . '</em>';
 						echo '</p><p>';
 					}
-					echo translate('reportedby', htmlspecialchars($cur_report['reported_by']), user_date($cur_report['time_reported'])) . '<br />' . translate('markedreadby', htmlspecialchars($cur_report['zapped_by']), user_date($cur_report['zapped'])) . '<br />' . translate('status') . ': <b>';
-					switch ($cur_report['status']) {
-						case 'unread':
-							echo translate('pending'); break;
-						case 'review':
-							echo translate('underreview'); break;
-						case 'reject':
-							echo '<span style="color:#A00">' . translate('rejected') . '</span>'; break;
-						case 'accept':
-							echo '<span style="color:#0A0">' . translate('accepted') . '</span>'; break;
-						case 'noresp':
-							echo translate('noresp'); break;
-						case 'withdrawn':
-							echo translate('withdrawnbyreporter'); break;
-						default:
-							echo translate('unknown'); break;
+					if ($cur_report['post_type'] == 'special') {
+						echo translate('systemreportmsg');
+					} else {
+						echo translate('reportedby', htmlspecialchars($cur_report['reported_by']), user_date($cur_report['time_reported'])) . '<br />' . translate('markedreadby', htmlspecialchars($cur_report['zapped_by']), user_date($cur_report['zapped'])) . '<br />' . translate('status') . ': <b>';
+						switch ($cur_report['status']) {
+							case 'unread':
+								echo translate('pending'); break;
+							case 'review':
+								echo translate('underreview'); break;
+							case 'reject':
+								echo '<span style="color:#A00">' . translate('rejected') . '</span>'; break;
+							case 'accept':
+								echo '<span style="color:#0A0">' . translate('accepted') . '</span>'; break;
+							case 'noresp':
+								echo translate('noresp'); break;
+							case 'withdrawn':
+								echo translate('withdrawnbyreporter'); break;
+							default:
+								echo translate('unknown'); break;
+						}
+						echo '</b>';
 					}
-					echo '</b></p><p>' . translate('reason') . '<br /><b>' . BBCodeController::add_line_breaks(htmlspecialchars($cur_report['reason'])) . '</b></p>';
+					
+					echo '</p><p>' . translate('reason') . '<br /><b>';
+					if ($cur_report['post_type'] == 'special') { //parse HTML for system reports
+						echo $cur_report['reason'];
+					} else {
+						echo htmlspecialchars($cur_report['reason']);
+					}
+					echo '</b></p>';
 					echo '
 				</div>';
 			}

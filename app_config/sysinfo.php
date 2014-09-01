@@ -1,2 +1,2 @@
 <?php
-define('FUTUREBB_VERSION', '1.0');
+define('FUTUREBB_VERSION', '.9');
