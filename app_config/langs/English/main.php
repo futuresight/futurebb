@@ -208,6 +208,7 @@ If this is not you, then please disregard this message.',
 	'flood_hour'			=>	'You may only post $1  posts in one hour. Please wait $2 seconds and try again.',
 	'imgwhitelisterror'		=>	'The image URL $1 is not allowed on this forum. You are only allowed to use images hosted on the following domains: $2.',
 	'imgblacklisterror'		=>	'The image URL $1 is not allowed on this forum. You are not allowed to use images hosted on the following domains: $2.',
+	'toomanynestedquotes'	=>	'The [quote] tag is nested too many times. It can only be nested up to $1 times.',
 	
 	//posting
 	'errordesc'			=>	'The following errors need to be fixed before continuing:',
@@ -456,6 +457,9 @@ If this is not you, then please disregard this message.',
 	'database'				=>	'Database',
 	'os'					=>	'Operating system',
 	'newversionmsg'			=>	'A new version of FutureBB is available! You can download it on <a href="http://futuresight.org/products/futurebb">the FutureSight Technologies website</a>.',
+	'maxquotedepth'			=>	'Maximum quote depth',
+	'quotedepth>1'			=>	'The maximum quote depth must be greater than 1',
+	'fixerrors'				=>	'The following errors must be fixed before continuing:',
 	
 	//notifications
 	'newreports'			=>	'There are new reports',
@@ -474,6 +478,7 @@ If this is not you, then please disregard this message.',
 	
 	//bbcode
 	'wrote'					=> 'wrote',
+	'bbcode'				=> 'BBCode',
 	
 	//bbcode help page
 	'produces'				=> 'produces',

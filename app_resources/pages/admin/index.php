@@ -33,32 +33,40 @@ if(isset($_POST['form_sent'])) {
 		'posts_per_page'		=> 'int',
 		'sig_max_length'		=> 'int',
 		'sig_max_lines'			=> 'int',
-		'sig_max_height'		=> 'int'
+		'sig_max_height'		=> 'int',
+		'max_quote_depth'		=> 'int'
 	);
-	if ($_POST['config']['turn_on_maint'] != '') {
-		$_POST['config']['turn_on_maint'] = time() + 60 * intval($_POST['config']['turn_on_maint']);
-		$cfg_list['turn_on_maint'] = 'int';
+	//check first
+	$errors = array();
+	if ($_POST['config']['max_quote_depth'] < 2) {
+		$errors[] = translate('quotedepth>1');
 	}
-	if ($_POST['config']['turn_off_maint'] != '') {
-		$_POST['config']['turn_off_maint'] = time() + 60 * intval($_POST['config']['turn_off_maint']);
-		$cfg_list['turn_off_maint'] = 'int';
-	}
-	if ($futurebb_config['turn_off_maint'] > time() && !isset($_POST['maintenance'])) {
-		$_POST['config']['turn_off_maint'] = 0;
-		$cfg_list['turn_off_maint'] = 'int';
-	}
-	foreach ($cfg_list as $name => $type) {
-		switch ($type) {
-			case 'bool':
-				$val = (isset($_POST['config'][$name]) ? '1' : '0'); break;
-			case 'string':
-				$val = $_POST['config'][$name]; break;
-			case 'int':
-				$val = intval($_POST['config'][$name]);
+	if (empty($errors)) {
+		if ($_POST['config']['turn_on_maint'] != '') {
+			$_POST['config']['turn_on_maint'] = time() + 60 * intval($_POST['config']['turn_on_maint']);
+			$cfg_list['turn_on_maint'] = 'int';
 		}
-		set_config($name, $val);
+		if ($_POST['config']['turn_off_maint'] != '') {
+			$_POST['config']['turn_off_maint'] = time() + 60 * intval($_POST['config']['turn_off_maint']);
+			$cfg_list['turn_off_maint'] = 'int';
+		}
+		if ($futurebb_config['turn_off_maint'] > time() && !isset($_POST['maintenance'])) {
+			$_POST['config']['turn_off_maint'] = 0;
+			$cfg_list['turn_off_maint'] = 'int';
+		}
+		foreach ($cfg_list as $name => $type) {
+			switch ($type) {
+				case 'bool':
+					$val = (isset($_POST['config'][$name]) ? '1' : '0'); break;
+				case 'string':
+					$val = $_POST['config'][$name]; break;
+				case 'int':
+					$val = intval($_POST['config'][$name]);
+			}
+			set_config($name, $val);
+		}
+		header('Refresh: 0'); return;
 	}
-	header('Refresh: 0'); return;
 }
 
 //automatically check for updates
@@ -89,7 +97,14 @@ if (ini_get('allow_url_fopen')) {
 		background-color: #DDD;
 	}
 	</style>
-	<?php make_admin_menu(); ?>
+	<?php make_admin_menu();
+	if (isset($errors) && !empty($errors)) {
+		echo '<div class="forum_content rightbox admin"><h3>' . translate('fixerrors') . '</h3><ul>';
+		foreach ($errors as $error) {
+			echo '<li>' . $error . '</li>';
+		}
+		echo '</ul></div>';
+	} ?>
 	<div class="forum_content rightbox admin">
 		<form action="<?php echo $base_config['baseurl']; ?>/admin" method="post" enctype="multipart/form-data">
 		<h3><?php echo translate('boardsettings'); ?></h3>
@@ -164,8 +179,15 @@ if (ini_get('allow_url_fopen')) {
 				<td><input type="text" name="config[sig_max_height]" value="<?php echo htmlspecialchars($futurebb_config['sig_max_height']); ?>" size="5" /></td>
 			</tr>
 		</table>
-		
-		<h4 id="maintenance"><?php echo translate('maintenance'); ?></h4>
+        
+        <h3><?php echo translate('bbcode'); ?></h3>
+        <table border="0" class="optionstable">
+			<tr>
+				<th><?php echo translate('maxquotedepth'); ?></th>
+				<td><input type="text" name="config[max_quote_depth]" value="<?php echo htmlspecialchars($futurebb_config['max_quote_depth']); ?>" size="5" /></td>
+			</tr>
+        </table>
+		<h3 id="maintenance"><?php echo translate('maintenance'); ?></h3>
 		<p><input name="config[maintenance]" type="checkbox" <?php if($futurebb_config['maintenance'] == 1) echo 'checked="checked"'; ?> value="1" id="maintenance" /> <label for="maintenance"><?php echo translate('maintenancemode'); ?></label><br />
 		<?php echo translate('maintenancemsg'); ?><br /><textarea name="config[maintenance_message]"><?php echo htmlspecialchars($futurebb_config['maintenance_message']); ?></textarea></p>
 		<p><?php echo translate('autoactivatemaint'); ?> <input type="text" name="config[turn_on_maint]" size="5" /> <?php echo strtolower(translate('minutes')); ?>.<?php if ($futurebb_config['turn_on_maint']) echo ' ' . translate('maintschedpanel', user_date($futurebb_config['turn_on_maint'])); ?></p>

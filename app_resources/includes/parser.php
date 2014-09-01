@@ -227,8 +227,10 @@ abstract class BBCodeController {
 		}
 		
 		$bbcode_parts = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY); //this regular expression was copied from FluxBB. However, everything used to parse it is completely original
+		//split the message into tags and check syntax
 		$open_tags = array();
 		$last_key = 0;
+		$quotes = 0;
 		foreach ($bbcode_parts as $val) {
 			if (preg_match('%^\[/(' . implode('|', self::$tags) . ')\]$%', $val, $matches)) {
 				if ($last_key == 0) {
@@ -239,10 +241,19 @@ abstract class BBCodeController {
 					$errors[] = translate('expectedfound', $open_tags[$last_key - 1], $matches[1]);
 					return;
 				}
+				if ($open_tags[$last_key - 1] == 'quote') {
+					$quotes--;
+				}
 				unset($open_tags[$last_key - 1]);
 				$last_key--;
 			} else if (preg_match('%^\[(' . implode('|', self::$tags) . ')(=.*?)?\]$%', $val, $matches)) {
 				$open_tags[$last_key] = $matches[1];
+				if ($open_tags[$last_key ] == 'quote') {
+					$quotes++;
+					if ($quotes > $futurebb_config['max_quote_depth']) {
+						$errors[] = translate('toomanynestedquotes', $futurebb_config['max_quote_depth']);
+					}
+				}
 				$last_key++;
 			}
 		}
