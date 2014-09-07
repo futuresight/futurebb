@@ -58,7 +58,7 @@ if (isset($_POST['form_sent'])) {
 				$handle = opendir($src);
 				while ($file = readdir($handle)) {
 					if ($file != '.' && $file != '..') {
-						if (is_dir($file)) {
+						if (is_dir($src . '/' . $file)) {
 							moveDir($src . '/' . $file, $dst . '/' . $file);
 						} else {
 							rename($src . '/' . $file, $dst . '/' . $file);

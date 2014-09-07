@@ -18,11 +18,6 @@ if (isset($_POST['form_sent'])) {
 	if ($_POST['password1'] != $_POST['password2']) {
 		$errors[] = translate('passnomatch');
 	}
-	$disposableemails = explode("\n", file_get_contents(SRV_ROOT . '/data/disposableemails.txt'));
-	preg_match('%^(.*?)@(.*?)$%', $_POST['email'], $email_parts);
-	if (sizeof($email_parts) > 1 && in_array($email_parts[2], $disposableemails)) {
-		$errors[] = 'Do not use a disposabile email service';
-	}
 	for ($i = 0; $i < strlen($_POST['username']); $i++) {
 		$char = $_POST['username']{$i};
 		$allowed_chars = array('-','_');

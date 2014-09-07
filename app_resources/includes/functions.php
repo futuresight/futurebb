@@ -367,8 +367,11 @@ function array_move($array, $start, $count) {
 }
 
 abstract class ExtensionConfig {
-	static function add_page($url, $details) {
+	static function add_page($url, array $details) {
 		include FORUM_ROOT . '/app_config/pages.php';
+		if (!is_array($details)) {
+			trigger_error('Illegal arguments given to add_page: must be array', E_USER_ERROR);
+		}
 		$pages[$url] = $details;
 		file_put_contents(FORUM_ROOT . '/app_config/pages.php', '<?php' . "\n" . '$pages = ' . var_export($pages, true) . ';' . "\n" . '$pagessubdirs = ' . var_export($pagessubdirs, true) . ';');
 	}
@@ -385,6 +388,21 @@ abstract class ExtensionConfig {
 		}
 		file_put_contents(FORUM_ROOT . '/app_config/admin_pages.php', '<?php' . "\n" . '$admin_pages = ' . var_export($admin_pages, true) . ';' . "\n" . '$mod_pages = ' . var_export($mod_pages, true) . ';');
 	}
+	static function add_language_key($key, $text, $language = 'English') {
+		if (!file_exists(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php')) {
+			trigger_error('Illegal argument: $language is not a valid language', E_USER_ERROR);
+		}
+		$lang_data = file_get_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php');
+		$lines = explode("\n", $lang_data);
+		foreach ($lines as $lineno => $line) {
+			if (trim($line) == '//extensions') {
+				$lines = array_move($lines, $lineno + 1, 1);
+				$lines[$lineno + 1] = "\t" . '\'' . $key . '\' => \'' . addslashes($text) . '\',';
+				break;
+			}
+		}
+		file_put_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php', implode("\n", $lines));
+	}
 }
 
 function translate() {
@@ -397,7 +415,7 @@ function translate() {
 		include FORUM_ROOT . '/app_config/langs/' . basename($futurebb_user['language']) . '/main.php';
 	}
 	if (func_num_args() == 0) {
-		trigger_error('A text string was not provided to the translate function');
+		trigger_error('A text string was not provided to the translate function', E_USER_ERROR);
 	}
 	$args = func_get_args();
 	if (!isset($lang[$args[0]])) {

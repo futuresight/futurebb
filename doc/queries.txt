@@ -1,0 +1,8 @@
+Query classes:
+DBInsert
+	Constructor: $table, $fields, $error
+    commit();
+
+DBUpdate
+	Constructor: $table, $set, $where, $error
+	commit();

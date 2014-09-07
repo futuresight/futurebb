@@ -400,7 +400,7 @@ If this is not you, then please disregard this message.',
 	'replace'				=>	'Replace',
 	'icon'					=>	'Icon',
 
-	//extensions
+	//extension installation
 	'uploadfailed'			=>	'File upload failed.',
 	'notzip'				=>	'The file you uploaded is not a ZIP file.',
 	'noinfophp'				=>	'The extension did not have an info.php file',
@@ -496,4 +496,6 @@ If this is not you, then please disregard this message.',
 	'textquoting'			=> 'This is the text I am quoting.',
 	'johnsmith'				=> 'John Smith', //replace with whatever generic name you want
 	'linksandimages'		=> 'Links and images',
+	
+	//extensions
 );

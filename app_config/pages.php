@@ -134,7 +134,7 @@ $pages = array (
   array (
     'file' => 'bbcodehelp.php',
     'template' => true,
-	'nocontentbox' => true,
+    'nocontentbox' => true,
   ),
 );
 $pagessubdirs = array (
