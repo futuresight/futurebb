@@ -45,6 +45,10 @@ if (isset($_POST['form_sent'])) {
 			include $ext_test_dir . '/database.php';
 			echo '<li>' . translate('makingdbchanges') . '</li>';
 		}
+		if (isset($error)) {
+			echo '<li>' . translate('Error') . ': ' . $error . '</li></ul></div>';
+			return;
+		}
 		if (file_exists($ext_test_dir . '/install.php')) {
 			include $ext_test_dir . '/install.php';
 			echo '<li>' . translate('runninginstallphp') . '</li>';
