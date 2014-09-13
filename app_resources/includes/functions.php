@@ -418,6 +418,10 @@ function translate() {
 		trigger_error('A text string was not provided to the translate function', E_USER_ERROR);
 	}
 	$args = func_get_args();
+	if ($args[0] == '<addfile>') {
+		include FORUM_ROOT . '/app_config/langs/' . basename($futurebb_user['language']) . '/' . $args[1] . '.php';
+		$lang = array_merge($lang, $lang_addl);
+	}
 	if (!isset($lang[$args[0]])) {
 		return 'Translator error: ' . $args[0] . ' is not a valid language key';
 	}

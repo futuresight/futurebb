@@ -497,5 +497,6 @@ If this is not you, then please disregard this message.',
 	'johnsmith'				=> 'John Smith', //replace with whatever generic name you want
 	'linksandimages'		=> 'Links and images',
 	
+	//IMPORTANT: DO NOT REMOVE OR MODIFY THIS COMMENT OR EXTENSIONS WILL NOT WORK
 	//extensions
 );

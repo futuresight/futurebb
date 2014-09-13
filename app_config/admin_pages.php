@@ -11,6 +11,7 @@ $admin_pages = array (
   'maintenance' => 'maintenance',
   'style' => 'style',
   'extensions' => 'extensions',
+  'sfs' => 'sfs',
 );
 $mod_pages = array (
   'bans' => 'bans',

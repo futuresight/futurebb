@@ -1,11 +1,11 @@
 <?php
 $pages = array(
-	'Welcome'				=>	false,
-	'Database setup'		=>	false,
-	'System configuration'	=>	false,
-	'Administrator account'	=>	false,
-	'Board title'			=>	false,
-	'Confirmation'			=>	false,
+	'welcome'		=>	false,
+	'dbsetup'		=>	false,
+	'syscfg'		=>	false,
+	'adminacct'		=>	false,
+	'brdtitle'		=>	false,
+	'confirmation'	=>	false,
 );
 
 define('FORUM_ROOT', dirname(__FILE__));
@@ -76,9 +76,18 @@ function test_db() {
 function db_fail() {
 	global $db_fail, $pages, $page;
 	$db_fail = true;
-	$pages['Database setup'] = true;
+	$pages['dbsetup'] = true;
 	$page = 'dbsetup';
 }
+
+//language stuff
+include 'app_resources/includes/functions.php';
+if (get_cookie_data('language') === false) {
+	$futurebb_user = array('language' => 'English');
+} else {
+	$futurebb_user = array('language' => get_cookie_data('language'));
+}
+translate('<addfile>', 'install');
 
 $page = '';
 if (isset($_GET['downloadconfigxml'])) {
@@ -119,7 +128,6 @@ if (isset($_GET['downloadconfigxml'])) {
 	die;
 } else if (isset($_POST['install'])) {
 	include 'app_resources/database/db_resources.php';
-	include 'app_resources/includes/functions.php';
 	if (test_db()) {
 		//create database structure
 		$tables = array();
@@ -683,7 +691,7 @@ if (isset($_GET['downloadconfigxml'])) {
 	}
 } else if (isset($_POST['brdsettings'])) {
 	foreach ($_POST['config'] as $key => $val) {
-		$pages['Confirmation'] = true;
+		$pages['confirmation'] = true;
 		$page = 'confirm';
 		foreach ($_POST['config'] as $key => $val) {
 			add_cookie_data($key, $val);
@@ -695,17 +703,17 @@ if (isset($_GET['downloadconfigxml'])) {
 	add_cookie_data('adminemail', $_POST['adminemail']);
 	add_cookie_data('adminpass', $_POST['adminpass']);
 	if ($_POST['adminpass'] != $_POST['confirmadminpass']) {
-		$pages['Administrator account'] = true;
+		$pages['adminacct'] = true;
 		$page = 'adminacc';
 		$pwd_mismatch = true;
 	} else {
-		$pages['Board title'] = true;
+		$pages['brdtitle'] = true;
 		$page = 'brdsettings';
 	}
 } else if (isset($_POST['syscfg'])) {
 	add_cookie_data('baseurl', $_POST['baseurl']);
 	add_cookie_data('basepath', $_POST['basepath']);
-	$pages['Administrator account'] = true;
+	$pages['adminacct'] = true;
 	$page = 'adminacc';
 	$pwd_mismatch = false;
 } else if (isset($_POST['dbsetup'])) {
@@ -718,25 +726,27 @@ if (isset($_GET['downloadconfigxml'])) {
 	
 	//test database
 	if (test_db()) {
-		$pages['System configuration'] = true;
+		$pages['syscfg'] = true;
 		$page = 'syscfg';
 	} else {
 		db_fail();
 	}
 } else if (isset($_POST['start'])) {
 	$db_fail = false;
-	$pages['Database setup'] = true;
+	$pages['dbsetup'] = true;
 	$page = 'dbsetup';
+} else if (isset($_POST['language'])) {
+	add_cookie_data('language', $_POST['language']);
 } else {
 	setcookie('install_cookie', '');
-	$pages['Welcome'] = true;
+	$pages['welcome'] = true;
 	$page = 'welcome';
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>FutureBB Installation</title>
+		<title><?php echo translate('headertext'); ?></title>
 		<style type="text/css">
 		<?php
 		$data = file_get_contents('app_resources/pages/css/default.css');
@@ -748,15 +758,15 @@ if (isset($_GET['downloadconfigxml'])) {
 	<body>
 		<div id="futurebb">
 			<div class="forum_header">
-				<h1 style="text-align:center">FutureBB Installation</h1>
+				<h1 style="text-align:center"><?php echo translate('headertext'); ?></h1>
 				<div id="navlistwrap">
 					<?php
 					$pages_echo = array();
 					foreach ($pages as $key => $current) {
 						if ($current) {
-							$pages_echo[] = '<b>' . $key . '</b>';
+							$pages_echo[] = '<b>' . translate($key) . '</b>';
 						} else {
-							$pages_echo[] = $key;
+							$pages_echo[] = translate($key);
 						}
 					}
 					echo implode(' &rarr; ', $pages_echo);
@@ -768,9 +778,8 @@ if (isset($_GET['downloadconfigxml'])) {
 				switch ($page) {
 					case 'welcome':
 						?>
-						<h2>Welcome to FutureBB</h2>
-                        <p>Please note that translations of this page are not currently available. They will be available in a future version.</p>
-						<p>Before you can start using your forum, you are going to need to set a few things up. This installer will make it easy for you.</p>
+						<h2><?php echo translate('welcometofbb'); ?></h2>
+						<p><?php echo translate('intro'); ?></p>
 						<?php
 						$ok = true;
 						function writable($path) {
@@ -804,123 +813,131 @@ if (isset($_GET['downloadconfigxml'])) {
 						}
 						?>
 						<form action="install.php" method="post" enctype="multipart/form-data">
-							<p><input type="submit" name="start" value="Continue &rarr;"<?php if (!$ok) echo ' disabled="disabled"'; ?> /></p>
+                        	<p><?php echo translate('selectlang'); ?> <select name="language"><?php
+							$handle = opendir(FORUM_ROOT . '/app_config/langs');
+							while ($lang = readdir($handle)) {
+								if ($lang != '.' && $lang != '..') {
+									echo '<option value="' . $lang . '">' . $lang . '</option>';
+								}
+							}
+							?></select></p>
+							<p><input type="submit" name="start" value="<?php echo translate('continue'); ?> &rarr;"<?php if (!$ok) echo ' disabled="disabled"'; ?> /></p>
 						</form>
 						<?php
 						break;
 					case 'dbsetup':
 						?>
-						<h2>Database setup</h2>
+						<h2><?php echo translate('dbsetup'); ?></h2>
 						<?php
 						if ($db_fail) {
-							echo '<p style="color:#F00; font-weight:bold">Your database information was invalid. The database reported: ' . $db->connect_error() . '</p>';
+							echo '<p style="color:#F00; font-weight:bold">' . translate('baddb') . $db->connect_error() . '</p>';
 						}
 						?>
-						<p>Currently, this software only supports MySQL Standard and MySQL Improved. If you use a different database engine (such as SQLite), then unfortunately this software will not support that until at least version 1.1.</p>
+						<p><?php echo translate('supporteddbs'); ?></p>
 						<form action="install.php" method="post" enctype="multipart/form-data">
 							<table border="0">
 								<tr>
-									<td>Type</td>
+									<td><?php echo translate('type'); ?></td>
 									<td><select name="dbtype"><option value="mysqli"<?php if (get_cookie_data('dbtype') == 'mysqli') echo ' selected="selected"'; ?>>MySQL Improved</option><option value="mysql"<?php if (get_cookie_data('dbtype') == 'mysql') echo ' selected="selected"'; ?>>MySQL Standard</option></select>
 								</td>
 								<tr>
-									<td>Host</td>
+									<td><?php echo translate('host'); ?></td>
 									<td><input type="text" name="dbhost" value="<?php echo get_cookie_data('dbhost') ? get_cookie_data('dbhost') : 'localhost'; ?>" /></td>
 								</tr>
 								<tr>
-									<td>Username</td>
+									<td><?php echo translate('username'); ?></td>
 									<td><input type="text" name="dbuser" value="<?php echo get_cookie_data('dbuser') ? get_cookie_data('dbuser') : 'root'; ?>" /></td>
 								</tr>
 								<tr>
-									<td>Password</td>
+									<td><?php echo translate('pwd'); ?></td>
 									<td><input type="password" name="dbpass" value="<?php echo get_cookie_data('dbpass') ? get_cookie_data('dbpass') : ''; ?>" /></td>
 								</tr>
 								<tr>
-									<td>Name</td>
+									<td><?php echo translate('name'); ?></td>
 									<td><input type="text" name="dbname" value="<?php echo get_cookie_data('dbname') ? get_cookie_data('dbname') : ''; ?>" /></td>
 								</tr>
 								<tr>
-									<td>Prefix</td>
+									<td><?php echo translate('prefix'); ?></td>
 									<td><input type="text" name="dbprefix" value="<?php echo get_cookie_data('dbprefix') ? get_cookie_data('dbprefix') : 'futurebb_'; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="submit" name="dbsetup" value="Continue and test &rarr;" /></p>
+							<p><input type="submit" name="dbsetup" value="<?php echo translate('continuetest'); ?> &rarr;" /></p>
 						</form>
 						<?php
 						break;
 					case 'syscfg':
 						?>
-						<h2>System configuration</h2>
-						<p>Connecting to the database was successful.</p>
-                        <p>Please set the URL information below. Please note that the pre-entered values are only educated guesses. Please verify them yourself before continuing. Also please verify that there are no trailing slashes.</p>
+						<h2><?php echo translate('syscfg'); ?></h2>
+						<p><?php echo translate('dbgood'); ?></p>
+                        <p><?php echo translate('seturlstuff'); ?></p>
 						<form action="install.php" method="post" enctype="multipart/form-data">
 							<table border="0">
 								<tr>
-									<td>Base URL</td>
+									<td><?php echo translate('baseurl'); ?></td>
 									<td><input type="text" name="baseurl" value="<?php if (isset($_SERVER['HTTPS'])) echo 'https://'; else echo 'http://'; echo $_SERVER['HTTP_HOST']; echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
 								</tr>
 								<tr>
-									<td>Base URL path</td>
+									<td><?php echo translate('baseurlpath'); ?></td>
 									<td><input type="text" name="basepath" value="<?php echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
 								</tr>
 							</table>
-							<p><input type="submit" name="syscfg" value="Continue &rarr;" /></p>
+							<p><input type="submit" name="syscfg" value="<?php echo translate('continue'); ?> &rarr;" /></p>
 						</form>
 						<?php
 						break;
 					case 'adminacc':
 						?>
-						<h2>Admin account</h2>
+						<h2><?php echo translate('adminacct'); ?></h2>
 						<?php
 						if ($pwd_mismatch) {
-							echo '<p>Passwords did not match. Please try again.</p>';
+							echo '<p>' . translate('pwdmismatch') . '</p>';
 						}
 						?>
 						<form action="install.php" method="post" enctype="multipart/form-data">
 							<table border="0">
 								<tr>
-									<td>Username</td>
+									<td><?php echo translate('username'); ?></td>
 									<td><input type="text" name="adminusername" value="<?php echo get_cookie_data('adminusername') ? get_cookie_data('adminusername') : ''; ?>" /></td>
 								</tr>
 								<tr>
-									<td>Password</td>
+									<td><?php echo translate('pwd'); ?></td>
 									<td><input type="password" name="adminpass" value="<?php echo (get_cookie_data('adminpass') && !$pwd_mismatch) ? get_cookie_data('adminpass') : ''; ?>" /></td>
 								</tr>
 								<tr>
-									<td>Confirm password</td>
+									<td><?php echo translate('confirmpwd'); ?></td>
 									<td><input type="password" name="confirmadminpass" value="<?php echo (get_cookie_data('adminpass') && !$pwd_mismatch) ? get_cookie_data('adminpass') : ''; ?>" /></td>
 								</tr>
 								<tr>
-									<td>Email address</td>
+									<td><?php echo translate('email'); ?></td>
 									<td><input type="email" name="adminemail" value="<?php echo get_cookie_data('adminemail') ? get_cookie_data('adminemail') : ''; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="submit" name="adminacc" value="Continue &rarr;" /></p>
+							<p><input type="submit" name="adminacc" value="<?php echo translate('continue'); ?> &rarr;" /></p>
 						</form>
 						<?php
 						break;
 					case 'brdsettings':
 						?>
-						<h2>Board title</h2>
+						<h2><?php echo translate('brdtitle'); ?></h2>
 						<form action="install.php" method="post" enctype="multipart/form-data">
 							<table border="0">
 								<tr>
-									<td>Board title</td>
+									<td><?php echo translate('brdtitle'); ?></td>
 									<td><input type="text" name="config[board_title]" value="<?php echo get_cookie_data('board_title') ? get_cookie_data('board_title') : ''; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="submit" name="brdsettings" value="Continue &rarr;" /></p>
+							<p><input type="submit" name="brdsettings" value="<?php echo translate('continue'); ?> &rarr;" /></p>
 						</form>
 						<?php
 						break;
 					case 'confirm':
 						?>
-						<h2>Confirmation</h2>
-						<p>You are now ready to set up your forum! When you click the install button, it will prepare the database for you, and create the configuration files. If you click the modify button, it will take you back to the first page so you can modify your settings.</p>
-						<p>The installation details are listed below. Please review them before you finalize the installation.</p>
+						<h2><?php echo translate('confirmation'); ?></h2>
+						<p><?php echo translate('confirmintro'); ?></p>
+						<p><?php echo translate('installdetails'); ?></p>
 						<table border="0">
 							<tr>
-								<td>Database type</td>
+								<td><?php echo translate('dbtype'); ?></td>
 								<td><?php switch (get_cookie_data('dbtype')) {
 									case 'mysqli':
 										echo 'MySQL Improved'; break;
@@ -931,76 +948,75 @@ if (isset($_GET['downloadconfigxml'])) {
 								} ?></td>
 							</tr>
 							<tr>
-								<td>Database host</td>
+								<td><?php echo translate('dbhost'); ?></td>
 								<td><?php echo get_cookie_data('dbhost'); ?></td>
 							</tr>
 							<tr>
-								<td>Database username</td>
+								<td><?php echo translate('dbuser'); ?></td>
 								<td><?php echo get_cookie_data('dbuser'); ?></td>
 							</tr>
 							<tr>
-								<td>Database password</td>
-								<td><i>[not displayed]</i></td>
+								<td><?php echo translate('dbpwd'); ?></td>
+								<td><em><?php echo translate('notdisplayed'); ?></em></td>
 							</tr>
 							<tr>
-								<td>Database name</td>
+								<td><?php echo translate('dbname'); ?></td>
 								<td><?php echo get_cookie_data('dbname'); ?></td>
 							</tr>
 							<tr>
-								<td>Database prefix</td>
+								<td><?php echo translate('dbprefix'); ?></td>
 								<td><?php echo get_cookie_data('dbprefix'); ?></td>
 							</tr>
 							<tr>
-								<td>Base URL</td>
+								<td><?php echo translate('baseurl'); ?></td>
 								<td><?php echo get_cookie_data('baseurl'); ?></td>
 							</tr>
 							<tr>
-								<td>Base URL path</td>
+								<td><?php echo translate('baseurlpath'); ?></td>
 								<td><?php echo get_cookie_data('basepath'); ?></td>
 							</tr>
 							<tr>
-								<td>Admin username</td>
+								<td><?php echo translate('adminusername'); ?></td>
 								<td><?php echo get_cookie_data('adminusername'); ?></td>
 							</tr>
 							<tr>
-								<td>Admin password</td>
-								<td><i>[not displayed]</i></td>
+								<td><?php echo translate('adminpwd'); ?></td>
+								<td><em><?php echo translate('notdisplayed'); ?></em></td>
 							</tr>
 							<tr>
-								<td>Admin email</td>
+								<td><?php echo translate('adminemail'); ?></td>
 								<td><?php echo get_cookie_data('adminemail'); ?></td>
 							</tr>
 							<tr>
-								<td>Board title</td>
+								<td><?php echo translate('brdtitle'); ?></td>
 								<td><?php echo get_cookie_data('board_title'); ?></td>
 							</tr>
 						</table>
 						<form action="install.php" method="post" enctype="multipart/form-data">
-							<p><input type="submit" name="start" value="Modify" /> <input type="submit" name="install" value="Install" /></p>
+							<p><input type="submit" name="start" value="<?php echo translate('modify'); ?>" /> <input type="submit" name="install" value="<?php echo translate('install'); ?>" /></p>
 						</form>
 						<?php
 						break;
 					case 'complete':
 						?>
-						<h2>Installation complete!</h2>
-						<p>Please follow the steps below to finish setting up your forum. When done, click <a href="<?php echo get_cookie_data('baseurl'); ?>" target="_blank">here</a> to test it out.</p>
+						<h2><?php echo translate('installcomplete'); ?></h2>
+						<p><?php echo translate('testout1'); ?><a href="<?php echo get_cookie_data('baseurl'); ?>" target="_blank"><?php echo translate('clickhere'); ?></a><?php echo translate('testout2'); ?></p>
                         <ol>
-                        	<li>Download the config.xml file from the link below and place it in your forum root directory</li>
-                            <?php if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) { ?>
-                            <li>Make sure AllowOverride is set to ON for your forum directory. If it is not, then you need to enable it.</li>
-                            <li>Download the .htaccess file below and place it in your forum root directory</li>
-                        	<?php } else { ?>
-                            <li>Rewrite all HTTP requests to the root directory of your forum to dispatcher.php</li>
-                            <?php } ?>
+                        	<li><?php echo translate('downloadxml'); ?></li>
+                            <?php if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
+                            	echo translate('apachemsg');
+                        	} else {
+                            	echo translate('noapachemsg');
+                            } ?>
                         </ol>
-						<p style="font-size:30px"><a href="install.php?downloadconfigxml">Download config.xml</a></p>
+						<p style="font-size:30px"><a href="install.php?downloadconfigxml"><?php echo translate('xmllink'); ?></a></p>
                         <?php if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) { ?>
-                        <p style="font-size:30px"><a href="install.php?downloadhtaccess">Download .htaccess</a></p>
+                        <p style="font-size:30px"><a href="install.php?downloadhtaccess"><?php echo translate('htalink'); ?></a></p>
 						<?php
 						}
 						break;
 					default:
-						echo '<p>Installation error of some sort. We don&apos;t know why. Sorry!</p>';
+						echo '<p>' . translate('weirderror') . '</p>';
 				}
 				?>
 			</div>
