@@ -2,6 +2,7 @@
 if (!$futurebb_user['g_admin_privs']) {
 	httperror(403);
 }
+translate('<addfile>', 'admin');
 $page_title = translate('maintenance');
 include FORUM_ROOT . '/app_resources/includes/admin.php';
 if (!isset($dirs[3])) {

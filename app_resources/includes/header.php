@@ -4,7 +4,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><$page_title/> - <?php echo htmlspecialchars($futurebb_config['board_title']); ?></title>
 	<link rel="stylesheet" type="text/css" href="<?php echo $base_config['baseurl']; ?>/styles/<?php echo $futurebb_user['style']; ?>.css" />
-	<link rel="stylesheet" href="/styles/forums.css" />
 </head>
 
 <body>

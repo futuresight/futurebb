@@ -3,6 +3,7 @@ $page_title = 'Register';
 if ($dirs[2] != futurebb_hash(LoginController::GetRandId())) {
 	httperror(404);
 }
+translate('<addfile>', 'register');
 if (isset($_POST['form_sent'])) {
 	$errors = array();
 	if (strlen($_POST['username']) < 4) {

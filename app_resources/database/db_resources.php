@@ -52,13 +52,13 @@ class DBUpdate {
 			if ($set_sql != '') {
 				$set_sql .= ',';
 			}
-			if ($val == intval($val)) {
+			if ($val == (string)intval($val)) {
 				$set_sql .= $key . '=' . intval($val);
 			} else {
 				$set_sql .= $key . '=\'' . $db->escape($val) . '\'';
 			}
 		}
-		$db->query('UPDATE `' . $db->prefix . $this->table . '` SET ' . $set_sql . ' WHERE ' . $this->where) or enhanced_error($this->error, true);
+		$db->query('UPDATE `' . $db->prefix . $this->table . '` SET ' . $set_sql . ' WHERE ' . $this->where) or enhanced_error($this->error . '<br />Query: ' . $set_sql, true);
 	}
 }
 
@@ -123,7 +123,7 @@ class DBSelect {
 		}
 		if (!empty($this->joins)) {
 			foreach ($this->joins as $join) {
-				$sql .= ' LEFT JOIN `' . $db->prefix . $join->table() . '` AS ' . $join->join_as() . ' ON ' . $join->getOn();
+				$sql .= ' ' . $join->type() . ' JOIN `' . $db->prefix . $join->table() . '` AS ' . $join->join_as() . ' ON ' . $join->getOn();
 			}
 		}
 		if ($this->where != '') {
@@ -140,15 +140,20 @@ class DBSelect {
 	}
 }
 
-class DBLeftJoin {
+class DBLeftJoin extends DBJoin {
+}
+
+class DBJoin {
 	var $table;
 	var $on;
 	var $join_as;
+	var $type;
 	
-	function __construct($table, $join_as, $on) {
+	function __construct($table, $join_as, $on, $type = 'left') {
 		$this->table = $table;
 		$this->join_as = $join_as;
 		$this->on = $on;
+		$this->type = $type;
 	}
 	
 	function table() {
@@ -161,6 +166,10 @@ class DBLeftJoin {
 	
 	function join_as() {
 		return $this->join_as;
+	}
+	
+	function type() {
+		return $this->type;
 	}
 }
 
