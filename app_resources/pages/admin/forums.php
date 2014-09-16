@@ -9,7 +9,7 @@ if (isset($dirs[3]) && $dirs[3] == 'enhanced') {
 	include FORUM_ROOT . '/app_resources/pages/admin/forums_ajax.php';
 	return;
 }
-if ($dirs[3] == 'edit' && isset($_GET['popup'])) { //popup window for editing a forum
+if (isset($dirs[3]) && $dirs[3] == 'edit' && isset($_GET['popup'])) { //popup window for editing a forum
 	include FORUM_ROOT . '/app_resources/pages/admin/includes/edit_forum.php';
 	$page_info['template'] = false;
 	return;
