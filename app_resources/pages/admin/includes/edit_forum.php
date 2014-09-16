@@ -89,14 +89,20 @@ if (isset($_GET['popup'])) {
                 }
                 echo ' /></td>
                 <td><input type="checkbox" name="topics[' . $id . ']"';
-                if (strstr($cur_forum['topic_groups'], '-' . $id . '-')) {
+                if ($id != '2' && strstr($cur_forum['topic_groups'], '-' . $id . '-')) {
                     echo ' checked="checked"';
                 }
+				if ($id == 2) {
+					echo ' disabled="disabled"';
+				}
                 echo ' /></td>
                 <td><input type="checkbox" name="reply[' . $id . ']"';
-                if (strstr($cur_forum['reply_groups'], '-' . $id . '-')) {
+                if ($id != 2 && strstr($cur_forum['reply_groups'], '-' . $id . '-')) {
                     echo ' checked="checked"';
                 }
+				if ($id == 2) {
+					echo 'disabled="disabled"';
+				}
                 echo ' /></td>
             </tr>';
         }
