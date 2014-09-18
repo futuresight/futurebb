@@ -39,7 +39,7 @@ if($dirs[2] == 'message') {
 	}
 	if (isset($_POST['form_sent'])) {
 		$db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_reported) VALUES(' . $pid . ',\'post\',\'' . $db->escape($_POST['reason']) . '\',' . $futurebb_user['id'] . ',' . time() . ')') or error('Failed to insert report', __FILE__, __LINE__, $db->error());
-		redirect('/');
+		redirect($base_config['baseurl']);
 	}
 	$cur_post = $db->fetch_assoc($result);
 	$breadcrumbs = array(translate('index') => '', $cur_post['fname'] => $cur_post['furl'], $cur_post['subject'] => $cur_post['furl'] . '/' . $cur_post['turl'], translate('reportpost') => '!nourl!');

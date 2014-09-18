@@ -8,7 +8,6 @@ $lang_addl = array(
 	'verifyemail'			=>	'Someone has registered using your email address as the user $1. If this is you, go to the login page ($2/login?activate) and log in, and when it asks you for an access code, please use the following:
 $3
 If this is not you, then please disregard this message.',
-	'emailaddrnocolon'		=>	'Email address',
 	'botchallenge'			=>	'You failed the anti-bot challenge',
 	'shortusername'		=>	'Your username must be longer than 4 characters',
 );

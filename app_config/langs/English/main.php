@@ -102,6 +102,7 @@ $lang = array(
 	'send'				=>	'Send',
 	'blockPM'				=>	'Disable private messaging',
 	'blocknotifs'			=>	'Disable notifications',
+	'emailaddrnocolon'		=>	'Email address',
 	
 	//forum viewer
 	'pages'					=>	'Pages: ',
