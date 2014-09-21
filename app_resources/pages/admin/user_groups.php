@@ -17,6 +17,12 @@ if (isset($_POST['form_sent_update'])) {
 		$cfg_list = array_merge($cfg_list, array(
 			'g_user_list_groups'	=> 'string',
 			'g_user_list'			=> 'bool',
+			'g_view_forums'			=> 'bool',
+		));
+	}
+	if ($group_id == 2) { //stuff only for guests
+		$cfg_list = array_merge($cfg_list, array(
+			'g_access_board'		=> 'bool',
 		));
 	}
 	if ($group_id != 1 && $group_id != 2) { //stuff not for admins or guests
@@ -33,7 +39,9 @@ if (isset($_POST['form_sent_update'])) {
 			'g_admin_privs'			=> 'bool',
 			'g_signature'			=> 'bool',
 			'g_post_links'			=> 'bool',
-			'g_post_images'			=> 'bool'
+			'g_post_images'			=> 'bool',
+			'g_post_topics'			=> 'bool',
+			'g_post_replies'		=> 'bool'
 		));
 	}
 	$sql = '';
@@ -119,7 +127,14 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 					<td><?php echo translate('usertitle'); ?></td>
 					<td><input type="text" name="config[g_title]" value="<?php echo $cur_group['g_title']; ?>" /><br /><?php echo translate('usertitledesc'); ?></td>
 				</tr>
-                <?php if ($group_id != 2 && $group_id != 1) { //hide for guests/admins ?>
+                <?php if ($group_id == 2) { //only for guests ?>
+                <tr>
+					<td><?php echo translate('accessboard'); ?></td>
+					<td><input type="checkbox" name="config[g_access_board]" id="g_access_board" <?php if ($cur_group['g_access_board']) echo 'checked="checked" '; ?>/> <label for="g_access_board"><?php echo translate('enable?'); ?></label><br /><?php echo translate('accessboarddesc'); ?></td>
+				</tr>
+                <?php 
+				}
+				if ($group_id != 2 && $group_id != 1) { //hide for guests/admins ?>
 				<tr>
 					<td><?php echo translate('editposts'); ?></td>
 					<td><input type="checkbox" name="config[g_edit_posts]" id="g_edit_posts" <?php if ($cur_group['g_edit_posts']) echo 'checked="checked" '; ?>/> <label for="g_edit_posts"><?php echo translate('enable?'); ?></label><br /><?php echo translate('editpostsdesc'); ?></td>
@@ -140,8 +155,20 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 					<td><?php echo translate('allowsig'); ?></td>
 					<td><input type="checkbox" name="config[g_signature]" id="g_signature" <?php if ($cur_group['g_signature']) echo 'checked="checked" '; ?>/> <label for="g_signature"><?php echo translate('enable?'); ?></label><br /><?php echo translate('allowsigdesc'); ?></td>
 				</tr>
+                <tr>
+					<td><?php echo translate('posttopics'); ?></td>
+					<td><input type="checkbox" name="config[g_post_topics]" id="g_post_topics" <?php if ($cur_group['g_post_topics']) echo 'checked="checked" '; ?>/> <label for="g_post_topics"><?php echo translate('enable?'); ?></label><br /><?php echo translate('posttopicsdesc'); ?></td>
+				</tr>
+                <tr>
+					<td><?php echo translate('postreplies'); ?></td>
+					<td><input type="checkbox" name="config[g_post_replies]" id="g_post_replies" <?php if ($cur_group['g_post_replies']) echo 'checked="checked" '; ?>/> <label for="g_post_replies"><?php echo translate('enable?'); ?></label><br /><?php echo translate('postrepliesdesc'); ?></td>
+				</tr>
                 <?php } ?>
                 <?php if ($group_id != 1) { //hide for admins ?>
+                <tr>
+					<td><?php echo translate('viewforums'); ?></td>
+					<td><input type="checkbox" name="config[g_view_forums]" id="g_view_forums" <?php if ($cur_group['g_view_forums']) echo 'checked="checked" '; ?>/> <label for="g_view_forums"><?php echo translate('enable?'); ?></label><br /><?php echo translate('viewforumsdesc'); ?></td>
+				</tr>
 				<tr>
 					<td><?php echo translate('viewuserlist'); ?></td>
 					<td><input type="checkbox" name="config[g_user_list]" id="g_user_list" <?php if ($cur_group['g_user_list']) echo 'checked="checked" '; ?>/> <label for="g_user_list"><?php echo translate('enable?'); ?></label><br /><?php echo translate('viewuserlistdesc'); ?></td>

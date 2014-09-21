@@ -59,6 +59,22 @@ if (isset($_POST['form_sent'])) {
 
 	//create any new forums
 	if (isset($_POST['new_forum'])) {
+		//get allowed user groups
+		$view = array();
+		$topics = array();
+		$replies = array();
+		$result = $db->query('SELECT g_id AS id,g_view_forums,g_post_topics,g_post_replies FROM `#^user_groups`') or enhanced_error('Failed to find user groups', true);
+		while ($group = $db->fetch_assoc($result)) {
+			if ($group['g_view_forums']) {
+				$view[] = $group['id'];
+			}
+			if ($group['g_post_topics']) {
+				$topics[] = $group['id'];
+			}
+			if ($group['g_post_replies']) {
+				$replies[] = $group['id'];
+			}
+		}
 		foreach ($_POST['new_forum'] as $key => $forum_name) {
 			//make new forum
 			$base_name = URLEngine::make_friendly($forum_name);
@@ -81,7 +97,7 @@ if (isset($_POST['form_sent'])) {
 					$ok = false;
 				}
 			}
-			$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($forum_name) . '\',' . intval($_POST['new_forum_cat'][$key]) . ',' . intval($_POST['sort_order'][$key]) . ')') or error('Failed to create new category', __FILE__, __LINE__, $db->error());
+			$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($forum_name) . '\',' . intval($_POST['new_forum_cat'][$key]) . ',' . intval($_POST['sort_order'][$key]) . ',\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new forum', __FILE__, __LINE__, $db->error());
 		}
 	}
 	

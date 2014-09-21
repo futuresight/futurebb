@@ -874,7 +874,7 @@ if (isset($_GET['downloadconfigxml'])) {
 							<table border="0">
 								<tr>
 									<td><?php echo translate('baseurl'); ?></td>
-									<td><input type="text" name="baseurl" value="<?php if (isset($_SERVER['HTTPS'])) echo 'https://'; else echo 'http://'; echo $_SERVER['HTTP_HOST']; echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
+									<td><input type="text" name="baseurl" value="<?php if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') echo 'https://'; else echo 'http://'; echo $_SERVER['HTTP_HOST']; echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
 								</tr>
 								<tr>
 									<td><?php echo translate('baseurlpath'); ?></td>

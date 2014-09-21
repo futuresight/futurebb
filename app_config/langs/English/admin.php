@@ -115,6 +115,12 @@ $lang_addl = array(
 	'deleteusergroup'		=>	'Delete user group',
 	'deletegroupconfirm'	=>	'Are you sure you want to delete the user group &quot;$1&quot;?',
 	'moveallusersto'		=>	'Move all users in this group to: ',
+	'accessboard'			=>	'Access board',
+	'accessboarddesc'		=>	'Access the board at all (if not enabled, users will only be able to log in and register',
+	'viewforums'			=>	'View forums',
+	'viewforumsdesc'		=>	'Allow viewing of new forums by default',
+	'posttopicsdesc'		=>	'Allow posting new topics by default when creating new forums',
+	'postrepliesdesc'		=>	'Allow posting replies by default when creating new forums',
 	
 	//extension installation
 	'uploadfailed'			=>	'File upload failed.',
