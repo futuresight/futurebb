@@ -89,6 +89,13 @@ if (!$page_info) {
 //check if user is banned
 $result = $db->query('SELECT 1 FROM `#^bans` WHERE (username=\'' . $db->escape($futurebb_user['username']) . '\' OR ip=\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\') AND (expires>' . time() . ' OR expires IS NULL)') or error('Failed to check for bans', __FILE__, __LINE__, $db->error());
 if ($db->num_rows($result) && $dirs[1] != 'styles') {
+	$ban_type = 'ban';
+	$page_info = array('file' => 'banned.php', 'template' => true);
+}
+
+//check if user is in a group not allowed to access the board
+if (!$futurebb_user['g_access_board'] && $dirs[1] != 'login' && $dirs[1] != 'register' && $dirs[1] != 'styles') {
+	$ban_type = 'no_guest';
 	$page_info = array('file' => 'banned.php', 'template' => true);
 }
 

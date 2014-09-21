@@ -18,7 +18,16 @@ if (isset($_POST['update_forum'])) {
 		$replies .= $key . '-';
 	}
 	$db->query('UPDATE `#^forums` SET description=\'' . $db->escape($_POST['desc']) . '\',view_groups=\'' . $view . '\',topic_groups=\'' . $topics . '\',reply_groups=\'' . $replies . '\',cat_id=' . intval($_POST['category']) . ' WHERE id=' . $fid) or error('Failed to update forum', __FILE__, __LINE__, $db->error());
-	header('Location: ' . $base_config['baseurl'] . '/admin/forums'); return;
+	if (isset($_POST['popup'])) {
+		?>
+<script type="text/javascript">
+window.close();
+</script>
+        <?php
+		return;
+	} else {
+		header('Location: ' . $base_config['baseurl'] . '/admin/forums'); return;
+	}
 }
 
 $cur_forum = $db->fetch_assoc($result);
@@ -108,6 +117,8 @@ if (isset($_GET['popup'])) {
         }
         ?>
         </table>
-        <p><input type="submit" name="update_forum" value="<?php echo translate('update'); ?>" /></p>
+        <p><?php if (isset($_GET['popup'])) {
+			echo '<input type="hidden" name="popup" value="true" />';
+		} ?><input type="submit" name="update_forum" value="<?php echo translate('update'); ?>" /></p>
     </form>
 </div>

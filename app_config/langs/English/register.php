@@ -10,4 +10,6 @@ $3
 If this is not you, then please disregard this message.',
 	'botchallenge'			=>	'You failed the anti-bot challenge',
 	'shortusername'		=>	'Your username must be longer than 4 characters',
+	'regsdisabled'		=>	'Registrations are disabled',
+	'regsdisableddesc'	=>	'The administrator of this forum has disabled registrations.',
 );

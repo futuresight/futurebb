@@ -160,6 +160,8 @@ $lang = array(
 	'until'				=>	'until',
 	'bannedmsg2'			=>	'The moderator or administrator that banned you left you with the following message:',
 	'bannedmsg3'			=>	'To contact the board administrator, you may send an email to <a href="mailto:$1">$1</a>.',
+	'accessdenied'			=>	'Access denied',
+	'noguests'				=>	'You must log in to view this forum.',
 	
 	//maintenance page
 	'maintintro'			=>	'This forum is down for maintenance. The forum administrator said this:',

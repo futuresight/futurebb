@@ -4,6 +4,13 @@ if ($dirs[2] != futurebb_hash(LoginController::GetRandId())) {
 	httperror(404);
 }
 translate('<addfile>', 'register');
+if ($futurebb_config['disable_registrations']) {
+	?>
+    <h2><?php echo translate('regsdisabled'); ?></h2>
+    <p><?php echo translate('regsdisableddesc'); ?></p>
+    <?php
+	return;
+}
 if (isset($_POST['form_sent'])) {
 	$errors = array();
 	if (strlen($_POST['username']) < 4) {

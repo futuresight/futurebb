@@ -17,6 +17,7 @@ if(isset($_POST['form_sent'])) {
 		'avatars'				=> 'bool',
 		'announcement_enable'	=> 'bool',
 		'verify_registrations'	=> 'bool',
+		'disable_registrations'	=> 'bool',
 		'maintenance'			=> 'bool',
 		'show_post_count'		=> 'bool',
 		'announcement_text'		=> 'string',
@@ -148,7 +149,16 @@ if (ini_get('allow_url_fopen')) {
 			</tr>
 		</table>
 		<h3><?php echo translate('registration'); ?></h3>
-		<p><input name="config[verify_registrations]" type="checkbox" <?php if($futurebb_config['verify_registrations'] == 1) echo 'checked="checked"'; ?> value="1" id="verify_registrations" /> <label for="verify_registrations"><?php echo translate('verifyregs'); ?></label> - <?php echo translate('verifyregsdesc'); ?></p>
+        <table border="0" class="optionstable">
+			<tr>
+				<th><?php echo translate('verifyregs'); ?></th>
+                <td><input name="config[verify_registrations]" type="checkbox" <?php if($futurebb_config['verify_registrations'] == 1) echo 'checked="checked"'; ?> value="1" id="verify_registrations" /> <label for="verify_registrations"><?php echo translate('verifyregsdesc'); ?></label></td>
+            </tr>
+            <tr>
+            	<th><?php echo translate('disableregs'); ?></th>
+               	<td><input name="config[disable_registrations]" type="checkbox" <?php if($futurebb_config['disable_registrations'] == 1) echo 'checked="checked"'; ?> value="1" id="disable_registrations" /> <label for="disable_registrations"><?php echo translate('disableregsdesc'); ?></label></td>
+            </tr>
+        </table>
 		<h3><?php echo translate('general'); ?></h3>
 		<h4><?php echo translate('userstopicsposts'); ?></h4>
 		<p><input name="config[avatars]" type="checkbox" <?php if($futurebb_config['avatars'] == 1) echo 'checked="checked"'; ?> value="1" id="avatars" /> <label for="avatars"><?php echo translate('enableavatars'); ?></label> - <?php echo translate('enableavatarsdesc'); ?></p>
@@ -190,7 +200,7 @@ if (ini_get('allow_url_fopen')) {
         </table>
 		<h3 id="maintenance"><?php echo translate('maintenance'); ?></h3>
 		<p><input name="config[maintenance]" type="checkbox" <?php if($futurebb_config['maintenance'] == 1) echo 'checked="checked"'; ?> value="1" id="maintenance" /> <label for="maintenance"><?php echo translate('maintenancemode'); ?></label><br />
-		<?php echo translate('maintenancemsg'); ?><br /><textarea name="config[maintenance_message]"><?php echo htmlspecialchars($futurebb_config['maintenance_message']); ?></textarea></p>
+		<?php echo translate('maintenancemsg'); ?><br /><textarea name="config[maintenance_message]" rows="3" cols="50"><?php echo htmlspecialchars($futurebb_config['maintenance_message']); ?></textarea></p>
 		<p><?php echo translate('autoactivatemaint'); ?> <input type="text" name="config[turn_on_maint]" size="5" /> <?php echo strtolower(translate('minutes')); ?>.<?php if ($futurebb_config['turn_on_maint']) echo ' ' . translate('maintschedpanel', user_date($futurebb_config['turn_on_maint'])); ?></p>
 		<p><?php echo translate('autodeactivatemaint'); ?> <input type="text" name="config[turn_off_maint]" size="5" /> <?php echo strtolower(translate('minutes')); ?>.<?php if ($futurebb_config['turn_off_maint']) echo ' ' . translate('maintoffschedpanel', user_date($futurebb_config['turn_off_maint'])); ?></p>
 		
