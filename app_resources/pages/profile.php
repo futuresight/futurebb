@@ -26,10 +26,15 @@ if ($user == $futurebb_user['username'] || $futurebb_user['g_admin_privs']) {
 		$edit = true;
 	}
 }
-$result = $db->query('SELECT id,group_id,signature,parsed_signature,deleted,num_posts,registered,registration_ip,email,timezone,restricted_privs,block_pm,block_notif FROM `#^users` WHERE username=\'' . $db->escape($user) . '\'') or error('Failed to get user', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT u.*,g.* FROM `#^users` AS u LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE LOWER(username)=\'' . $db->escape(strtolower($user)) . '\'') or error('Failed to get user', __FILE__, __LINE__, $db->error());
 $cur_user = $db->fetch_assoc($result);
 if (!$db->num_rows($result) || ($cur_user['deleted'] == 1 && !$futurebb_user['g_admin_privs'])) {
 	httperror(404);
+}
+if ($cur_user['username'] != $user) {
+	unset($dirs[0], $dirs[1], $dirs[2]);
+	header('Location: ' . $base_config['baseurl'] . '/users/' . $cur_user['username'] . '/' . implode('/', $dirs));
+	return;
 }
 $page_title = $user . ' - Users';
 
@@ -41,6 +46,7 @@ if(isset($_POST['pm_sent'])) {
 }
 ?>
 <div class="container">
+	<?php if ($edit) { ?>
 	<div class="forum_content leftmenu">
 		<h2 class="boxtitle"><?php echo htmlspecialchars($user); ?></h2>
 		<ul class="leftnavlist">
@@ -49,14 +55,15 @@ if(isset($_POST['pm_sent'])) {
 			<?php if ($futurebb_config['avatars']) { ?>
 			<li <?php if ($dirs[3] == 'avatar') echo ' class="active"'; ?>><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/avatar"><?php echo translate('avatar'); ?></a></li>
 			<?php } ?>
-			<?php if ($futurebb_user['g_signature']) { ?><li <?php if ($dirs[3] == 'sig') echo ' class="active"'; ?>><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/sig"><?php echo translate('postsig'); ?></a></li><?php } ?>
+			<?php if ($cur_user['g_signature']) { ?><li <?php if ($dirs[3] == 'sig') echo ' class="active"'; ?>><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/sig"><?php echo translate('postsig'); ?></a></li><?php } ?>
 			<li <?php if ($dirs[3] == 'reports') echo ' class="active"'; ?>><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/reports"><?php echo translate('reports'); ?></a></li>
 			<?php if ($user != $futurebb_user['username'] && $futurebb_user['g_admin_privs']) { ?>
 			<li <?php if ($dirs[3] == 'admin') echo ' class="active"'; ?>><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/admin"><?php echo translate('administration'); ?></a></li>
 			<?php } ?>
 		</ul>
 	</div>
-	<div class="forum_content rightbox">
+    <?php } ?>
+	<div class="forum_content<?php if ($edit) echo ' rightbox'; ?>">
 	<?php
 	if ($edit) {
 		switch ($dirs[3]) {
@@ -123,7 +130,7 @@ if(isset($_POST['pm_sent'])) {
 							if (pathinfo($f, PATHINFO_EXTENSION) == 'css') {
 								$f = htmlspecialchars(basename($f, '.css'));
 								echo '<option value="' . $f . '"';
-								if ($f == $futurebb_user['style']) {
+								if ($f == $cur_user['style']) {
 									echo ' selected="selected"';
 								}
 								echo '>' . $f . '</option>';
@@ -139,7 +146,7 @@ if(isset($_POST['pm_sent'])) {
 							if ($f != '.' && $f != '..') {
 								$f = htmlspecialchars($f);
 								echo '<option value="' . $f . '"';
-								if ($f == $futurebb_user['language']) {
+								if ($f == $cur_user['language']) {
 									echo ' selected="selected"';
 								}
 								echo '>' . $f . '</option>';
@@ -195,27 +202,88 @@ if(isset($_POST['pm_sent'])) {
 				if (!$futurebb_config['avatars']) {
 					httperror(404);
 				}
+				if (isset($dirs[4]) && $dirs[4] == 'remove') {
+					$q = new DBUpdate('users', array('avatar_extension' => null), 'username=\'' . $db->escape($user) . '\'', 'Failed to remove avatar extension');
+					$q->commit();
+				}
 				if (isset($_POST['form_sent'])) {
-					if (!is_uploaded_file($_FILES['avatar']['tmp_name'])) {
-						echo '<p>' . translate('uploadfailed') . '</p>'; return;
+					// Make sure the upload worked right
+					if (isset($_FILES['avatar']['error'])) {
+						switch ($_FILES['avatar']['error']) {
+							case 1: // UPLOAD_ERR_INI_SIZE
+							case 2: // UPLOAD_ERR_FORM_SIZE
+								echo '<p>' . translate('toobigphpini', (ini_get('upload_max_filesize') / 1024)) . '</p></div>'; return;
+								break;
+							case 3: // UPLOAD_ERR_PARTIAL
+								echo '<p>' . translate('partialupload') . '</p></div>'; return;
+								break;
+			
+							case 4: // UPLOAD_ERR_NO_FILE
+								echo '<p>' . translate('uploadfailed') . '</p></div>'; return;
+								break;
+			
+							case 6: // UPLOAD_ERR_NO_TMP_DIR
+								echo '<p>' . translate('notmpdir') . '</p></div>'; return;
+								break;
+			
+							default:
+								if ($_FILES['avatar']['size'] == 0) {
+									echo '<p>' . translate('uploadfailed') . '</p></div>'; return;
+								}
+								break;
+						}
 					}
-					move_uploaded_file($_FILES['avatar']['tmp_name'], FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.png');
+					if (!is_uploaded_file($_FILES['avatar']['tmp_name'])) {
+						echo '<p>' . translate('uploadfailed') . '</p></div>'; return;
+					}
+					if (!in_array($_FILES['avatar']['type'], array('image/gif', 'image/jpeg', 'image/pjpeg', 'image/png', 'image/x-png'))) {
+						echo '<p>' . translate('badavatarfiletype') . '</p></div>'; return;
+					}
+					if ($_FILES['avatar']['size'] > $futurebb_config['avatar_max_filesize'] * 1024) {
+						echo '<p>' . translate('filetoobig', $futurebb_config['avatar_max_filesize']) . '</p></div>'; return;
+					}
+					list($width, $height, $type,) = @getimagesize($_FILES['avatar']['tmp_name']);
+					switch ($type) {
+						case IMAGETYPE_GIF:
+							$ext = 'gif'; break;
+						case IMAGETYPE_JPEG:
+							$ext = 'jpg'; break;
+						case IMAGETYPE_PNG;
+							$ext = 'png'; break;
+						default:
+							echo '<p>' . translate('badavatarfiletype') . '</p></div>';
+					}
+					if (empty($width) || empty($height) || $width > $futurebb_config['avatar_max_width'] || $height > $futurebb_config['avatar_max_height']) {
+						echo '<p>' . translate('imagetoobig', $futurebb_config['avatar_max_width'], $futurebb_config['avatar_max_width']) . '</p></div>'; return;
+					}
+					if (file_exists(FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.' . $cur_user['avatar_extension'])) {
+						unlink(FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.' . $cur_user['avatar_extension']);
+					}
+					$q = new DBUpdate('users', array('avatar_extension' => $ext), 'username=\'' . $db->escape($cur_user['username']) . '\'', 'Failed to update avatar extension');
+					$q->commit();
+					move_uploaded_file($_FILES['avatar']['tmp_name'], FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.' . $ext);
+					header('Refresh: 0'); echo '</p></div>'; return;
 				}
 				echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '/avatar" method="post" enctype="multipart/form-data">';
 				?>
-				<p><?php echo translate('currentavatar'); ?><br /><?php if (file_exists(FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.png')) {
-						echo '<img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_user['id'] . '.png" />';
-					} else {
-						echo translate('noavatar');
-					}
-					?></p>
-					<h3><?php echo translate('newavatar'); ?></h3>
-					<p><input type="file" name="avatar" accept="image/png" /></p>
-					<p><input type="submit" name="form_sent" value="<?php echo translate('save'); ?>" /></p>
+				<p><?php echo translate('currentavatar'); ?><br /><?php if (file_exists(FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.' . $cur_user['avatar_extension'])) {
+					echo '<img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_user['id'] . '.' . $cur_user['avatar_extension'] . '" alt="avatar" />';
+					?>
+                    <br />
+                    <a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/avatar/remove">Delete avatar</a>
+                    <?php
+				} else {
+					echo translate('noavatar');
+				}
+				?></p>
+				<h3><?php echo translate('newavatar'); ?></h3>
+				<p><?php echo translate('avataruploaddesc', $futurebb_config['avatar_max_filesize'], $futurebb_config['avatar_max_width'], $futurebb_config['avatar_max_height']); ?></p>
+				<p><input type="file" name="avatar" accept="image/png" /></p>
+				<p><input type="submit" name="form_sent" value="<?php echo translate('save'); ?>" /></p>
 				<?php
 				echo '</form>'; break;
 			case 'sig':
-				if (!$futurebb_user['g_signature']) {
+				if (!$cur_user['g_signature']) {
 					httperror(404);
 				}
 				if (isset($_POST['form_sent'])) {
@@ -229,7 +297,7 @@ if(isset($_POST['pm_sent'])) {
 						$errors[] = translate('toomanysiglines', $futurebb_config['sig_max_lines'], sizeof(explode("\n", $_POST['signature'])));
 					}
 					if (empty($errors)) {
-						$futurebb_user['signature'] = $_POST['signature'];
+						$cur_user['signature'] = $_POST['signature'];
 						$db->query('UPDATE `#^users` SET signature=\'' . $db->escape($_POST['signature']) . '\',parsed_signature=\'' . $db->escape(BBCodeController::parse_msg($_POST['signature'])) . '\' WHERE id=' . $cur_user['id']) or error('Failed to update sig', __FILE__, __LINE__, $db->error());
 						echo '</div></div>';
 						header('Refresh: 0');
@@ -250,6 +318,20 @@ if(isset($_POST['pm_sent'])) {
 				}
 				?>
 				<h4><?php echo translate('newsig'); ?></h4>
+                <p><?php
+				$restrictions = array();
+                if ($futurebb_config['sig_max_length'] > 0) {
+					$restrictions[] = translate('maxchars', $futurebb_config['sig_max_length']);
+				}
+				if ($futurebb_config['sig_max_lines'] > 0) {
+					$restrictions[] = translate('maxlines', $futurebb_config['sig_max_lines']);
+				}
+				if ($futurebb_config['sig_max_height'] > 0) {
+					$restrictions[] = translate('heightwarning', $futurebb_config['sig_max_height']);
+				}
+				echo implode('<br />', $restrictions);
+				?>
+                </p>
 				<p><textarea name="signature" rows="6" cols="60"><?php
 				if (isset($_POST['signature'])) {
 					echo htmlspecialchars($_POST['signature']);
@@ -390,8 +472,43 @@ if(isset($_POST['pm_sent'])) {
 				httperror(404);
 		}
 	} else {
-		echo '<p>' . translate('somebodyelse') . '</p>';
+		//view-only
+		?>
+        <div style="padding-left:5px">
+            <h2><?php echo htmlspecialchars($user); ?></h2>
+            <table border="0" class="optionstable">
+                <tr>
+                    <th><?php echo translate('numposts'); ?></th>
+                    <td><?php echo $cur_user['num_posts']; ?></td>
+                </tr>
+                <tr>
+                    <th><?php echo translate('timezone'); ?></th>
+                    <td><?php echo 'GMT' . ($cur_user['timezone'] >= 0 ? '+': '') . $cur_user['timezone']; ?></td>
+                </tr>
+                <tr>
+                    <th><?php echo translate('dateregistered'); ?></th>
+                    <td><?php echo user_date($cur_user['registered']); ?></td>
+                </tr>
+                <tr>
+                	<th><?php echo translate('signature'); ?></th>
+                    <td><?php echo $cur_user['parsed_signature']; ?></td>
+                </tr>
+                <?php
+				if (file_exists(FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.' . $cur_user['avatar_extension'])) {
+					?>
+                    <tr>
+                    	<th><?php echo translate('avatar'); ?></th>
+                        <td><?php echo '<img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_user['id'] . '.' . $cur_user['avatar_extension'] . '" alt="avatar" />'; ?></td>
+                    </tr>
+                   	<?php
+				}
+				?>
+            </table>
+        <?php
 		PMBox();
+		?>
+        </div>
+        <?php
 	}
 	?>
 	</div>

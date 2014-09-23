@@ -107,7 +107,7 @@ $result = $db->query('SELECT COUNT(id) FROM `#^posts` WHERE topic_id=' . $cur_to
 list($num_posts) = $db->fetch_row($result);
 
 //get all of the posts
-$result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_edited,u.username AS author,u.id AS author_id,u.parsed_signature AS signature,u.last_page_load,u.num_posts,g.g_title AS user_title,leu.username AS last_edited_by FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by WHERE p.topic_id=' . $cur_topic['id'] . ' AND p.deleted IS NULL ORDER BY p.posted ASC LIMIT ' . (($page - 1) * intval($futurebb_config['posts_per_page'])) . ',' . intval($futurebb_config['posts_per_page'])) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_edited,u.username AS author,u.id AS author_id,u.parsed_signature AS signature,u.last_page_load,u.num_posts,u.avatar_extension,g.g_title AS user_title,leu.username AS last_edited_by FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by WHERE p.topic_id=' . $cur_topic['id'] . ' AND p.deleted IS NULL ORDER BY p.posted ASC LIMIT ' . (($page - 1) * intval($futurebb_config['posts_per_page'])) . ',' . intval($futurebb_config['posts_per_page'])) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
 
 ?>
 <p><?php echo translate('pages');
@@ -148,8 +148,8 @@ while ($cur_post = $db->fetch_assoc($result)) {
 				<a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($cur_post['author']); ?>"><?php echo htmlspecialchars($cur_post['author']); ?></a><br /></p>
 				<p><b><?php echo $cur_post['user_title']; ?></b>
 				<?php
-				if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/avatars/' . $cur_post['author_id'] . '.png')) {
-					echo '<br /><img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_post['author_id'] . '.png" alt="user avatar" class="avatar" />';
+				if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/avatars/' . $cur_post['author_id'] . '.' . $cur_post['avatar_extension'])) {
+					echo '<br /><img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_post['author_id'] . '.' . $cur_post['avatar_extension'] . '" alt="user avatar" class="avatar" />';
 				}
 				if ($futurebb_config['show_post_count']) {
 					echo '<br />' . translate('posts:') . $cur_post['num_posts'];

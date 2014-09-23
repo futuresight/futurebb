@@ -15,6 +15,9 @@ if(isset($_POST['form_sent'])) {
 	$cfg_list = array(
 		//format: 'name'		=> 'type'
 		'avatars'				=> 'bool',
+		'avatar_max_filesize'	=> 'int',
+		'avatar_max_height'		=> 'int',
+		'avatar_max_width'		=> 'int',
 		'announcement_enable'	=> 'bool',
 		'verify_registrations'	=> 'bool',
 		'disable_registrations'	=> 'bool',
@@ -85,20 +88,6 @@ if (ini_get('allow_url_fopen')) {
 }
 ?>
 <div class="container">
-	<style type="text/css">
-	#futurebb table.optionstable {
-		width:100%;
-	}
-	#futurebb table.optionstable th {
-		width:200px;
-		text-align:left;
-	}
-	#futurebb table.optionstable td {
-		margin-left:200px;
-		margin-right:0px;
-		background-color: #DDD;
-	}
-	</style>
 	<?php make_admin_menu();
 	if (isset($errors) && !empty($errors)) {
 		echo '<div class="forum_content rightbox admin"><h3>' . translate('fixerrors') . '</h3><ul>';
@@ -121,7 +110,7 @@ if (ini_get('allow_url_fopen')) {
 			</tr>
 			<tr>
 				<th><?php echo translate('onlinetimeout'); ?></th>
-				<td><input type="text" name="config[online_timeout]" value="<?php echo htmlspecialchars($futurebb_config['online_timeout']); ?>" size="5" /><br /><?php echo translate('onlinetimeoutdesc'); ?></td>
+				<td><input type="text" name="config[online_timeout]" value="<?php echo intval($futurebb_config['online_timeout']); ?>" size="5" /><br /><?php echo translate('onlinetimeoutdesc'); ?></td>
 			</tr>
 			<tr>
 				<th>Default language</th>
@@ -160,8 +149,29 @@ if (ini_get('allow_url_fopen')) {
             </tr>
         </table>
 		<h3><?php echo translate('general'); ?></h3>
-		<h4><?php echo translate('userstopicsposts'); ?></h4>
-		<p><input name="config[avatars]" type="checkbox" <?php if($futurebb_config['avatars'] == 1) echo 'checked="checked"'; ?> value="1" id="avatars" /> <label for="avatars"><?php echo translate('enableavatars'); ?></label> - <?php echo translate('enableavatarsdesc'); ?></p>
+		<h4><?php echo translate('avatars'); ?></h4>
+        <table border="0" class="optionstable">
+        	<tr>
+            	<th><?php echo translate('avatars'); ?></th>
+                <td><input name="config[avatars]" type="checkbox" <?php if($futurebb_config['avatars'] == 1) echo 'checked="checked"'; ?> value="1" id="avatars" /> <label for="avatars"><?php echo translate('enableavatarsdesc'); ?></label></td>
+            </tr>
+            <tr>
+            	<th><?php echo translate('avatarmaxfilesize'); ?></th>
+                <td><input type="text" name="config[avatar_max_filesize]" value="<?php echo intval($futurebb_config['avatar_max_filesize']); ?>" size="5" /><br /><?php echo translate('avatarfilesizedesc'); ?></td>
+            </tr>
+            <tr>
+            	<th><?php echo translate('avatarmaxfilesize'); ?></th>
+                <td><input type="text" name="config[avatar_max_filesize]" value="<?php echo intval($futurebb_config['avatar_max_filesize']); ?>" size="5" /><br /><?php echo translate('avatarfilesizedesc'); ?></td>
+            </tr>
+            <tr>
+            	<th><?php echo translate('maxwidth'); ?></th>
+                <td><input type="text" name="config[avatar_max_width]" value="<?php echo intval($futurebb_config['avatar_max_width']); ?>" size="5" /><br /><?php echo translate('avatarmaxwidthdesc'); ?></td>
+            </tr>
+            <tr>
+            	<th><?php echo translate('maxheight'); ?></th>
+                <td><input type="text" name="config[avatar_max_height]" value="<?php echo intval($futurebb_config['avatar_max_height']); ?>" size="5" /><br /><?php echo translate('avatarmaxheightdesc'); ?></td>
+            </tr>
+        </table>
 		<p><b><?php echo translate('rules'); ?></b><br /><?php echo translate('rulesdesc'); ?><br /><textarea name="config[rules]" cols="50" rows="4"><?php echo htmlspecialchars($futurebb_config['rules']); ?></textarea></p>
 		<h4><?php echo translate('announcement'); ?></h4>
 		<p><?php echo translate('announcementdesc'); ?><br />

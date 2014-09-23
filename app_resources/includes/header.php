@@ -17,8 +17,8 @@
 					
 					//user button
 					echo '<a class="userbutton" href="'. $base_config['baseurl'] . '/users/' . $futurebb_user['username'] . '">';
-					if (file_exists(FORUM_ROOT . '/static/avatars/' . $futurebb_user['id'] . '.png')) {
-						echo '<img src="' . $base_config['baseurl'] . '/static/avatars/' . $futurebb_user['id'] . '.png" width="36px" height="36px" alt="avatar" />';
+					if (file_exists(FORUM_ROOT . '/static/avatars/' . $futurebb_user['id'] . '.' . $futurebb_user['avatar_extension'])) {
+						echo '<img src="' . $base_config['baseurl'] . '/static/avatars/' . $futurebb_user['id'] . '.' . $futurebb_user['avatar_extension'] . '" width="36px" height="36px" alt="avatar" />';
 					}
 					echo '<strong>' . $futurebb_user['username'] . '</strong>
 					</a>';

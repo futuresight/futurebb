@@ -54,6 +54,8 @@ class DBUpdate {
 			}
 			if ($val == (string)intval($val)) {
 				$set_sql .= $key . '=' . intval($val);
+			} else if ($val === null) {
+				$set_sql .= $key . '=NULL';
 			} else {
 				$set_sql .= $key . '=\'' . $db->escape($val) . '\'';
 			}

@@ -121,6 +121,10 @@ $lang_addl = array(
 	'viewforumsdesc'		=>	'Allow viewing of new forums by default',
 	'posttopicsdesc'		=>	'Allow posting new topics by default when creating new forums',
 	'postrepliesdesc'		=>	'Allow posting replies by default when creating new forums',
+	'maxwidth'				=>	'Maximum width',
+	'maxheight'				=>	'Maximum height',
+	'avatarmaxwidthdesc'	=>	'The maxiumum width allowed (in pixels), generally between 60 and 128 is recommended',
+	'avatarmaxheightdesc'	=>	'The maxiumum height allowed (in pixels), generally between 60 and 128 is recommended',
 	
 	//extension installation
 	'uploadfailed'			=>	'File upload failed.',
@@ -184,4 +188,6 @@ $lang_addl = array(
 	'maxquotedepth'			=>	'Maximum quote depth',
 	'quotedepth>1'			=>	'The maximum quote depth must be greater than 1',
 	'fixerrors'				=>	'The following errors must be fixed before continuing:',
+	'avatarmaxfilesize'		=>	'Maxiumum avatar file size',
+	'avatarfilesizedesc'	=>	'The maximum allowed avatar file size (KiB)',
 );

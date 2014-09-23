@@ -73,10 +73,10 @@ include FORUM_ROOT . '/app_resources/includes/parser.php';
 					if ($cur_report['post_type'] == 'special') {
 						echo translate('systemreportmsg');
 					} else {
-						echo translate('reportedby', htmlspecialchars($cur_report['reported_by']), user_date($cur_report['time_reported']));
+						echo translate('reportedby', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_report['reported_by']) . '">' . htmlspecialchars($cur_report['reported_by']) . '</a>', user_date($cur_report['time_reported']));
 					}
 					if ($cur_report['status'] == 'review') {
-						echo '<br />' . translate('furtherreview', $cur_report['zapped_by']);
+						echo '<br />' . translate('furtherreview',  '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_report['zapped_by']) . '">' . htmlspecialchars($cur_report['zapped_by']) . '</a>');
 					}
 					echo '</p><p>' . translate('reason') . '<br /><b>';
 					if ($cur_report['post_type'] == 'special') { //parse HTML for system reports
@@ -152,7 +152,7 @@ include FORUM_ROOT . '/app_resources/includes/parser.php';
 					if ($cur_report['post_type'] == 'special') {
 						echo translate('systemreportmsg');
 					} else {
-						echo translate('reportedby', htmlspecialchars($cur_report['reported_by']), user_date($cur_report['time_reported'])) . '<br />' . translate('markedreadby', htmlspecialchars($cur_report['zapped_by']), user_date($cur_report['zapped'])) . '<br />' . translate('status') . ': <b>';
+						echo translate('reportedby',  '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_report['reported_by']) . '">' . htmlspecialchars($cur_report['reported_by']) . '</a>', user_date($cur_report['time_reported'])) . '<br />' . translate('markedreadby',  '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_report['zapped_by']) . '">' . htmlspecialchars($cur_report['zapped_by']) . '</a>', user_date($cur_report['zapped'])) . '<br />' . translate('status') . ': <b>';
 						switch ($cur_report['status']) {
 							case 'unread':
 								echo translate('pending'); break;

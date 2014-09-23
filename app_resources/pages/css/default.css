@@ -445,3 +445,16 @@ ul#navlist li {
 #futurebb p.ipaddress {
 	color: #666;
 }
+
+#futurebb table.optionstable {
+	width:100%;
+}
+#futurebb table.optionstable th {
+	width:200px;
+	text-align:left;
+}
+#futurebb table.optionstable td {
+	margin-left:200px;
+	margin-right:0px;
+	background-color: #DDD;
+}

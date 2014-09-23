@@ -47,6 +47,7 @@ $lang = array(
 	'editposts'				=>	'Edit posts',
 	'deleteposts'			=>	'Delete posts',
 	'cancel'				=>	'Cancel',
+	'avatars'				=>	'Avatars',
 	
 	//index
 	'markallread'			=>	'Mark all topics as read',
@@ -103,6 +104,19 @@ $lang = array(
 	'blockPM'				=>	'Disable private messaging',
 	'blocknotifs'			=>	'Disable notifications',
 	'emailaddrnocolon'		=>	'Email address',
+	'badavatarfiletype'		=>	'Invalid file type for your avatar. Only image formats GIF, JPG/JPEG, and PNG are allowed.',
+	'uploadfailed'			=>	'File upload failed. Please hit the back button and try again.',
+	'filetoobig'			=>	'The file you uploaded is too big. The maximumum allowed filesize is $1 KiB. Please hit the back button and try again.',
+	'imagetoobig'			=>	'The image you uploaded is too big. The maximum allowed dimensions are $1x$2 pixels. Please hit the back button and try again.',
+	'toobigphpini'			=>	'Your file is larger than the allowed size on the server ($1 KiB). Please hit the back button and try again.',
+	'partialupload'			=>	'The file was only partially uploaded. Please hit the back button and try again.',
+	'notmpdir'				=>	'A temp directory for uploaded files was not defined on the server. Please contact the server administrator.',
+	'avataruploaddesc'		=>	'Upload a new avatar. The maximum allowed file size is $1 KiB and the maximum allowed image size is $2x$3 pixels.',
+	'deleteavatar'			=>	'Delete avatar',
+	'maxchars'				=>	'Maximum characters: $1',
+	'maxlines'				=>	'Maximum lines: $1',
+	'heightwarning'			=>	'Maximum height: $1 (if it is taller, it will be cut off)',
+	
 	
 	//forum viewer
 	'pages'					=>	'Pages: ',
