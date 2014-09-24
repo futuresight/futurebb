@@ -63,6 +63,9 @@ function test_db() {
 			'hide_errors'	=>	true
 		);
 		$db = new Database($info);
+		if (get_cookie_data('dbname') == '') {
+			return false;
+		}
 		if ($db->link) {
 			return true;
 		} else {
@@ -830,7 +833,14 @@ if (isset($_GET['downloadconfigxml'])) {
 						<h2><?php echo translate('dbsetup'); ?></h2>
 						<?php
 						if ($db_fail) {
-							echo '<p style="color:#F00; font-weight:bold">' . translate('baddb') . $db->connect_error() . '</p>';
+							if ($db->connect_error()) {
+								$error = $db->connect_error();
+							} else if (get_cookie_data('dbname') == '') {
+								$error = 'No database specified';
+							} else {
+								$error = 'Unknown error';
+							}
+							echo '<p style="color:#F00; font-weight:bold">' . translate('baddb') . $error . '</p>';
 						}
 						?>
 						<p><?php echo translate('supporteddbs'); ?></p>
