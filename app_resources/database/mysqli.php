@@ -1,4 +1,9 @@
 <?php
+/*
+FutureBB Database Spec - DO NOT REMOVE
+Name<MySQL Improved>
+Extension<mysqli>
+*/
 class Database {
 	public $link;
 	var $prefix;

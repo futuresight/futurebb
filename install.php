@@ -1,6 +1,7 @@
 <?php
 $pages = array(
 	'welcome'		=>	false,
+	'dbtype'		=>	false,
 	'dbsetup'		=>	false,
 	'syscfg'		=>	false,
 	'adminacct'		=>	false,
@@ -81,6 +82,27 @@ function db_fail() {
 	$db_fail = true;
 	$pages['dbsetup'] = true;
 	$page = 'dbsetup';
+}
+
+function get_db_info($name) {
+	$dbtype = $name;
+	if (ctype_alnum($dbtype)) {
+		if (file_exists(FORUM_ROOT . '/app_resources/database/' . $dbtype . '.php')) {
+			$contents = file_get_contents(FORUM_ROOT . '/app_resources/database/' . $dbtype . '.php');
+			if (strstr($contents, 'FutureBB Database Spec - DO NOT REMOVE')) {
+				//database file registered
+				preg_match('%Name<(.*?)>%', $contents, $matches);
+				if (!empty($matches[1])) {
+					$db_name = $matches[1];
+					preg_match('%Extension<(.*?)>%', $contents, $matches);
+					if (!empty($matches[1]) && extension_loaded($matches[1])) {
+						return $db_name;
+					}
+				}
+			}
+		}
+	}
+	return false;
 }
 
 //language stuff
@@ -720,10 +742,11 @@ if (isset($_GET['downloadconfigxml'])) {
 	$page = 'adminacc';
 	$pwd_mismatch = false;
 } else if (isset($_POST['dbsetup'])) {
-	add_cookie_data('dbtype', $_POST['dbtype']);
-	add_cookie_data('dbhost', $_POST['dbhost']);
-	add_cookie_data('dbuser', $_POST['dbuser']);
-	add_cookie_data('dbpass', $_POST['dbpass']);
+	if (get_cookie_data('dbtype') != 'sqlite') {
+		add_cookie_data('dbhost', $_POST['dbhost']);
+		add_cookie_data('dbuser', $_POST['dbuser']);
+		add_cookie_data('dbpass', $_POST['dbpass']);
+	}
 	add_cookie_data('dbname', $_POST['dbname']);
 	add_cookie_data('dbprefix', $_POST['dbprefix']);
 	
@@ -734,10 +757,22 @@ if (isset($_GET['downloadconfigxml'])) {
 	} else {
 		db_fail();
 	}
+} else if (isset($_POST['dbtype'])) {
+	//check a valid database was entered
+	$ok = false;
+	if (get_db_info($_POST['dbtype'])) {
+		add_cookie_data('dbtype', $_POST['dbtype']);
+		$db_fail = false;
+		$pages['dbsetup'] = true;
+		$page = 'dbsetup';
+	} else {
+		$pages['dbtype'] = true;
+		$page = 'dbtype';
+		$error = translate('baddbtype');
+	}
 } else if (isset($_POST['start'])) {
-	$db_fail = false;
-	$pages['dbsetup'] = true;
-	$page = 'dbsetup';
+	$pages['dbtype'] = true;
+	$page = 'dbtype';
 } else if (isset($_POST['language'])) {
 	add_cookie_data('language', $_POST['language']);
 } else {
@@ -819,6 +854,45 @@ if (isset($_GET['downloadconfigxml'])) {
 						</form>
 						<?php
 						break;
+					case 'dbtype':
+						?>
+                        <h2><?php echo translate('dbtype'); ?></h2>
+                        <form action="install.php" method="post" enctype="multipart/form-data">
+                        	<?php
+							if (isset($error)) {
+								echo '<p style="color:#F00; font-weight:bold">' . $error . '</p>';
+							}
+							?>
+                        	<p><?php echo translate('selectdbtype'); ?> <select name="dbtype">
+							<?php
+							$handle = opendir(FORUM_ROOT . '/app_resources/database');
+							$existing_db_type = get_cookie_data('dbtype');
+							while ($file = readdir($handle)) {
+								if ($file != '.' && $file != '..') {
+									$contents = file_get_contents(FORUM_ROOT . '/app_resources/database/' . $file);
+									if (strstr($contents, 'FutureBB Database Spec - DO NOT REMOVE')) {
+										//database file registered
+										preg_match('%Name<(.*?)>%', $contents, $matches);
+										if (!empty($matches[1])) {
+											$name = $matches[1];
+											preg_match('%Extension<(.*?)>%', $contents, $matches);
+											if (!empty($matches[1]) && extension_loaded($matches[1])) {
+												echo '<option value="' . basename($file, '.php') . '"';
+												if (basename($file, '.php') == $existing_db_type) {
+													echo ' selected="selected"';
+												}
+												echo '>' . $name . '</option>';
+											}
+										}
+									}
+								}
+							}
+                            ?>
+                            </select></p>
+                            <p><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+                        </form>
+                        <?php
+						break;
 					case 'dbsetup':
 						?>
 						<h2><?php echo translate('dbsetup'); ?></h2>
@@ -834,13 +908,18 @@ if (isset($_GET['downloadconfigxml'])) {
 							echo '<p style="color:#F00; font-weight:bold">' . translate('baddb') . $error . '</p>';
 						}
 						?>
-						<p><?php echo translate('supporteddbs'); ?></p>
 						<form action="install.php" method="post" enctype="multipart/form-data">
 							<table border="0">
-								<tr>
-									<td><?php echo translate('type'); ?></td>
-									<td><select name="dbtype"><option value="mysqli"<?php if (get_cookie_data('dbtype') == 'mysqli') echo ' selected="selected"'; ?>>MySQL Improved</option><option value="mysql"<?php if (get_cookie_data('dbtype') == 'mysql') echo ' selected="selected"'; ?>>MySQL Standard</option></select>
-								</td>
+                            	<tr>
+                                	<td><?php echo translate('type'); ?></td>
+                                    <td><?php echo get_db_info(get_cookie_data('dbtype')); ?></td>
+                                </tr>
+                                <?php if (get_cookie_data('dbtype') == 'sqlite') { ?>
+                                <tr>
+									<td><?php echo translate('dbfile'); ?></td>
+									<td><input type="text" name="dbname" value="<?php echo get_cookie_data('dbname') ? get_cookie_data('dbname') : ''; ?>" /></td>
+								</tr>
+                                <?php } else { ?>
 								<tr>
 									<td><?php echo translate('host'); ?></td>
 									<td><input type="text" name="dbhost" value="<?php echo get_cookie_data('dbhost') ? get_cookie_data('dbhost') : 'localhost'; ?>" /></td>
@@ -857,7 +936,8 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><?php echo translate('name'); ?></td>
 									<td><input type="text" name="dbname" value="<?php echo get_cookie_data('dbname') ? get_cookie_data('dbname') : ''; ?>" /></td>
 								</tr>
-								<tr>
+                                <?php } ?>
+                                <tr>
 									<td><?php echo translate('prefix'); ?></td>
 									<td><input type="text" name="dbprefix" value="<?php echo get_cookie_data('dbprefix') ? get_cookie_data('dbprefix') : 'futurebb_'; ?>" /></td>
 								</tr>
@@ -939,14 +1019,7 @@ if (isset($_GET['downloadconfigxml'])) {
 						<table border="0">
 							<tr>
 								<td><?php echo translate('dbtype'); ?></td>
-								<td><?php switch (get_cookie_data('dbtype')) {
-									case 'mysqli':
-										echo 'MySQL Improved'; break;
-									case 'mysql':
-										echo 'MySQL Standard'; break;
-									default:
-										echo 'Unknown';
-								} ?></td>
+								<td><?php echo get_db_info(get_cookie_data('dbtype')); ?></td>
 							</tr>
 							<tr>
 								<td><?php echo translate('dbhost'); ?></td>

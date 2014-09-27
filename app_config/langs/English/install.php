@@ -2,6 +2,7 @@
 $lang_addl = array(
 	'headertext'	=> 'FutureBB Installation',
 	'welcome'		=> 'Welcome',
+	'dbtype'		=> 'Database type',
 	'dbsetup'		=> 'Database setup',
 	'syscfg'		=> 'System configuration',
 	'adminacct'		=> 'Administrator account',
@@ -11,7 +12,6 @@ $lang_addl = array(
 	'intro'			=> 'Before you can start using your forum, you are going to need to set a few things up. This installer will make it easy for you.',
 	'selectlang'	=> 'First, please select a language:',
 	'continue'		=> 'Continue',
-	'supporteddbs'	=> 'Currently, this software only supports MySQL Standard and MySQL Improved. If you use a different database engine (such as SQLite), then unfortunately this software will not support that until at least version 1.1.',
 	'baddb'			=> 'Your database information was invalid. The database reported: ',
 	'type'			=> 'Type',
 	'host'			=> 'Host',
@@ -51,4 +51,8 @@ $lang_addl = array(
 	'xmllink'		=> 'Download config.xml',
 	'htalink'		=> 'Download .htaccess',
 	'weirderror'	=> 'Installation error of some sort. We don&apos;t know why. Sorry!',
+	'selectdbtype'	=> 'Select a database type: ',
+	'baddbtype'		=> 'Your server does not support the database type selected. Please try again.',
+	'adminemail'	=> 'Administrator email',
+	'dbfile'		=> 'File to store SQLite',
 );
