@@ -49,6 +49,9 @@ if ($dirs[2] == 'forum') {
 	httperror(404);
 }
 if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
+	if (!$futurebb_config['enable_smilies']) {
+		$_POST['hidesmilies'] = true;
+	}
 	$errors = array();
 	BBCodeController::error_check($_POST['message'], $errors);
 	if (strlen($_POST['message']) > 256000) {
@@ -84,7 +87,8 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		}
 		$db->query('INSERT INTO `#^topics`(subject,url,forum_id) VALUES(\'' . $db->escape($_POST['subject']) . '\',\'' . $db->escape($name) . '\',' . $fid . ')') or error('Failed to create topic', __FILE__, __LINE__, $db->error());
 		$tid = $db->insert_id();
-		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']));
+		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies'], $futurebb_config['enable_bbcode']
+		));
 		$db->query('INSERT INTO `#^posts`(poster,poster_ip,content,parsed_content,posted,topic_id,disable_smilies) VALUES(' . $futurebb_user['id'] . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',\'' . $db->escape($_POST['message']) . '\',\'' . $db->escape($parsedtext) . '\',' . time() . ',' . $tid . ',' . intval(isset($_POST['hidesmilies'])) . ')') or error('Failed to make first post', __FILE__, __LINE__, $db->error());
 		$pid = $db->insert_id();
 		// Let's take a break to fire any notifications from @ tags
@@ -117,7 +121,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		// New post
 	} else if ($dirs[2] == 'topic' && empty($errors) && !isset($_POST['preview'])) {
 		$tid = intval($dirs[3]);
-		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']));
+		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), $futurebb_confog['enable_bbcode']);
 		$db->query('INSERT INTO `#^posts`(poster,poster_ip,content,parsed_content,posted,topic_id,disable_smilies) VALUES(' . $futurebb_user['id'] . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',\'' . $db->escape($_POST['message']) . '\',\'' . $db->escape($parsedtext) . '\',' . time() . ',' . $tid . ',' . intval(isset($_POST['hidesmilies'])) . ')') or error('Failed to make first post', __FILE__, __LINE__, $db->error());
 		$pid = $db->insert_id();
 		
@@ -148,7 +152,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		
 		redirect($base_config['baseurl'] . '/posts/' . $pid); return;
 	} else if (isset($_POST['preview']) && empty($errors)) {
-		echo '<div class="quotebox preview">' . BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), true) . '</div>';
+		echo '<div class="quotebox preview">' . BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), true, $futurebb_config['enable_bbcode']) . '</div>';
 	}
 }
 if (isset($errors) && !empty($errors)) {
@@ -171,5 +175,10 @@ if (isset($_GET['quote'])) {
 <form action="<?php echo $base_config['baseurl']; ?>/post/<?php echo htmlspecialchars($dirs[2]); ?>/<?php echo htmlspecialchars($dirs[3]); ?>" method="post" enctype="multipart/form-data">
 	<?php if ($dirs[2] == 'forum') { ?><p><?php echo translate('subject'); ?> <input type="text" name="subject" size="50"<?php if (isset($_POST['subject'])) echo ' value="' . htmlspecialchars($_POST['subject']) . '"'; ?> /></p><?php } ?>
 	<p><?php echo translate('message'); ?><br /><textarea name="message" rows="20" cols="70"><?php if (isset($_POST['message'])) echo htmlspecialchars($_POST['message']); else if (isset($post)) echo '[quote=' . htmlspecialchars($poster) . ']' . htmlspecialchars($post) . '[/quote]' . "\n"; ?></textarea></p>
-	<p><input type="submit" name="form_sent" value="<?php echo translate('post'); ?>" /> <input type="submit" name="preview" value="<?php echo translate('preview'); ?>" /> <input name="hidesmilies" type="checkbox" value="1"<?php if (isset($_POST['hidesmilies'])) echo ' checked="checked"'; ?>  id="disablesmilies" /> <label for="disablesmilies"><?php echo translate('disablesmilies'); ?></label></p>
+    <?php //the bar at the bottom indicating which features are available ?>
+    <p><a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp"><?php echo translate('bbcode'); ?></a>: <?php if ($futurebb_config['enable_bbcode']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#smilies"><?php echo translate('smilies'); ?></a>: <?php if ($futurebb_config['enable_smilies']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('imgtag'); ?></a>: <?php if ($futurebb_user['g_post_links']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('urltag'); ?></a>: <?php if ($futurebb_user['g_post_images']) echo translate('on'); else echo translate('off'); ?></p>
+	<p><input type="submit" name="form_sent" value="<?php echo translate('post'); ?>" /> <input type="submit" name="preview" value="<?php echo translate('preview'); ?>" />
+	<?php if ($futurebb_config['enable_smilies']) { ?>
+     <input name="hidesmilies" type="checkbox" value="1"<?php if (isset($_POST['hidesmilies'])) echo ' checked="checked"'; ?>  id="disablesmilies" /> <label for="disablesmilies"><?php echo translate('disablesmilies'); ?></label><?php
+	} ?></p>
 </form>

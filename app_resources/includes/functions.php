@@ -388,6 +388,11 @@ abstract class ExtensionConfig {
 		}
 		file_put_contents(FORUM_ROOT . '/app_config/admin_pages.php', '<?php' . "\n" . '$admin_pages = ' . var_export($admin_pages, true) . ';' . "\n" . '$mod_pages = ' . var_export($mod_pages, true) . ';');
 	}
+	static function remove_admin_menu($url) {
+		include FORUM_ROOT . '/app_config/admin_pages.php';
+		unset($admin_pages[$url]);
+		file_put_contents(FORUM_ROOT . '/app_config/admin_pages.php', '<?php' . "\n" . '$admin_pages = ' . var_export($admin_pages, true) . ';' . "\n" . '$mod_pages = ' . var_export($mod_pages, true) . ';');
+	}
 	static function add_language_key($key, $text, $language = 'English') {
 		if (!file_exists(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php')) {
 			trigger_error('Illegal argument: $language is not a valid language', E_USER_ERROR);
@@ -398,6 +403,21 @@ abstract class ExtensionConfig {
 			if (trim($line) == '//extensions') {
 				$lines = array_move($lines, $lineno + 1, 1);
 				$lines[$lineno + 1] = "\t" . '\'' . $key . '\' => \'' . addslashes($text) . '\',';
+				break;
+			}
+		}
+		file_put_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php', implode("\n", $lines));
+	}
+	static function remove_language_key($key, $language = 'English') {
+		if (!file_exists(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php')) {
+			trigger_error('Illegal argument: $language is not a valid language', E_USER_ERROR);
+		}
+		$lang_data = file_get_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php');
+		$lines = explode("\n", $lang_data);
+		foreach ($lines as $lineno => $line) {
+			if (trim($line) == '\'' . $key . '\'') {
+				$lines = array_move($lines, $lineno + 1, -1);
+				unset($lines[max($lines)]);
 				break;
 			}
 		}
@@ -433,4 +453,14 @@ function translate() {
 		}
 	}
 	return $returnstr;
+}
+
+function writable($path) {
+	$rnd = rand(100000, 999999);
+	@file_put_contents($path . '/' . $rnd . '.tmp', 'qwertyuiop');
+	if (!file_exists($path . '/' . $rnd . '.tmp')) {
+		return false;
+	}
+	unlink($path . '/' . $rnd . '.tmp');
+	return true;
 }

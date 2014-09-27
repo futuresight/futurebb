@@ -298,7 +298,7 @@ if(isset($_POST['pm_sent'])) {
 					}
 					if (empty($errors)) {
 						$cur_user['signature'] = $_POST['signature'];
-						$db->query('UPDATE `#^users` SET signature=\'' . $db->escape($_POST['signature']) . '\',parsed_signature=\'' . $db->escape(BBCodeController::parse_msg($_POST['signature'])) . '\' WHERE id=' . $cur_user['id']) or error('Failed to update sig', __FILE__, __LINE__, $db->error());
+						$db->query('UPDATE `#^users` SET signature=\'' . $db->escape($_POST['signature']) . '\',parsed_signature=\'' . $db->escape(BBCodeController::parse_msg($_POST['signature'], $futurebb_config['enable_smilies'], false, $futurebb_config['enable_bbcode'])) . '\' WHERE id=' . $cur_user['id'], $futurebb_config['enable_bbcode']) or error('Failed to update sig', __FILE__, __LINE__, $db->error());
 						echo '</div></div>';
 						header('Refresh: 0');
 						return;
@@ -339,6 +339,7 @@ if(isset($_POST['pm_sent'])) {
 					echo htmlspecialchars($cur_user['signature']);
 				}
 				?></textarea></p>
+                <p><a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp"><?php echo translate('bbcode'); ?></a>: <?php if ($futurebb_config['enable_bbcode']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#smilies"><?php echo translate('smilies'); ?></a>: <?php if ($futurebb_config['enable_smilies']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('imgtag'); ?></a>: <?php if ($futurebb_user['g_post_links']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('urltag'); ?></a>: <?php if ($futurebb_user['g_post_images']) echo translate('on'); else echo translate('off'); ?></p>
 				<p><input type="submit" name="form_sent" value="Update" /></p>
 				<?php
 				echo '</form>';

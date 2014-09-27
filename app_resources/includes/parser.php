@@ -3,10 +3,32 @@ abstract class BBCodeController {
 	public static $pattern = array();
 	public static $replace = array();
 	public static $tags = array();
+	public static $smilies = array(
+		':D' => 'bigsmile.png',
+		'8D' => 'cool.png',
+		'8)' => 'cool.png',
+		':cool:' => 'cool.png',
+		':/' => 'hmm.png',
+		':lol:' => 'lol.png',
+		':mad:' => 'mad.png',
+		'>:(' => 'mad.png',
+		':|' => 'neutral.png',
+		':roll:' => 'roll.png',
+		'-_-' => 'roll.png',
+		':rolleyes:' => 'roll.png',
+		':(' => 'sad.png',
+		':-(' => 'sad.png',
+		':)' => 'smile.png',
+		':-)' => 'smile.png',
+		':P' => 'tongue.png',
+		';)' => 'wink.png',
+		':O' => 'yikes.png',
+		':0' => 'yikes.png'
+	);
 	
-	static function parse_msg($text, $hide_smilies = false, $preview = false) {
+	static function parse_msg($text, $show_smilies = true, $preview = false, $bbcode = true) {
 		global $db, $futurebb_user, $futurebb_config;
-		if (empty(self::$pattern)) {
+		if ($bbcode && empty(self::$pattern)) {
 			self::$pattern = array();
 			self::$replace = array();
 			self::add_bbcode('%\[b\](.*?)\[/b\]%ms', '<strong>$1</strong>');
@@ -29,8 +51,10 @@ abstract class BBCodeController {
 			$text = preg_replace('%@([a-zA-Z0-9_\-]+)%', '<span class="usertag">@$1</span>', $text);
 		}
 		
-		self::parse_bbcode($text);		
-		if($hide_smilies) { // only parse similies if they were enabled by poster
+		if ($bbcode) {
+			self::parse_bbcode($text);
+		}
+		if($show_smilies) { // only parse similies if they were enabled by poster
 			self::parse_smilies($text);
 		}
 		
@@ -146,29 +170,7 @@ abstract class BBCodeController {
 	
 	static function parse_smilies(&$text) {
 		global $base_config;	
-		$smilies = array(
-			':D' => 'bigsmile.png',
-			'8D' => 'cool.png',
-			'8)' => 'cool.png',
-			':cool:' => 'cool.png',
-			':/' => 'hmm.png',
-			':lol:' => 'lol.png',
-			':mad:' => 'mad.png',
-			'>:(' => 'mad.png',
-			':|' => 'neutral.png',
-			':roll:' => 'roll.png',
-			'-_-' => 'roll.png',
-			':rolleyes:' => 'roll.png',
-			':(' => 'sad.png',
-			':-(' => 'sad.png',
-			':)' => 'smile.png',
-			':-)' => 'smile.png',
-			':P' => 'tongue.png',
-			';)' => 'wink.png',
-			':O' => 'yikes.png',
-			':0' => 'yikes.png'
-		);
-		foreach ($smilies as $smiley => $url) {
+		foreach (self::$smilies as $smiley => $url) {
 			//thank you FluxBB for the RegEx code
 			$text = preg_replace('%(^|(?<=[>\s]))' . preg_quote($smiley) . '((?=[^\p{L}\p{N}])|$)%mu', '$1<img src="' . $base_config['baseurl'] . '/static/img/smile/' . $url . '" alt="' . $smiley . '" width="15px" height="15px" />$2', $text);
 		}

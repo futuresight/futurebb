@@ -23,6 +23,8 @@ class DBInsert {
 		foreach ($this->fields as $key => $val) {
 			if ($val === intval($val)) {
 				$vals[] = intval($val);
+			} else if ($val === null) {
+				$vals[] = 'NULL';
 			} else {
 				$vals[] = '\'' . $db->escape($val) . '\'';
 			}

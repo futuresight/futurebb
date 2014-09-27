@@ -142,6 +142,13 @@ $lang_addl = array(
 	'installcomplete'		=>	'Installation complete!',
 	'unzipfailed'			=>	'Something went wrong with unzipping. Not sure what. :(',
 	'installnewext'			=>	'Install new extension',
+	'forumnotwritable'		=>	'Your forum installation directory is not writable by PHP. This means you will not be able to install any extensions. To fix this, recursively chmod the directory properly, if in doubt use 0777.',
+	'existingexts'			=>	'Existing extensions',
+	'noexts'				=>	'No extensions installed. :(',
+	'website'				=>	'Website',
+	'supporturl'			=>	'Support URL',
+	'uninstall'				=>	'Uninstall',
+	'nouninstallphp'		=>	'The uninstall.php file is not available. Please contact the extension creator.',
 	
 	//admin index
 	'boardsettings'			=>	'Board settings',
@@ -190,4 +197,8 @@ $lang_addl = array(
 	'fixerrors'				=>	'The following errors must be fixed before continuing:',
 	'avatarmaxfilesize'		=>	'Maxiumum avatar file size',
 	'avatarfilesizedesc'	=>	'The maximum allowed avatar file size (KiB)',
+	'enablebbcode'			=>	'Enable BBCode',
+	'enablebbcodedesc'		=>	'Allow BBCode in posts - if this box is changed, it will not affect existing posts unless the &quot;reparse posts&quot; tool is used on the maintenance page',
+	'enablesmilies'			=>	'Enable smilies',
+	'enablesmiliesdesc'		=>	'Enable smilies - if this box is changed, it will not affect existing posts unless the &quot;reparse posts&quot; tool is used on the maintenance page',
 );

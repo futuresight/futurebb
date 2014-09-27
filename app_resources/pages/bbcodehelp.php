@@ -1,5 +1,6 @@
 <?php
 $page_title = 'BBCode Help';
+include FORUM_ROOT . '/app_resources/includes/parser.php';
 ?>
 <div class="container">
     <div class="forum_content">
@@ -25,7 +26,17 @@ $page_title = 'BBCode Help';
         <p><code>[quote=<?php echo translate('johnsmith'); ?>]<?php echo translate('textquoting'); ?>[/quote]</code> <?php echo translate('produces'); ?>:</p>
         <div class="quotebox"><p><b><?php echo translate('johnsmith'); ?> <?php echo translate('wrote'); ?></b><br /><?php echo translate('textquoting'); ?></p></div>
     </div>
-    <div class="forum_content">
+    <div class="forum_content" id="smilies">
+    	<h3><?php echo translate('smilies'); ?></h3>
+        <ul>
+        <?php
+		foreach (BBCodeController::$smilies as $code => $url) {
+			echo '<li><code>' . $code . '</code> ' . translate('produces') . ' <img src="' . $base_config['baseurl'] . '/static/img/smile/' . $url . '" alt="' . $code . '" width="15px" height="15px" /></li>';
+		}
+		?>
+        </ul>
+    </div>
+    <div class="forum_content" id="linksimages">
     	<h3><?php echo translate('linksandimages'); ?></h3>
         <ul>
         	<li><code>[url]http://futuresight.org[/url]</code> <?php echo translate('produces'); ?> <a href="http://futuresight.org">http://futuresight.org</a></li>

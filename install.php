@@ -785,15 +785,6 @@ if (isset($_GET['downloadconfigxml'])) {
 						<p><?php echo translate('intro'); ?></p>
 						<?php
 						$ok = true;
-						function writable($path) {
-							$rnd = rand(100000, 999999);
-							@file_put_contents($path . '/' . $rnd . '.tmp', 'qwertyuiop');
-							if (!file_exists($path . '/' . $rnd . '.tmp')) {
-								return false;
-							}
-							unlink($path . '/' . $rnd . '.tmp');
-							return true;
-						}
 						//check if necessary directories are writable
 						if (!file_exists(FORUM_ROOT . '/temp') || !is_dir(FORUM_ROOT . '/temp')) {
 							$ok = false;
