@@ -464,3 +464,46 @@ function writable($path) {
 	unlink($path . '/' . $rnd . '.tmp');
 	return true;
 }
+
+function paginate($url, $page, $count) {
+	//paginate links
+	$links = array();
+	if ($page > 1) {
+		$text = str_replace('$page$', $page - 1, $url);
+		$text = str_replace('>' . ($page - 1) . '<', '>' . translate('prev') . '<', $text);
+		$text = str_replace('$bold', '', $text);
+		$links[] = $text;
+	}	
+	$text = str_replace('$page$', 1, $url);
+	if ($page == 1) {
+		$text = str_replace('$bold$', ' style="font-weight:bold"', $text);
+	}
+	$links[] = $text;
+	if ($page > 4) {
+		$links[] = '...';
+	}
+	for ($i = max($page - 2, 2); $i <= min($page + 2, $count - 1); $i++) {
+		$text = str_replace('$page$', $i, $url);
+		if ($i == $page) {
+			$text = str_replace('$bold$', ' class="bold"', $text);
+		}
+		$links[] = $text;
+	}
+	if ($count > $page + 3) {
+		$links[] = '...';
+	}
+	if ($count > 1) {
+		$text = str_replace('$page$', $count, $url);
+		if ($page == $count) {
+			$text = str_replace('$bold$', ' style="font-weight:bold"', $text);
+		}
+		$links[] = $text;
+	}
+	if ($page < $count) {
+		$text = str_replace('$page$', $page + 1, $url);
+		$text = str_replace('>' . ($page + 1) . '<', '>' . translate('next') . '<', $text);
+		$text = str_replace('$bold', '', $text);
+		$links[] = $text;
+	}
+	return implode(' ', $links);
+}

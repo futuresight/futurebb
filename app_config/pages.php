@@ -235,4 +235,10 @@ $pagessubdirs = array (
     'nocontentbox' => true,
     'mod' => true,
   ),
+   '/rss' => 
+  array (
+    'file' => 'rss.php',
+    'template' => false,
+    'nocontentbox' => true,
+  ),
 );

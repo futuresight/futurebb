@@ -111,11 +111,7 @@ $result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_e
 
 ?>
 <p><?php echo translate('pages');
-for ($i = 1; $i <= ceil($num_posts / $futurebb_config['posts_per_page']); $i++) {
-	?>
-	<a href="<?php echo $base_config['baseurl']; ?>/<?php echo htmlspecialchars($dirs[1]); ?>/<?php echo htmlspecialchars($dirs[2]); ?>?page=<?php echo $i; ?>"<?php if ($i == $page) echo ' class="bold"'; ?>><?php echo $i; ?></a>
-	<?php
-}
+echo paginate('<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '?page=$page$" $bold$>$page$</a>', $page, ceil($num_posts / $futurebb_config['posts_per_page']));
 ?></p>
 <?php
 
@@ -201,11 +197,7 @@ while ($cur_post = $db->fetch_assoc($result)) {
 ?>
 <$breadcrumbs/>
 <p><?php echo translate('pages');
-for ($i = 1; $i <= ceil($num_posts / $futurebb_config['posts_per_page']); $i++) {
-	?>
-	<a href="<?php echo $base_config['baseurl']; ?>/<?php echo htmlspecialchars($dirs[1]); ?>/<?php echo htmlspecialchars($dirs[2]); ?>?page=<?php echo $i; ?>"<?php if ($i == $page) echo ' class="bold"'; ?>><?php echo $i; ?></a>
-	<?php
-}
+echo paginate('<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '?page=$page$" $bold$>$page$</a>', $page, ceil($num_posts / $futurebb_config['posts_per_page']));
 ?></p>
 <?php
 if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && (!$cur_topic['closed'] || $futurebb_user['g_mod_privs'])) {

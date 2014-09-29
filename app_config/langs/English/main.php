@@ -127,6 +127,9 @@ $lang = array(
 	'replies'				=>	'Replies',
 	'topicmoved'			=>	'(Topic moved)',
 	'notopics'				=>	'There are no topics in this forum.',
+	'rssfeed'				=>	'RSS Feed',
+	'prev'					=>	'Prev',
+	'next'					=>	'Next',
 	
 	//topic viewer
 	'edited'				=>	'Edited',

@@ -38,6 +38,33 @@ $per_page = 25;
 	</form>
 </div>
 
+<?php
+$sql = '';
+if (isset($_GET['username']) && $_GET['username'] != '') {
+	$sql .= ' AND u.username LIKE \'' . $db->escape(str_replace('*', '%', $_GET['username'])) . '\'';
+}
+if (isset($_GET['group']) && $_GET['group'] != '0') {
+	$sql .= ' AND u.group_id=' . intval($_GET['group']);
+}
+$q = new DBSelect('users', array('u.username','u.num_posts','u.registered','g.g_title AS title'), 'u.id>0 AND u.username<>\'Guest\' ' . $sql . ' ' . ($visible_groups == '' ? '' : 'AND u.group_id IN(' . $visible_groups . ')') . ' AND u.deleted=0 AND u.username<>\'Guest\'', 'Failed to get users');
+$q->table_as('u');
+$join = new DBLeftJoin('user_groups', 'g', 'g.g_id=u.group_id');
+$q->add_join($join);
+$result = $q->commit();
+unset($q);
+$num_users = $db->num_rows($result);
+$page = isset($_GET['p']) ? intval($_GET['p']) : 1;
+$linktext = '<a href="' . $base_config['baseurl'] . '/users?p=$page$';
+if (isset($_GET['username'])) $linktext .= htmlspecialchars('&username=' . $_GET['username']);
+if (isset($_GET['group'])) $linktext .= htmlspecialchars('&group=' . $_GET['group']);
+if (isset($_GET['sort'])) $linktext .= htmlspecialchars('&sort=' . $_GET['sort']);
+if (isset($_GET['order'])) $linktext .= htmlspecialchars('&order=' . $_GET['order']);
+$linktext .= '"$bold$>$page$</a> ';
+?>
+<p><?php echo translate('pages');
+echo paginate($linktext, $page, ceil($num_users / $per_page));
+?></p>
+
 <div class="forum_content">
 	<table border="0" style="width: 100%;">
 		<tr>
@@ -47,13 +74,6 @@ $per_page = 25;
 			<th style="text-align: left;"><?php echo translate('registered'); ?></th>
 		</tr>
 		<?php
-		$sql = '';
-		if (isset($_GET['username']) && $_GET['username'] != '') {
-			$sql .= ' AND u.username LIKE \'' . $db->escape(str_replace('*', '%', $_GET['username'])) . '\'';
-		}
-		if (isset($_GET['group']) && $_GET['group'] != '0') {
-			$sql .= ' AND u.group_id=' . intval($_GET['group']);
-		}
 		if (isset($_GET['sort'])) {
 			switch ($_GET['sort']) {
 				case 'username':
@@ -73,18 +93,6 @@ $per_page = 25;
 		} else {
 			$order = 'u.username ASC';
 		}
-		$page = isset($_GET['p']) ? intval($_GET['p']) : 1;
-		//$result = $db->query('SELECT u.username,u.num_posts,u.registered,g.g_title AS title FROM `#^users` AS u LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE id>0 ' . $sql . ' AND u.group_id IN(' . $visible_groups . ') AND u.deleted=0') or error('Failed to get users', __FILE__, __LINE__, $db->error());
-		
-		$q = new DBSelect('users', array('u.username','u.num_posts','u.registered','g.g_title AS title'), 'u.id>0 AND u.username<>\'Guest\' ' . $sql . ' ' . ($visible_groups == '' ? '' : 'AND u.group_id IN(' . $visible_groups . ')') . ' AND u.deleted=0 AND u.username<>\'Guest\'', 'Failed to get users');
-		$q->table_as('u');
-		$join = new DBLeftJoin('user_groups', 'g', 'g.g_id=u.group_id');
-		$q->add_join($join);
-		$result = $q->commit();
-		unset($q);
-		$num_users = $db->num_rows($result);
-		
-		//$result = $db->query('SELECT u.username,u.num_posts,u.registered,g.g_title AS title FROM `#^users` AS u LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE id>0 ' . $sql . ' AND u.group_id IN(' . $visible_groups . ') AND u.deleted=0 ORDER BY ' . $order . ' LIMIT ' . (($page - 1) * $per_page) . ',' . $per_page) or error('Failed to get users', __FILE__, __LINE__, $db->error());
 		$q = new DBSelect('users', array('u.username','u.num_posts','u.registered','g.g_title AS title'), ' u.id>0 AND u.username<>\'Guest\' ' . $sql . ($visible_groups == '' ? '' : ' AND u.group_id IN(' . $visible_groups . ')') . ' AND u.deleted=0', 'Failed to get users');
 		$q->table_as('u');
 		$join = new DBLeftJoin('user_groups', 'g', 'g.g_id=u.group_id');
@@ -105,13 +113,6 @@ $per_page = 25;
 		?>
 	</table>
 	<p><?php echo translate('pages');
-	for ($i = 1; $i <= ceil($num_users / $per_page); $i++) {
-		echo '<a href="' . $base_config['baseurl'] . '/users?p=' . $i . '';
-		if (isset($_GET['username'])) echo htmlspecialchars('&username=' . $_GET['username']);
-		if (isset($_GET['group'])) echo htmlspecialchars('&group=' . $_GET['group']);
-		if (isset($_GET['sort'])) echo htmlspecialchars('&sort=' . $_GET['sort']);
-		if (isset($_GET['order'])) echo htmlspecialchars('&order=' . $_GET['order']);
-		echo '">' . $i . '</a> ';
-	}
+	echo paginate($linktext, $page, ceil($num_users / $per_page));
 	?></p>
 </div>

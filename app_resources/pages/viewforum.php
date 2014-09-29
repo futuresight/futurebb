@@ -26,11 +26,7 @@ $result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.c
 if ($num_topics) {
 	?>
 	<p><?php echo translate('pages');
-	for ($i = 1; $i <= ceil($num_topics / $futurebb_config['topics_per_page']); $i++) {
-		?>
-		<a href="<?php echo $base_config['baseurl']; ?>/<?php echo htmlspecialchars($dirs[1]); ?>?page=<?php echo $i; ?>"<?php if ($i == $page) echo ' class="bold"'; ?>><?php echo $i; ?></a>
-		<?php
-	}
+	echo paginate('<a href="' . $base_config['baseurl'] . '/' .  htmlspecialchars($dirs[1]) . '?page=$page$"$bold$>$page$</a>', $page, ceil($num_topics / $futurebb_config['topics_per_page']));
 ?></p>
 <?php
 }
@@ -107,6 +103,7 @@ if ($db->num_rows($result)) {
 		}
 	} ?>
 </table>
+<p><a href="<?php echo $base_config['baseurl']; ?>/rss/forum/<?php echo htmlspecialchars($dirs[1]); ?>"><?php echo translate('rssfeed'); ?></a></p>
 <?php 
 } else {
 	if ($num_topics == 0) {
@@ -121,11 +118,7 @@ if ($futurebb_user['id'] != 0 && $cur_forum['tracker_id'] == null && $all_read) 
 if ($num_topics) {
 	?>
 	<p><?php echo translate('pages');
-	for ($i = 1; $i <= ceil($num_topics / $futurebb_config['topics_per_page']); $i++) {
-		?>
-		<a href="<?php echo $base_config['baseurl']; ?>/<?php echo htmlspecialchars($dirs[1]); ?>?page=<?php echo $i; ?>"<?php if ($i == $page) echo ' class="bold"'; ?>><?php echo $i; ?></a>
-		<?php
-	}
+	echo paginate('<a href="' . $base_config['baseurl'] . '/' .  htmlspecialchars($dirs[1]) . '?page=$page$"$bold$>$page$</a>', $page, ceil($num_topics / $futurebb_config['topics_per_page']));
 	?></p>
 <?php
 }
