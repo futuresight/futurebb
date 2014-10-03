@@ -103,7 +103,7 @@ if ($db->num_rows($result)) {
 		}
 	} ?>
 </table>
-<p><a href="<?php echo $base_config['baseurl']; ?>/rss/forum/<?php echo htmlspecialchars($dirs[1]); ?>"><?php echo translate('rssfeed'); ?></a></p>
+<p><a href="<?php echo $base_config['baseurl']; ?>/rss/<?php echo htmlspecialchars($dirs[1]); ?>"><?php echo translate('rssfeed'); ?></a></p>
 <?php 
 } else {
 	if ($num_topics == 0) {

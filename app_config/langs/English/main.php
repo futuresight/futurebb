@@ -51,6 +51,7 @@ $lang = array(
 	'unavailable'			=>	'Unavailable',
 	'yes'					=>	'Yes',
 	'no'					=>	'No',
+	'none'					=>	'None',
 	
 	//index
 	'markallread'			=>	'Mark all topics as read',
@@ -130,6 +131,7 @@ $lang = array(
 	'rssfeed'				=>	'RSS Feed',
 	'prev'					=>	'Prev',
 	'next'					=>	'Next',
+	'newposts'				=>	'New posts',
 	
 	//topic viewer
 	'edited'				=>	'Edited',

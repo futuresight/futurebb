@@ -125,6 +125,9 @@ if ($page_info) {
 				$str .= '<a href="' . $base_config['baseurl'] . '/' . $url . '">' . htmlspecialchars($name) . '</a>';
 			}
 		}
+		if (isset($rss_url)) {
+			$str .= ' (<a href="' . $base_config['baseurl'] . '/' . $rss_url . '">' . translate('rssfeed') . '</a>)';
+		}
 		$page_contents = str_replace('<$breadcrumbs/>', '<p>' . $str . '</p>', $page_contents);
 		unset($first);
 	} else {

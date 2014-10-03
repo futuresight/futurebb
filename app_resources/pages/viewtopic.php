@@ -9,7 +9,7 @@ if (!strstr($cur_topic['view_groups'], '-' . $futurebb_user['group_id'] . '-')) 
 	httperror(403);
 }
 $breadcrumbs = array(translate('index') => '', $cur_topic['forum_name'] => $cur_topic['forum_url'], $cur_topic['subject'] => $cur_topic['forum_url'] . '/' . $cur_topic['url']);
-$page_title = $cur_topic['subject'];
+$page_title = $cur_topic['subject'] . ' - ' . $cur_topic['forum_name'];
 
 if ($cur_topic['redirect_id'] != null) {
 	$result = $db->query('SELECT t.url AS turl,f.url AS furl FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . $cur_topic['redirect_id']) or error('Failed to get redirect info', __FILE__, __LINE__, $db->error());
@@ -250,4 +250,7 @@ if ($futurebb_user['id'] != 0 && !$db->num_rows($result) && $cur_topic['tracker_
 		$db->query('INSERT INTO `#^read_tracker`(user_id,forum_id) VALUES(' . $futurebb_user['id'] . ',' . $cur_topic['forum_id'] . ')') or error('Failed to mark forum as read', __FILE__, __LINE__, $db->error());
 	}
 }
+
+//send RSS URL back to dispatcher to put next to breadcrumbs
+$rss_url = 'rss/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]);
 ?>

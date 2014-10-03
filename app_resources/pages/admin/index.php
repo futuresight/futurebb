@@ -28,7 +28,7 @@ if(isset($_POST['form_sent'])) {
 		'admin_email'			=> 'string',
 		'footer_text'			=> 'string',
 		'maintenance_message'	=> 'string',
-		'rules'				=> 'string',
+		'rules'					=> 'string',
 		'default_language'		=> 'string',
 		'allow_privatemsg'		=> 'bool',
 		'allow_notifications'	=> 'bool',
@@ -41,7 +41,7 @@ if(isset($_POST['form_sent'])) {
 		'sig_max_height'		=> 'int',
 		'max_quote_depth'		=> 'int',
 		'enable_bbcode'			=> 'bool',
-		'enable_smilies'			=> 'bool',
+		'enable_smilies'		=> 'bool',
 	);
 	//check first
 	$errors = array();
@@ -98,9 +98,20 @@ if (ini_get('allow_url_fopen')) {
 		}
 		echo '</ul></div>';
 	} ?>
+    <div class="forum_content rightbox admin">
+    	<ul>
+        	<li><a href="#boardsettings"><?php echo translate('boardsettings'); ?></a></li>
+            <li><a href="#registration"><?php echo translate('registration'); ?></a></li>
+            <li><a href="#siteappearance"><?php echo translate('siteappearance'); ?></a></li>
+            <li><a href="#bbcode"><?php echo translate('bbcode'); ?></a></li>
+            <li><a href="#signatures"><?php echo translate('signatures'); ?></a></li>
+            <li><a href="#avatars"><?php echo translate('avatars'); ?></a></li>
+            <li><a href="#maint"><?php echo translate('maintenance'); ?></a></li>
+        </ul>
+    </div>
 	<div class="forum_content rightbox admin">
 		<form action="<?php echo $base_config['baseurl']; ?>/admin" method="post" enctype="multipart/form-data">
-		<h3><?php echo translate('boardsettings'); ?></h3>
+		<h3 id="boardsettings"><?php echo translate('boardsettings'); ?></h3>
 		<table border="0" class="optionstable">
 			<tr>
 				<th><?php echo translate('boardtitle'); ?></th>
@@ -139,7 +150,8 @@ if (ini_get('allow_url_fopen')) {
 				<td><input type="checkbox" name="config[allow_notifications]" <?php if($futurebb_config['allow_notifications'] == 1) echo 'checked="checked"'; ?> /></td>
 			</tr>
 		</table>
-		<h3><?php echo translate('registration'); ?></h3>
+        
+        <h3 id="registration"><?php echo translate('registration'); ?></h3>
         <table border="0" class="optionstable">
 			<tr>
 				<th><?php echo translate('verifyregs'); ?></th>
@@ -150,7 +162,37 @@ if (ini_get('allow_url_fopen')) {
                	<td><input name="config[disable_registrations]" type="checkbox" <?php if($futurebb_config['disable_registrations'] == 1) echo 'checked="checked"'; ?> value="1" id="disable_registrations" /> <label for="disable_registrations"><?php echo translate('disableregsdesc'); ?></label></td>
             </tr>
         </table>
-        <h3><?php echo translate('signatures'); ?></h3>
+        <h4><?php echo translate('rules'); ?></h4>
+		<p><?php echo translate('rulesdesc'); ?><br /><textarea name="config[rules]" cols="50" rows="4"><?php echo htmlspecialchars($futurebb_config['rules']); ?></textarea></p>
+        
+        <h3 id="siteappearance"><?php echo translate('siteappearance'); ?></h3>
+		<h4><?php echo translate('announcement'); ?></h4>
+		<p><?php echo translate('announcementdesc'); ?><br />
+		
+		<input name="config[announcement_enable]" type="checkbox" <?php if($futurebb_config['announcement_enable'] == 1) echo 'checked="checked"'; ?> value="1" id="announcement_enable" /> <label for="announcement_enable"><?php echo translate('enableannouncement'); ?></label><br />
+		<textarea name="config[announcement_text]" cols="50" rows="4"><?php echo htmlspecialchars($futurebb_config['announcement_text']); ?></textarea></p>
+		<p><?php echo translate('customfooter'); ?><br /><textarea name="config[footer_text]" cols="50" rows="3"><?php echo htmlspecialchars($futurebb_config['footer_text']); ?></textarea></p>
+		<p><?php echo translate('addl_header_links'); ?><br /><textarea name="config[addl_header_links]" cols="50" rows="3"><?php echo htmlspecialchars($futurebb_config['addl_header_links']); ?></textarea></p>
+		<p><input type="text" name="config[topics_per_page]" value="<?php echo $futurebb_config['topics_per_page']; ?>" size="3" /> <?php echo translate('topicsperpage'); ?><br /><input type="text" name="config[posts_per_page]" value="<?php echo $futurebb_config['posts_per_page']; ?>" size="3" /> <?php echo translate('postsperpage'); ?></p>
+		<p><input name="config[show_post_count]" type="checkbox" <?php if($futurebb_config['show_post_count'] == 1) echo 'checked="checked"'; ?> value="1" id="show_post_count" /> <label for="show_post_count"><?php echo translate('showpostcounts'); ?></label> - <?php echo translate('showpostcountsdesc'); ?></p>
+        
+        <h3 id="bbcode"><?php echo translate('bbcode'); ?></h3>
+        <table border="0" class="optionstable">
+       		<tr>
+				<th><?php echo translate('enablebbcode'); ?></th>
+				<td><input name="config[enable_bbcode]" type="checkbox" <?php if($futurebb_config['enable_bbcode'] == 1) echo 'checked="checked"'; ?> value="1" id="enable_bbcode" /> <label for="enable_bbcode"><?php echo translate('enablebbcodedesc'); ?></label></td>
+			</tr>
+            <tr>
+				<th><?php echo translate('enablesmilies'); ?></th>
+				<td><input name="config[enable_smilies]" type="checkbox" <?php if($futurebb_config['enable_smilies'] == 1) echo 'checked="checked"'; ?> value="1" id="enable_smilies" /> <label for="enable_smilies"><?php echo translate('enablesmiliesdesc'); ?></label></td>
+			</tr>
+			<tr>
+				<th><?php echo translate('maxquotedepth'); ?></th>
+				<td><input type="text" name="config[max_quote_depth]" value="<?php echo htmlspecialchars($futurebb_config['max_quote_depth']); ?>" size="5" /></td>
+			</tr>
+        </table>
+        
+        <h3 id="signatures"><?php echo translate('signatures'); ?></h3>
 		<p><?php echo translate('zeronolimit'); ?></p>
 		<table border="0" class="optionstable">
 			<tr>
@@ -167,30 +209,11 @@ if (ini_get('allow_url_fopen')) {
 			</tr>
 		</table>
         
-        <h3><?php echo translate('bbcode'); ?></h3>
-        <table border="0" class="optionstable">
-       		<tr>
-				<th><?php echo translate('enablebbcode'); ?></th>
-				<td><input name="config[enable_bbcode]" type="checkbox" <?php if($futurebb_config['enable_bbcode'] == 1) echo 'checked="checked"'; ?> value="1" id="enable_bbcode" /> <label for="enable_bbcode"><?php echo translate('enablebbcodedesc'); ?></label></td>
-			</tr>
-            <tr>
-				<th><?php echo translate('enablesmilies'); ?></th>
-				<td><input name="config[enable_smilies]" type="checkbox" <?php if($futurebb_config['enable_smilies'] == 1) echo 'checked="checked"'; ?> value="1" id="enable_smilies" /> <label for="enable_smilies"><?php echo translate('enablesmiliesdesc'); ?></label></td>
-			</tr>
-			<tr>
-				<th><?php echo translate('maxquotedepth'); ?></th>
-				<td><input type="text" name="config[max_quote_depth]" value="<?php echo htmlspecialchars($futurebb_config['max_quote_depth']); ?>" size="5" /></td>
-			</tr>
-        </table>
-		<h4><?php echo translate('avatars'); ?></h4>
+        <h3><?php echo translate('avatars'); ?></h3>
         <table border="0" class="optionstable">
         	<tr>
             	<th><?php echo translate('avatars'); ?></th>
                 <td><input name="config[avatars]" type="checkbox" <?php if($futurebb_config['avatars'] == 1) echo 'checked="checked"'; ?> value="1" id="avatars" /> <label for="avatars"><?php echo translate('enableavatarsdesc'); ?></label></td>
-            </tr>
-            <tr>
-            	<th><?php echo translate('avatarmaxfilesize'); ?></th>
-                <td><input type="text" name="config[avatar_max_filesize]" value="<?php echo intval($futurebb_config['avatar_max_filesize']); ?>" size="5" /><br /><?php echo translate('avatarfilesizedesc'); ?></td>
             </tr>
             <tr>
             	<th><?php echo translate('avatarmaxfilesize'); ?></th>
@@ -205,19 +228,8 @@ if (ini_get('allow_url_fopen')) {
                 <td><input type="text" name="config[avatar_max_height]" value="<?php echo intval($futurebb_config['avatar_max_height']); ?>" size="5" /><br /><?php echo translate('avatarmaxheightdesc'); ?></td>
             </tr>
         </table>
-		<p><b><?php echo translate('rules'); ?></b><br /><?php echo translate('rulesdesc'); ?><br /><textarea name="config[rules]" cols="50" rows="4"><?php echo htmlspecialchars($futurebb_config['rules']); ?></textarea></p>
-		<h4><?php echo translate('announcement'); ?></h4>
-		<p><?php echo translate('announcementdesc'); ?><br />
 		
-		<input name="config[announcement_enable]" type="checkbox" <?php if($futurebb_config['announcement_enable'] == 1) echo 'checked="checked"'; ?> value="1" id="announcement_enable" /> <label for="announcement_enable"><?php echo translate('enableannouncement'); ?></label><br />
-		<textarea name="config[announcement_text]" cols="50" rows="4"><?php echo htmlspecialchars($futurebb_config['announcement_text']); ?></textarea></p>
-		<h4><?php echo translate('siteappearance'); ?></h4>
-		<p><?php echo translate('customfooter'); ?><br /><textarea name="config[footer_text]" cols="50" rows="3"><?php echo htmlspecialchars($futurebb_config['footer_text']); ?></textarea></p>
-		<p><?php echo translate('addl_header_links'); ?><br /><textarea name="config[addl_header_links]" cols="50" rows="3"><?php echo htmlspecialchars($futurebb_config['addl_header_links']); ?></textarea></p>
-		<p><input type="text" name="config[topics_per_page]" value="<?php echo $futurebb_config['topics_per_page']; ?>" size="3" /> <?php echo translate('topicsperpage'); ?><br /><input type="text" name="config[posts_per_page]" value="<?php echo $futurebb_config['posts_per_page']; ?>" size="3" /> <?php echo translate('postsperpage'); ?></p>
-		<p><input name="config[show_post_count]" type="checkbox" <?php if($futurebb_config['show_post_count'] == 1) echo 'checked="checked"'; ?> value="1" id="show_post_count" /> <label for="show_post_count"><?php echo translate('showpostcounts'); ?></label> - <?php echo translate('showpostcountsdesc'); ?></p>
-		
-		<h3 id="maintenance"><?php echo translate('maintenance'); ?></h3>
+		<h3 id="maint"><?php echo translate('maintenance'); ?></h3>
 		<p><input name="config[maintenance]" type="checkbox" <?php if($futurebb_config['maintenance'] == 1) echo 'checked="checked"'; ?> value="1" id="maintenance" /> <label for="maintenance"><?php echo translate('maintenancemode'); ?></label><br />
 		<?php echo translate('maintenancemsg'); ?><br /><textarea name="config[maintenance_message]" rows="3" cols="50"><?php echo htmlspecialchars($futurebb_config['maintenance_message']); ?></textarea></p>
 		<p><?php echo translate('autoactivatemaint'); ?> <input type="text" name="config[turn_on_maint]" size="5" /> <?php echo strtolower(translate('minutes')); ?>.<?php if ($futurebb_config['turn_on_maint']) echo ' ' . translate('maintschedpanel', user_date($futurebb_config['turn_on_maint'])); ?></p>
