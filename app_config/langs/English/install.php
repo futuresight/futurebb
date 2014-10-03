@@ -55,4 +55,6 @@ $lang_addl = array(
 	'baddbtype'		=> 'Your server does not support the database type selected. Please try again.',
 	'adminemail'	=> 'Administrator email',
 	'dbfile'		=> 'File to store SQLite',
+	'installcomplete'=> 'Installation complete!',
+	'addtonginx'	=> 'Add the following information to your nginx configuration file in order to make URLs rewrite (item #2 above):',
 );

@@ -742,7 +742,7 @@ if (isset($_GET['downloadconfigxml'])) {
 	$page = 'adminacc';
 	$pwd_mismatch = false;
 } else if (isset($_POST['dbsetup'])) {
-	if (get_cookie_data('dbtype') != 'sqlite') {
+	if (get_cookie_data('dbtype') != 'sqlite3') {
 		add_cookie_data('dbhost', $_POST['dbhost']);
 		add_cookie_data('dbuser', $_POST['dbuser']);
 		add_cookie_data('dbpass', $_POST['dbpass']);
@@ -914,7 +914,7 @@ if (isset($_GET['downloadconfigxml'])) {
                                 	<td><?php echo translate('type'); ?></td>
                                     <td><?php echo get_db_info(get_cookie_data('dbtype')); ?></td>
                                 </tr>
-                                <?php if (get_cookie_data('dbtype') == 'sqlite') { ?>
+                                <?php if (get_cookie_data('dbtype') == 'sqlite3') { ?>
                                 <tr>
 									<td><?php echo translate('dbfile'); ?></td>
 									<td><input type="text" name="dbname" value="<?php echo get_cookie_data('dbname') ? get_cookie_data('dbname') : ''; ?>" /></td>
@@ -1084,9 +1084,20 @@ if (isset($_GET['downloadconfigxml'])) {
                             } ?>
                         </ol>
 						<p style="font-size:30px"><a href="install.php?downloadconfigxml"><?php echo translate('xmllink'); ?></a></p>
-                        <?php if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) { ?>
-                        <p style="font-size:30px"><a href="install.php?downloadhtaccess"><?php echo translate('htalink'); ?></a></p>
+                        <?php 
+						if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) { 
+						?>
+                        	<p style="font-size:30px"><a href="install.php?downloadhtaccess"><?php echo translate('htalink'); ?></a></p>
 						<?php
+						} else if (strstr($_SERVER['SERVER_SOFTWARE'], 'nginx')) {
+							?>
+                            <p><?php echo translate('addtonginx'); ?></p>
+          					<pre>
+location / { 
+    rewrite ^(.*)$ /dispatcher.php; 
+}
+                            </pre>
+                            <?php
 						}
 						break;
 					default:
