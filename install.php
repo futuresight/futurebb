@@ -1093,8 +1093,8 @@ if (isset($_GET['downloadconfigxml'])) {
 							?>
                             <p><?php echo translate('addtonginx'); ?></p>
           					<pre>
-location / { 
-    rewrite ^(.*)$ /dispatcher.php; 
+location <?php echo substr(get_cookie_data('basepath'), 1); ?> { 
+    rewrite ^ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php; 
 }
                             </pre>
                             <?php

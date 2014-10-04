@@ -43,18 +43,29 @@ if ($db->num_rows($result)) {
 ?>
 <div class="cat_wrap">
 	<h2 class="cat_header"><?php echo translate('usersonline'); ?></h2>
-	<div class="cat_body">
+	<div class="cat_body" style="text-align:center">
 		<p>
 		<?php
-		$result = $db->query('SELECT id,username FROM `#^users` WHERE last_page_load>' . (time() - $futurebb_config['online_timeout']) . ' AND username<>\'Guest\' ORDER BY RAND() LIMIT 10') or error('Failed to get online list', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT id,username,avatar_extension FROM `#^users` WHERE last_page_load>' . (time() - $futurebb_config['online_timeout']) . ' AND username<>\'Guest\' ORDER BY RAND() LIMIT 10') or error('Failed to get online list', __FILE__, __LINE__, $db->error());
 		if (!$db->num_rows($result)) {
 			echo translate('nobody');
 		}
 		$online = array();
-		while (list($id,$username) = $db->fetch_row($result)) {
-			$online[] = '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($username) . '">' . htmlspecialchars($username) . '</a>';
+		if ($futurebb_config['avatars']) {
+			while (list($id,$username,$avatar_ext) = $db->fetch_row($result)) {
+				if (file_exists(FORUM_ROOT . '/static/avatars/' . $id . '.' . $avatar_ext)) {
+					$online[] = '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($username) . '"><img src="' . $base_config['baseurl'] . '/static/avatars/' . $id . '.' . $avatar_ext . '" alt="avatar" style="max-width:36px; max-height:36px" />' . '<br />' . htmlspecialchars($username) . '</a>';
+				} else {
+					$online[] = '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($username) . '">' . htmlspecialchars($username) . '</a>';
+				}
+			}
+			echo '<table border="0" style="width:100%"><tr><td>' . implode('</td><td>', $online) . '</td></tr></table>';
+		} else {
+			while (list($id,$username) = $db->fetch_row($result)) {
+				$online[] = '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($username) . '">' . htmlspecialchars($username) . '</a>';
+			}
+			echo implode(', ', $online);
 		}
-		echo implode(', ', $online);
 		if ($db->num_rows($result)) { ?>
 		<br /><a href="<?php echo $base_config['baseurl']; ?>/online_list"><?php echo translate('seeall'); ?></a>
 		<?php } ?>
