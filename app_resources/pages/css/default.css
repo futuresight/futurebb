@@ -135,17 +135,17 @@ header('Content-type: text/css');
     float: left;
 }
 
-#notifications:hover div {
+#futurebb #notifications:hover div {
     display: inline;
     position: absolute;
 }
 
-#notifications:hover li {
+#futurebb #notifications:hover li {
     float: none;
     font-size: 11px;
 }
 
-#notif_dropdown li a {
+#futurebb #notif_dropdown li a {
     display: block;
     text-decoration: none;
     color: #ffffff;
@@ -154,6 +154,17 @@ header('Content-type: text/css');
     background: #CCF;
     margin-left: 1px;
     white-space: nowrap;
+}
+
+#futurebb div#notificationsdropdown {
+	border-bottom: 3px groove #FFF;
+	text-align:right;
+	padding-right:5px;
+	display:none;
+}
+
+#futurebb div#notificationsdropdown table {
+	margin-left:auto; margin-right:5px;
 }
 
 /* header/nav */

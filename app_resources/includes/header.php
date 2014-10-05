@@ -4,6 +4,32 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title><$page_title/> - <?php echo htmlspecialchars($futurebb_config['board_title']); ?></title>
 	<link rel="stylesheet" type="text/css" href="<?php echo $base_config['baseurl']; ?>/styles/<?php echo $futurebb_user['style']; ?>.css" />
+    <script type="text/javascript">
+	function showNotifs() {
+		var dropDown = document.getElementById('notificationsdropdown');
+		if (dropDown.style.display == 'block') {
+			dropDown.style.display = 'none';
+		} else {
+			dropDown.style.display = 'block';
+			if (window.XMLHttpRequest) {
+				req = new XMLHttpRequest();
+			} else {
+				 req = new ActiveXObject('Microsoft.XMLHTTP');
+			}
+			req.open('GET', '<?php echo $base_config['baseurl']; ?>/messages?nopage=true', true);
+			req.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+			req.send('');
+			
+			req.onreadystatechange = function() {
+				if (req.readyState==4 && req.status==200) {
+					document.getElementById('notificationsdropdown').innerHTML = req.responseText;
+				} else {
+					//failure
+				}
+			 }
+		}
+	}
+	</script>
 </head>
 
 <body>
@@ -37,7 +63,7 @@
 						echo '<a class="userbutton" href="' . $base_config['baseurl'] . '/admin#maintenance" title="' . translate('maintsched', user_date($futurebb_config['turn_on_maint'])) . '"><img src="' . $base_config['baseurl'] . '/static/img/clock16.png" alt="scheduled maintenance" /></a>';
 					}
 					if ($futurebb_user['notifications_count'] > 0) {
-						echo '<span id="notifications"><a class="userbutton" href="' . $base_config['baseurl'] . '/messages" title="' . translate('unreadnotifications', $futurebb_user['notifications_count']) . '"><img src="' . $base_config['baseurl'] . '/static/img/message16.png" alt="unread notifications" />
+						echo '<span id="notifications"><a class="userbutton" href="' . $base_config['baseurl'] . '/messages" onclick="showNotifs(); return false;" title="' . translate('unreadnotifications', $futurebb_user['notifications_count']) . '"><img src="' . $base_config['baseurl'] . '/static/img/message16.png" alt="unread notifications" />
 						<span class="notifications_count">' . $futurebb_user['notifications_count']. '</span></a>';
 						echo '';
 						echo '</span>';
@@ -49,6 +75,8 @@
 			?>
 			<h1><a href="<?php echo $base_config['baseurl']; ?>"><?php echo htmlspecialchars($futurebb_config['board_title']); ?></a></h1>
 		</div>
+        <div id="notificationsdropdown">
+        </div>
 		<div id="navlistwrap">
 			<ul id="navlist">
 				<?php

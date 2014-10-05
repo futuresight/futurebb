@@ -1,12 +1,16 @@
 <?php
 $page_title = translate('messages');
+if (isset($_GET['nopage'])) {
+	ob_end_clean();
+}
 ?>
 
-<table width="100%" border="0">
+<table<?php if (!isset($_GET['nopage'])) echo ' width="100%"'; ?> border="0">
 <?php
 if (sizeof($futurebb_user['notifications']) == 0) {
-	echo '<p>' . translate('nonotifs') . '</p>';
+	echo '<tr><td>' . translate('nonotifs') . '</td></tr>';
 }
+
 foreach($futurebb_user['notifications'] as $entry) {
 	echo '<tr><td>';
 	switch ($entry['type']) {
@@ -50,3 +54,9 @@ foreach($futurebb_user['notifications'] as $entry) {
 $db->query('UPDATE `#^notifications` SET read_time = ' . time() . ', read_ip = \'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\' WHERE user = ' . $futurebb_user['id'] . ' AND read_time = 0');
 ?>
 </table>
+<?php
+if (isset($_GET['nopage'])) {
+	$db->close();
+	die;
+}
+?>
