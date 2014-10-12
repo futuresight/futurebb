@@ -12,9 +12,15 @@ class Database {
 	function __construct(array $info) {
 		//error('Invalid table prefix; contact board administrator', __FILE__, __LINE__, '');
 		$this->prefix = $info['prefix'];
+		if (!file_exists($info['name'])) {
+			error('Database file non-existent');
+		}
+		if (!is_readable($info['name'])) {
+			error('Unreadable database');
+		}
 		$this->link = @sqlite_open($info['name']);
 		if (!$this->link && !isset($info['hide_errors'])) {
-			error('Failed to start database: ' . mysqli_connect_error());
+			error('Failed to open SQLite database');
 		}
 	}
 	
@@ -23,7 +29,7 @@ class Database {
 	}
 	
 	function name() {
-		return 'SQLite';
+		return 'SQLite 3';
 	}
 	
 	function error() {
@@ -76,7 +82,7 @@ class Database {
 	}
 	
 	function connect_error() {
-		return sqlite_connect_error();
+		return 'Unavailable';
 	}
 	
 	function add_table($table) {

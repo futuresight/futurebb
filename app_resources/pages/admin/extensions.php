@@ -62,6 +62,17 @@ function process_changes($changes) {
 							$lines[$i + $line_num + sizeof($change['find'])] = $change['change'][$i];
 						}
 					} else if ($change['type'] == 'replace') {
+						for ($i = 0; $i < sizeof($change['find']); $i++) {
+							$lines[$i + $line_num] = '';
+						}
+						//make more room if necessary
+						if (sizeof($change['find']) < sizeof($change['change'])) {
+							array_splice($lines, $line_num, 0, array_fill(0, sizeof($change['change']) - sizeof($change['find']), ''));
+						} else if (sizeof($change['find']) > sizeof($change['change'])) {
+							for ($i = 0; $i < sizeof($change['find']) - sizeof($change['change']); $i++) {
+								unset($lines[$line_num + $i]);
+							}
+						}
 						for ($i = 0; $i < sizeof($change['change']); $i++) {
 							$lines[$i + $line_num] = $change['change'][$i];
 						}
@@ -225,6 +236,9 @@ if (isset($_POST['form_sent'])) {
 		if (file_exists($ext_test_dir . '/uninstall.php') && $ext_info['uninstallable']) {
 			mkdir(FORUM_ROOT . '/app_config/extensions/' . $ext_id);
 			rename($ext_test_dir . '/uninstall.php', FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/uninstall.php');
+			if (!file_exists(FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/uninstall.php')) {
+				error('Failed to copy uninstall file. Please check file permissions in app_config directory.');
+			}
 		}
 		
 		//finish up

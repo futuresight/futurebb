@@ -376,8 +376,13 @@ abstract class ExtensionConfig {
 		file_put_contents(FORUM_ROOT . '/app_config/pages.php', '<?php' . "\n" . '$pages = ' . var_export($pages, true) . ';' . "\n" . '$pagessubdirs = ' . var_export($pagessubdirs, true) . ';');
 	}
 	static function remove_page($url) {
-		global $pages, $pagessubdirs;
-		unset($pages[$url]);
+		include FORUM_ROOT . '/app_config/pages.php';
+		if (isset($pages[$url])) {
+			unset($pages[$url]);
+		}
+		if (isset($pagessubdirs[$url])) {
+			unset($pagessubdirs[$url]);
+		}
 		file_put_contents(FORUM_ROOT . '/app_config/pages.php', '<?php' . "\n" . '$pages = ' . var_export($pages, true) . ';' . "\n" . '$pagessubdirs = ' . var_export($pagessubdirs, true) . ';');
 	}
 	static function add_admin_menu($title, $url, $mod = false) {
@@ -415,9 +420,9 @@ abstract class ExtensionConfig {
 		$lang_data = file_get_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php');
 		$lines = explode("\n", $lang_data);
 		foreach ($lines as $lineno => $line) {
-			if (trim($line) == '\'' . $key . '\'') {
+			if (strpos(trim($line), '\'' . $key . '\'') === 0) {
 				$lines = array_move($lines, $lineno + 1, -1);
-				unset($lines[max($lines)]);
+				unset($lines[$lineno]);
 				break;
 			}
 		}

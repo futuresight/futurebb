@@ -136,13 +136,6 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
   ),
-  '/admin/sfs' => 
-  array (
-    'file' => 'admin/sfs.php',
-    'template' => true,
-    'nocontentbox' => true,
-    'admin' => true,
-  ),
 );
 $pagessubdirs = array (
   '/users' => 
@@ -235,7 +228,7 @@ $pagessubdirs = array (
     'nocontentbox' => true,
     'mod' => true,
   ),
-   '/rss' => 
+  '/rss' => 
   array (
     'file' => 'rss.php',
     'template' => false,
