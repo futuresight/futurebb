@@ -105,6 +105,10 @@ if (isset($_GET['uninstall'])) {
 			echo '<p>' . translate('nouninstallphp') . '</p>';
 			return;
 		}
+		if (!writable(FORUM_ROOT)) {
+			echo '<p>' . translate('forumnotwritable') . '</p>';
+			return;
+		}
 		include FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/uninstall.php';
 		if (isset($changes)) {
 			process_changes($changes);
@@ -121,14 +125,23 @@ if (isset($_GET['uninstall'])) {
 		}
 		$q = new DBDelete('extensions', 'id=' . $ext_id, 'Failed to remove extension info from database');
 		$q->commit();
+		?>
+    <div class="container">
+		<?php make_admin_menu(); ?>
+		<div class="forum_content rightbox admin">
+			<h2><?php echo translate('success'); ?></h2>
+            <p><?php echo translate('uninstalled'); ?><br /><a href="<?php echo $base_config['baseurl']; ?>/admin/extensions"><?php echo translate('return'); ?></a></p>
+		</div>
+	</div>
+    	<?php
 	} else {
 		//warn the user before uninstalling
 		?>
 	<div class="container">
 		<?php make_admin_menu(); ?>
 		<div class="forum_content rightbox admin">
-			<h2>Uninstall extension</h2>
-			<p>Are you sure you want to install the extension <strong><?php echo $ext_info['name']; ?></strong>?</p>
+			<h2><?php echo translate('uninstallext'); ?></h2>
+			<p><?php echo translate('uninstallextintro', $ext_info['name']); ?></p>
 			<form action="?uninstall=<?php echo $ext_id; ?>" method="post" enctype="multipart/form-data">
             	<p><input type="submit" name="form_sent" value="<?php echo translate('yes'); ?>" /> <input type="submit" name="cancel" value="<?php echo translate('no'); ?>" /></p>
 			</form>
@@ -153,7 +166,11 @@ if (isset($_POST['form_sent'])) {
 		return;
 	}
 	$ext_test_dir = FORUM_ROOT . '/temp/' . time() . rand(1,1000);
-	mkdir($ext_test_dir);
+	@mkdir($ext_test_dir);
+	if (!file_exists($ext_test_dir)) {
+		echo '<div class="forum_content"><p>' . translate('tempdirfailed') . '</p></div>';
+		return;
+	}
 	$zip = new ZipArchive();
 	if ($zip->open($_FILES['ext_file']['tmp_name'])) {
 		$zip->extractTo($ext_test_dir);
@@ -165,7 +182,7 @@ if (isset($_POST['form_sent'])) {
 		}
 		include $ext_test_dir . '/info.php';
 		if (!isset($ext_info) || !is_array($ext_info)) {
-			echo '<div class="forum_content"><p>' . translate('badextinfo') . '</a></p></div>';
+			echo '<div class="forum_content"><p>' . translate('badextinfo') . '</p></div>';
 			removetemp();
 			return;
 		}
@@ -177,6 +194,56 @@ if (isset($_POST['form_sent'])) {
 				return;
 			}
 		}
+		//before doing anything, check that everything is writable
+		if (!writable(FORUM_ROOT)) {
+			echo '<div class="forum_content"><p>' . translate('forumnotwritable') . '</p></div>';
+			removetemp();
+			return;
+		}
+		if (file_exists($ext_test_dir . '/files') && is_dir($ext_test_dir . '/files')) {
+			function list_files($dir, $first = true) {
+				static $files;
+				if ($first) {
+					$files = array();
+				}
+				$handle = opendir($dir);
+				while ($file = readdir($handle)) {
+					if ($file != '.' && $file != '..') {
+						$files[] = $dir . '/' . $file;
+						if (is_dir($dir . '/' . $file)) {
+							list_files($dir . '/' . $file, false);
+						}
+					}
+				}
+				if ($first) {
+					return $files;
+				}
+			}
+			$files = list_files($ext_test_dir . '/files');
+			foreach ($files as $file) {
+				if (!writable($file)) {
+					echo '<div class="forum_content"><p>' . translate('filenotwritable', $file) . '</p></div>';
+					removetemp();
+					return;
+				}
+			}
+		}
+		if (file_exists($ext_test_dir . '/changes.php')) {
+			include $ext_test_dir . '/changes.php';
+			if (!isset($changes)) {
+				echo '<li>' . translate('nochangesvar') . '</li></ul></div>';
+				removetemp();
+				return;
+			}
+			foreach ($changes as $change) {
+				if (!is_writable($change['file'])) {
+					echo '<div class="forum_content"><p>' . translate('filenotwritable', $change['file']) . '</p></div>';
+					removetemp();
+					return;
+				}
+			}
+		}
+		
 		echo '<div class="forum_content"><h2>' . translate('extinstallation') . '</h2><h3>' . $ext_info['title'] . '</h3><ul>';
 		if (file_exists($ext_test_dir . '/database.php')) {
 			include $ext_test_dir . '/database.php';

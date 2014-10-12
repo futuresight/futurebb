@@ -149,6 +149,14 @@ $lang_addl = array(
 	'supporturl'			=>	'Support URL',
 	'uninstall'				=>	'Uninstall',
 	'nouninstallphp'		=>	'The uninstall.php file is not available. Please contact the extension creator.',
+	'forumnotwritable'		=>	'Your forum root directory is not writable. To fix this, you need to change the permissions. When in doubt, chmod to 0777.',
+	'filenotwritable'		=>	'The following file/directory is not writable: $1. Please change the permissions to fix this. When in doubt, chmod to 0777.',
+	'tempdirfailed'			=>	'Could not make the temporary directory for your extension. Please make sure that the temp directory (/temp from your forum root) exists and is writable.',
+	'uninstallext'			=>	'Uninstall extension',
+	'uninstallextintro'		=>	'Are you sure you want to install the extension <strong>$1</strong>?',
+	'success'				=>	'Success',
+	'uninstalled'			=>	'The selected extension was successfully uninstalled.',
+	'return'				=>	'Return',
 	
 	//admin index
 	'boardsettings'			=>	'Board settings',

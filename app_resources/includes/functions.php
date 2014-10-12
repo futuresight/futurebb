@@ -461,13 +461,29 @@ function translate() {
 }
 
 function writable($path) {
-	$rnd = rand(100000, 999999);
-	@file_put_contents($path . '/' . $rnd . '.tmp', 'qwertyuiop');
-	if (!file_exists($path . '/' . $rnd . '.tmp')) {
-		return false;
+	if (is_dir($path)) {
+		$rnd = rand(100000, 999999);
+		@file_put_contents($path . '/' . $rnd . '.tmp', 'qwertyuiop');
+		if (!file_exists($path . '/' . $rnd . '.tmp')) {
+			return false;
+		}
+		unlink($path . '/' . $rnd . '.tmp');
+		return true;
+	} else {
+		$file_exists = file_exists($path);
+		$handle = @fopen($path, 'a');
+	
+		if ($handle === false) {
+			return false;
+		}
+	
+		fclose($handle);
+	
+		if (!$file_exists)
+			@unlink($path);
+	
+		return true;
 	}
-	unlink($path . '/' . $rnd . '.tmp');
-	return true;
 }
 
 function paginate($url, $page, $count) {
