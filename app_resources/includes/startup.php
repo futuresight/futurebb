@@ -79,7 +79,7 @@ if ($futurebb_config['turn_off_maint'] > 0 && $futurebb_config['turn_off_maint']
 	set_config('maintenance', 0);
 	set_config('turn_off_maint', 0);
 }
-if ($futurebb_config['maintenance'] && !$futurebb_user['g_admin_privs'] && strpos(str_replace($base_config['basepath'], '', $_SERVER['REQUEST_URI']), '/styles') !== 0) {
+if ($futurebb_config['maintenance'] && !$futurebb_user['g_admin_privs'] && strpos(str_replace($base_config['basepath'], '', $_SERVER['REQUEST_URI']), '/styles') !== 0 && strpos(str_replace($base_config['basepath'], '', $_SERVER['REQUEST_URI']), '/login') !== 0) {
 	httperror('maint');
 }
 

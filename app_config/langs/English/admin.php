@@ -6,7 +6,6 @@ $lang_addl = array(
 	'censoring'				=>	'Censoring',
 	'iptracker'				=>	'IP Tracker',
 	'usergroups'			=>	'User groups',
-	'maintenance'			=>	'Maintenance',
 	'style'					=>	'Style',
 	'extensions'			=>	'Extensions',
 	

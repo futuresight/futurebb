@@ -1,8 +1,15 @@
 <?php
-$page_title = translate('messages');
-if (isset($_GET['nopage'])) {
-	ob_end_clean();
+if (trim($dirs[2]) == '') {
+	httperror(404);
 }
+$q = new DBSelect('users', array('id'), 'rss_token=\'' . $db->escape($dirs[2]) . '\'', 'Failed to find user');
+$result = $q->commit();
+if (!$db->num_rows($result)) {
+	httperror(404);
+}
+list($uid) = $db->fetch_row($result);
+$futurebb_user['id'] = $uid;
+LoginController::LoadNotifications();
 ?>
 
 <table<?php if (!isset($_GET['nopage'])) echo ' width="100%"'; ?> border="0">

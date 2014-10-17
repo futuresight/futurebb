@@ -44,7 +44,7 @@ if (isset($_POST['form_sent'])) {
 		} else {
 			$access_code = 'NULL';
 		}
-		$db->query('INSERT INTO `#^users`(username,password,registered,registration_ip,group_id,email,last_visit,timezone,activate_key,language) VALUES(\'' . $db->escape($_POST['username']) . '\',\'' . futurebb_hash($_POST['password1']) . '\',' . time() . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',' . intval($futurebb_config['default_user_group']) . ',\'' . $db->escape($_POST['email']) . '\',' . time() . ',' . intval($_POST['timezone']) . ',' . $access_code . ',\'' . $db->escape($_POST['language']) . '\')') or error('Failed to create user', __FILE__, __LINE__, $db->error());
+		$db->query('INSERT INTO `#^users`(username,password,registered,registration_ip,group_id,email,last_visit,timezone,activate_key,language,rss_token) VALUES(\'' . $db->escape($_POST['username']) . '\',\'' . futurebb_hash($_POST['password1']) . '\',' . time() . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',' . intval($futurebb_config['default_user_group']) . ',\'' . $db->escape($_POST['email']) . '\',' . time() . ',' . intval($_POST['timezone']) . ',' . $access_code . ',\'' . $db->escape($_POST['language']) . '\',\'' . md5(rand(1,10000000000)) '\')') or error('Failed to create user', __FILE__, __LINE__, $db->error());
 		redirect($base_config['baseurl']);
 		return;
 	}

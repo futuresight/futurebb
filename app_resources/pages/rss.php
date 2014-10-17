@@ -8,7 +8,7 @@ $output = '<?xml version="1.0" encoding="utf-8"?>
 <channel>
 	<title><$title></title>
 	<description><$description></description>	
-	<link>http://modshare.futuresight.org/forums/index.php</link>
+	<link><$link></link>
 	<generator>FutureBB</generator>';
 if (isset($dirs[3]) && $dirs[3] != '') {
 	//topic is given, use it
@@ -23,6 +23,26 @@ if (isset($dirs[3]) && $dirs[3] != '') {
 	}
 	$title = $cur_topic['subject'] . ' - ' . $cur_topic['forum_name'] . ' - ' . $futurebb_config['board_title'];
 	$description = translate('latestpostsin', $cur_topic['subject']);
+	$link = $base_config['baseurl'] . '/' . htmlspecialchars($dirs[2]) . '/' . htmlspecialchars($dirs[3]);
+	
+	$q = new DBSelect('posts', array('p.id','p.parsed_content','u.username AS poster','p.posted'), 'p.topic_id=' . $cur_topic['id'], 'Failed to get posts');
+	$q->add_join(new DBJoin('users', 'u', 'u.id=p.poster', 'LEFT'));
+	$q->table_as('p');
+	$q->set_order('p.posted DESC');
+	$q->set_limit('20');
+	$result = $q->commit();
+	if (!$db->num_rows($result)) {
+		httperror(404);
+	}
+	while ($post = $db->fetch_assoc($result)) {
+		$output .= "\n\t" . '<item>' . "\n\t\t" . '<title><![CDATA[' . htmlspecialchars($cur_topic['forum_name']) . ' / ' . htmlspecialchars($cur_topic['subject']) . ']]></title>';
+		$output .= "\n\t\t" . '<pubDate>' . gmdate('D, d M Y H:i:s', $post['posted']) . ' +0000</pubDate>';
+		$output .= "\n\t\t" . '<link>' . $base_config['baseurl'] . '/posts/' . $post['id'] . '</link>';
+		$output .= "\n\t\t" . '<guid>' . $base_config['baseurl'] . '/posts/' . $post['id'] . '</guid>';
+		$output .= "\n\t\t" . '<author><![CDATA[' . htmlspecialchars($post['poster']) . ']]></author>';
+		$output .= "\n\t\t" . '<description><![CDATA[' . strip_tags($post['parsed_content']) . ']]></description>';
+		$output .= "\n\t" . '</item>';
+	}
 } else {
 	//no topic is given, so use the forum
 	$q = new DBSelect('forums', array('f.id','rf.url AS redirect_url', 'f.name', 'f.view_groups'), 'f.url=\'' . $db->escape($dirs[2]) . '\'', 'Failed to get forum info');
@@ -57,12 +77,14 @@ if (isset($dirs[3]) && $dirs[3] != '') {
 		$output .= "\n\t\t" . '<link>' . $base_config['baseurl'] . '/posts/' . $post['id'] . '</link>';
 		$output .= "\n\t\t" . '<guid>' . $base_config['baseurl'] . '/posts/' . $post['id'] . '</guid>';
 		$output .= "\n\t\t" . '<author><![CDATA[' . htmlspecialchars($post['poster']) . ']]></author>';
-		$output .= "\n\t\t" . '<description><![CDATA[' . htmlspecialchars($post['parsed_content']) . ']]></description>';
+		$output .= "\n\t\t" . '<description><![CDATA[' . strip_tags($post['parsed_content']) . ']]></description>';
 		$output .= "\n\t" . '</item>';
 	}
+	$link = $base_config['baseurl'] . '/' . htmlspecialchars($dirs[2]);
 	$description = translate('latestpostsin', $forum_info['name']);
 }
 $output .= "\n" . '</channel></rss>';
 $output = str_replace('<$title>', $title, $output);
 $output = str_replace('<$description>', $description, $output);
+$output = str_replace('<$link>', $link, $output);
 echo $output;

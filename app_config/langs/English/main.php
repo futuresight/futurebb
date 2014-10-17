@@ -76,6 +76,7 @@ $lang = array(
 	'activateacct'			=>	'Activate your account',
 	'language'				=>	'Language',
 	'timezone'				=>	'Time zone',
+	'badmaintlogin'			=>	'This site is in maintenance mode and only administrators can log in.',
 	
 	//profile
 	'basics'				=>	'Basics',
@@ -187,6 +188,7 @@ $lang = array(
 	
 	//maintenance page
 	'maintintro'			=>	'This forum is down for maintenance. The forum administrator said this:',
+	'maintintro2'			=>	'If you are an administrator and need to log in, you may do so <a href="' . $base_config['baseurl'] . '/login">here</a>.',
 	
 	//header
 	'profile'				=>	'Profile',
@@ -318,6 +320,7 @@ $lang = array(
 	'sent'					=>	'Sent',
 	'couldnot_display_notif'=>	'The notification could not be displayed because the type of message could not be determined.',
 	'nonotifs'				=>	'You have no notifications at the moment',
+	'maintenance'			=>	'Maintenance',
 	
 	//bbcode
 	'wrote'					=> 'wrote',

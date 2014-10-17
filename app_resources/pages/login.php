@@ -5,8 +5,12 @@ if ($futurebb_user['id'] != 0) {
 }
 $page_title = translate('login');
 if (isset($_POST['form_sent'])) {
-	$result = $db->query('SELECT password,id,activate_key FROM `#^users` WHERE username=\'' . $db->escape($_POST['username']) . '\' AND deleted=0') or error('Failed to check user', __FILE__, __LINE__, $db->error());
-	list($password, $id, $key) = $db->fetch_row($result);
+	$result = $db->query('SELECT password,id,activate_key,g_admin_privs FROM `#^users` AS u LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE username=\'' . $db->escape($_POST['username']) . '\' AND deleted=0') or error('Failed to check user', __FILE__, __LINE__, $db->error());
+	list($password, $id, $key, $admin_privs) = $db->fetch_row($result);
+	if ($futurebb_config['maintenance'] && !$admin_privs) {
+		echo '<p>' . translate('badmaintlogin') . '</p>';
+		return;
+	}
 	if ($key != null) {
 		if (!isset($_POST['activation_code'])) {
 			echo '<p>' . translate('notactivated') . '</p>';

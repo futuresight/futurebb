@@ -96,7 +96,7 @@ function httperror($errorcode) {
 		break;
 	  case 'maint':
 	  	$page_title = translate('maintenance');
-		echo '<h2>' . translate('maintenance') . '</h2><p>' . translate('maintintro') . '<br /><b>' . $futurebb_config['maintenance_message'] . '</b></p>';
+		echo '<h2>' . translate('maintenance') . '</h2><p>' . translate('maintintro') . '<br /><b>' . $futurebb_config['maintenance_message'] . '</b><br />' . translate('maintintro2') . '</p>';
 	  	break;
 	  default:
 		$page_title = $errorcode . ' ' . translate('Error');

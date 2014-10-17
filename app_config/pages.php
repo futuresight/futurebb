@@ -234,4 +234,10 @@ $pagessubdirs = array (
     'template' => false,
     'nocontentbox' => true,
   ),
+  '/usernotifsrss' => 
+  array (
+    'file' => 'notifsrss.php',
+    'template' => false,
+    'nocontentbox' => true,
+  ),
 );
