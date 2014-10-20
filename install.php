@@ -721,7 +721,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		foreach ($_POST['config'] as $key => $val) {
 			add_cookie_data($key, $val);
 		}
-		
 	}
 } else if (isset($_POST['adminacc'])) {
 	add_cookie_data('adminusername', $_POST['adminusername']);
@@ -769,6 +768,11 @@ if (isset($_GET['downloadconfigxml'])) {
 		$pages['dbtype'] = true;
 		$page = 'dbtype';
 		$error = translate('baddbtype');
+	}
+	if (isset($_POST['back'])) {
+		$pages['welcome'] = true;
+		$page = 'welcome';
+		$pages['dbsetup'] = false;
 	}
 } else if (isset($_POST['start'])) {
 	$pages['dbtype'] = true;
@@ -889,7 +893,7 @@ if (isset($_GET['downloadconfigxml'])) {
 							}
                             ?>
                             </select></p>
-                            <p><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+                            <p><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
                         </form>
                         <?php
 						break;

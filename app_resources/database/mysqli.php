@@ -97,4 +97,39 @@ class Database {
 		$query .= implode(',', $fields) . ');';
 		$this->query($query) or enhanced_error('Failed to create table ' . $table->name, true);
 	}
+	
+	function field_exists($table, $field) {
+		$result = $db->query('SHOW COLUMNS FROM `' . $this->prefix . $table . '` LIKE \'' . $field . '\'') or enhanced_error('Failed to show columns');
+		return $this->num_rows($result);
+	}
+	
+	function table_exists($table) {
+		$result = $this->query('SHOW TABLES LIKE \'' . $this->prefix . $table . '\'') or enhanced_error('Failed to show tables');
+		return $this->num_rows($result);
+	}
+	
+	function drop_table($table) {
+		return ($this->query('DROP TABLE `' . $this->prefix . $table . '`') or enhanced_error('Failed to drop table'));
+	}
+	
+	function rename_table($oldname, $newname) {
+		if ($this->table_exists($oldname) && !$this->table_exists($oldname)) {
+			return true;
+		}
+		
+		return ($db->query('ALTER TABLE `' . $this->prefix . $oldname . '` RENAME TO `' . $this->prefix . $newname . '`') or enhanced_error('Failed to rename table'));
+	}
+	
+	function add_field($table, DBField $field, $after) {
+		if ($this->field_exists($table, $field)) {
+			return true;
+		}
+		
+		$default = '';
+		if ($field->default_val != null) {
+			$default = ' DEFAULT \'' . $this->escape($default) . '\'';
+		}
+		
+		return ($this->query('ALTER TABLE `' . $this->prefix . 'table` ADD ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ' AFTER ' . $after) or enhanced_error('Failed to add field'));
+	}
 }
