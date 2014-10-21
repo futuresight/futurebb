@@ -12,6 +12,7 @@ $lang_addl = array(
 	'intro'			=> 'Before you can start using your forum, you are going to need to set a few things up. This installer will make it easy for you.',
 	'selectlang'	=> 'First, please select a language:',
 	'continue'		=> 'Continue',
+	'back'			=> 'Back',
 	'baddb'			=> 'Your database information was invalid. The database reported: ',
 	'type'			=> 'Type',
 	'host'			=> 'Host',

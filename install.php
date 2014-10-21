@@ -722,6 +722,12 @@ if (isset($_GET['downloadconfigxml'])) {
 			add_cookie_data($key, $val);
 		}
 	}
+	if (isset($_POST['back'])) {
+		$pages['adminacct'] = true;
+		$pwd_mismatch = false;
+		$page = 'adminacc';
+		$pages['confirmation'] = false;
+	}
 } else if (isset($_POST['adminacc'])) {
 	add_cookie_data('adminusername', $_POST['adminusername']);
 	add_cookie_data('adminemail', $_POST['adminemail']);
@@ -734,12 +740,26 @@ if (isset($_GET['downloadconfigxml'])) {
 		$pages['brdtitle'] = true;
 		$page = 'brdsettings';
 	}
+	if (isset($_POST['back'])) {
+		$pages['syscfg'] = true;
+		$page = 'syscfg';
+		$pwd_mismatch = false;
+		$pages['adminacct'] = false;
+		$pages['brdtitle'] = false;
+	}
 } else if (isset($_POST['syscfg'])) {
 	add_cookie_data('baseurl', $_POST['baseurl']);
 	add_cookie_data('basepath', $_POST['basepath']);
 	$pages['adminacct'] = true;
 	$page = 'adminacc';
 	$pwd_mismatch = false;
+	
+	if (isset($_POST['back'])) {
+		$pages['dbsetup'] = true;
+		$page = 'dbsetup';
+		$pages['adminacct'] = false;
+		$db_fail = false;
+	}
 } else if (isset($_POST['dbsetup'])) {
 	if (get_cookie_data('dbtype') != 'sqlite3') {
 		add_cookie_data('dbhost', $_POST['dbhost']);
@@ -755,6 +775,12 @@ if (isset($_GET['downloadconfigxml'])) {
 		$page = 'syscfg';
 	} else {
 		db_fail();
+	}
+	if (isset($_POST['back'])) {
+		$pages['dbtype'] = true;
+		$page = 'dbtype';
+		$pages['syscfg'] = false;
+		$pages['dbsetup'] = false;
 	}
 } else if (isset($_POST['dbtype'])) {
 	//check a valid database was entered
@@ -946,7 +972,7 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><input type="text" name="dbprefix" value="<?php echo get_cookie_data('dbprefix') ? get_cookie_data('dbprefix') : 'futurebb_'; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="submit" name="dbsetup" value="<?php echo translate('continuetest'); ?> &rarr;" /></p>
+							<p><input type="hidden" name="dbsetup" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continuetest'); ?> &rarr;" /></p>
 						</form>
 						<?php
 						break;
@@ -966,7 +992,7 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><input type="text" name="basepath" value="<?php echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
 								</tr>
 							</table>
-							<p><input type="submit" name="syscfg" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+							<p><input type="hidden" name="syscfg" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
 						</form>
 						<?php
 						break;
@@ -997,7 +1023,7 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><input type="email" name="adminemail" value="<?php echo get_cookie_data('adminemail') ? get_cookie_data('adminemail') : ''; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="submit" name="adminacc" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+							<p><input type="hidden" name="adminacc" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
 						</form>
 						<?php
 						break;
@@ -1011,7 +1037,7 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><input type="text" name="config[board_title]" value="<?php echo get_cookie_data('board_title') ? get_cookie_data('board_title') : ''; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="submit" name="brdsettings" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+							<p><input type="hidden" name="brdsettings" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
 						</form>
 						<?php
 						break;
