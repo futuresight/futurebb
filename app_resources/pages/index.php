@@ -44,7 +44,6 @@ if ($db->num_rows($result)) {
 <div class="cat_wrap">
 	<h2 class="cat_header"><?php echo translate('usersonline'); ?></h2>
 	<div class="cat_body" style="text-align:center">
-		<p>
 		<?php
 		$result = $db->query('SELECT id,username,avatar_extension FROM `#^users` WHERE last_page_load>' . (time() - $futurebb_config['online_timeout']) . ' AND username<>\'Guest\' ORDER BY RAND() LIMIT 10') or error('Failed to get online list', __FILE__, __LINE__, $db->error());
 		if (!$db->num_rows($result)) {
@@ -69,7 +68,6 @@ if ($db->num_rows($result)) {
 		if ($db->num_rows($result)) { ?>
 		<br /><a href="<?php echo $base_config['baseurl']; ?>/online_list"><?php echo translate('seeall'); ?></a>
 		<?php } ?>
-		</p>
 	</div>
 </div>
 <?php

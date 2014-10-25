@@ -144,6 +144,12 @@ $pagessubdirs = array (
     'template' => true,
     'nocontentbox' => true,
   ),
+  '/embed' => 
+  array (
+    'file' => 'embed.php',
+    'template' => false,
+    'nocontentbox' => true,
+  ),
   '/register/' => 
   array (
     'file' => 'register.php',

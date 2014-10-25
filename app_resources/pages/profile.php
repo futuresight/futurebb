@@ -60,6 +60,10 @@ if(isset($_POST['pm_sent'])) {
 			<?php if ($user != $futurebb_user['username'] && $futurebb_user['g_admin_privs']) { ?>
 			<li <?php if ($dirs[3] == 'admin') echo ' class="active"'; ?>><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/admin"><?php echo translate('administration'); ?></a></li>
 			<?php } ?>
+            <?php if ($futurebb_user['g_admin_privs']) { ?>
+			<li <?php if ($dirs[3] == 'warnings') echo ' class="active"'; ?>><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/warnings"><?php echo translate('warnings'); ?></a></li>
+			<?php } ?>
+            <li <?php if ($dirs[3] == 'msgs') echo ' class="active"'; ?>><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($dirs[2]); ?>/msgs"><?php echo translate('messages'); ?></a></li>
 		</ul>
 	</div>
     <?php } ?>
@@ -77,8 +81,18 @@ if(isset($_POST['pm_sent'])) {
 						'style'				=> 'string',
 						'language'			=> 'string',
 						'block_pm'			=> 'bool',
-						'block_notif'			=> 'bool'
+						'block_notif'		=> 'bool',
 					);
+					if ($_POST['rss_token'] != $cur_user['rss_token']) {
+						$token_exists = true;
+						while ($token_exists) {
+							$token = md5(rand(1,10000000000));
+							$result = $db->query('SELECT 1 FROM `#^users` WHERE rss_token=\'' . $db->escape($token) . '\'') or error('Failed to check if token exists', __FILE__, __LINE__, $db->error());
+							$token_exists = $db->num_rows($result);
+						}
+						$cfg_list['rss_token'] = 'string';
+						$_POST['rss_token'] = $token;
+					}
 					$sql = '';
 					foreach ($cfg_list as $name => $type) {
 						switch ($type) {
@@ -116,7 +130,7 @@ if(isset($_POST['pm_sent'])) {
 				<table border="0">
 					<tr>
 						<td><?php echo translate('emailaddrnocolon'); ?></td>
-						<td><input type="text" name="email" value="<?php echo $cur_user['email']; ?>" /></td>
+						<td><input type="text" name="email" value="<?php echo htmlspecialchars($cur_user['email']); ?>" /></td>
 					</tr>
 					<tr>
 						<td><?php echo translate('timezone'); ?></td>
@@ -153,6 +167,10 @@ if(isset($_POST['pm_sent'])) {
 							}
 						}
 						?></select></td>
+					</tr>
+                    <tr>
+						<td><?php echo translate('rsstoken'); ?></td>
+						<td><input type="text" name="rss_token" value="<?php echo htmlspecialchars($cur_user['rss_token']); ?>" size="50" /></td>
 					</tr>
 					<tr>
 						<td><?php echo translate('blockPM'); ?></td>
@@ -345,6 +363,9 @@ if(isset($_POST['pm_sent'])) {
 				echo '</form>';
 				break;
 			case 'admin':
+				if (!$futurebb_user['g_admin_privs']) {
+					httperror(403);
+				}
 				if (isset($_POST['form_sent'])) {
 					$revoked_privs = array();
 					if (isset($_POST['revoke_edit_privs'])) $revoked_privs[] = 'edit';
@@ -380,10 +401,16 @@ if(isset($_POST['pm_sent'])) {
 				<?php
 				break;
 			case 'delete':
+				if (!$futurebb_user['g_admin_privs']) {
+					httperror(403);
+				}
 				$db->query('UPDATE `#^users` SET deleted=1 WHERE id=' . $cur_user['id']) or error('Failed to delete user', __FILE__, __LINE__, $db->error());
 				header('Location: ' . $base_config['baseurl'] . '/users/' . $dirs[2]);
 				return;
 			case 'restore':
+				if (!$futurebb_user['g_admin_privs']) {
+					httperror(403);
+				}
 				$db->query('UPDATE `#^users` SET deleted=0 WHERE id=' . $cur_user['id']) or error('Failed to delete user', __FILE__, __LINE__, $db->error());
 				header('Location: ' . $base_config['baseurl'] . '/users/' . $dirs[2]);
 				return;
@@ -467,6 +494,44 @@ if(isset($_POST['pm_sent'])) {
 						
 					</div>';
 					}
+				}
+				break;
+			case 'warnings':
+				if (!$futurebb_user['g_admin_privs']) {
+					httperror(403);
+				}
+				$result = $db->query('SELECT send_time,contents,arguments FROM `#^notifications` WHERE type=\'warning\' AND user=' . $cur_user['id'] . ' ORDER BY send_time DESC LIMIT 20') or error('Failed to get warnings', __FILE__, __LINE__, $db->error());
+				if (!$db->num_rows($result)) {
+					echo '<p>' . translate('none') . '</p>';
+				} else {
+					echo '<table border="0">
+						<tr>
+							<th>' . translate('time') . '</th>
+							<th>' . translate('sentby') . '</th>
+							<th>' . translate('message') . '</th>
+						</tr>';
+					while ($msg = $db->fetch_assoc($result)) {
+						echo '<tr><td>' . user_date($msg['send_time']) . '</td><td>' . htmlspecialchars($msg['arguments']) . '</td><td>' . $msg['contents'] . '</td></tr>';
+					}
+					echo '</table>';
+				}
+				break;
+			case 'msgs':
+				$result = $db->query('SELECT n.send_time,n.contents,n.arguments,u.username AS recipient FROM `#^notifications` AS n LEFT JOIN `#^users` AS u ON u.id=n.user WHERE type=\'msg\' AND (arguments=\'' . $db->escape($cur_user['username']) . '\' OR user=' . $cur_user['id'] . ') ORDER BY send_time DESC LIMIT 20') or error('Failed to get message', __FILE__, __LINE__, $db->error());
+				if (!$db->num_rows($result)) {
+					echo '<p>' . translate('none') . '</p>';
+				} else {
+					echo '<table border="0">
+						<tr>
+							<th>' . translate('time') . '</th>
+							<th>' . translate('sentby') . '</th>
+							<th>' . translate('sentto') . '</th>
+							<th>' . translate('message') . '</th>
+						</tr>';
+					while ($msg = $db->fetch_assoc($result)) {
+						echo '<tr><td>' . user_date($msg['send_time']) . '</td><td>' . htmlspecialchars($msg['arguments']) . '</td><td>' . htmlspecialchars($msg['recipient']) . '</td><td>' . $msg['contents'] . '</td></tr>';
+					}
+					echo '</table>';
 				}
 				break;
 			default:

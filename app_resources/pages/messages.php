@@ -1,15 +1,9 @@
 <?php
-if (trim($dirs[2]) == '') {
-	httperror(404);
-}
-$q = new DBSelect('users', array('id'), 'rss_token=\'' . $db->escape($dirs[2]) . '\'', 'Failed to find user');
-$result = $q->commit();
-if (!$db->num_rows($result)) {
-	httperror(404);
-}
-list($uid) = $db->fetch_row($result);
-$futurebb_user['id'] = $uid;
+$page_title = translate('messages');
 LoginController::LoadNotifications();
+if (isset($_GET['nopage'])) {
+	ob_end_clean();
+}
 ?>
 
 <table<?php if (!isset($_GET['nopage'])) echo ' width="100%"'; ?> border="0">
@@ -61,6 +55,7 @@ foreach($futurebb_user['notifications'] as $entry) {
 $db->query('UPDATE `#^notifications` SET read_time = ' . time() . ', read_ip = \'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\' WHERE user = ' . $futurebb_user['id'] . ' AND read_time = 0');
 ?>
 </table>
+<p><a href="<?php echo $base_config['baseurl']; ?>/usernotifsrss/<?php echo $futurebb_user['rss_token']; ?>"><?php echo translate('rssfeed'); ?></a></p>
 <?php
 if (isset($_GET['nopage'])) {
 	$db->close();

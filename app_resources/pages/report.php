@@ -22,7 +22,7 @@ if($dirs[2] == 'message') {
 	}
 	if (isset($_POST['form_sent'])) {
 		$db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_reported) VALUES(' . $pid . ',\'msg\',\'' . $db->escape($_POST['reason']) . '\',' . $futurebb_user['id'] . ',' . time() . ')') or error('Failed to insert report', __FILE__, __LINE__, $db->error());
-		redirect($base_config['base_url']);
+		redirect($base_config['baseurl']);
 	}
 	echo '<h3>' . translate('report_abuse') . '</h3>';
 	?>

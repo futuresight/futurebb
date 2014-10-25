@@ -5,6 +5,7 @@
 	<title><$page_title/> - <?php echo htmlspecialchars($futurebb_config['board_title']); ?></title>
 	<link rel="stylesheet" type="text/css" href="<?php echo $base_config['baseurl']; ?>/styles/<?php echo $futurebb_user['style']; ?>.css" />
     <script type="text/javascript">
+	//<![CDATA[
 	function showNotifs() {
 		var dropDown = document.getElementById('notificationsdropdown');
 		if (dropDown.style.display == 'block') {
@@ -29,6 +30,7 @@
 			 }
 		}
 	}
+	//]]>
 	</script>
 </head>
 

@@ -121,7 +121,10 @@ $lang = array(
 	'maxchars'				=>	'Maximum characters: $1',
 	'maxlines'				=>	'Maximum lines: $1',
 	'heightwarning'			=>	'Maximum height: $1 (if it is taller, it will be cut off)',
-	
+	'rsstoken'				=>	'RSS Token (used for viewing user-specific RSS feeds)<br />If you change it, a new random one will be given.',
+	'warnings'				=>	'Warnings',
+	'sentby'				=>	'Sent by',
+	'sentto'				=>	'Sent to',
 	
 	//forum viewer
 	'pages'					=>	'Pages: ',

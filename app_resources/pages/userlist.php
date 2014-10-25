@@ -112,7 +112,7 @@ echo paginate($linktext, $page, ceil($num_users / $per_page));
 		}
 		?>
 	</table>
-	<p><?php echo translate('pages');
+</div>
+<p><?php echo translate('pages');
 	echo paginate($linktext, $page, ceil($num_users / $per_page));
 	?></p>
-</div>
