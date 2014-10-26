@@ -4,6 +4,7 @@ FutureBB Database Spec - DO NOT REMOVE
 Name<MySQL Improved>
 Extension<mysqli>
 */
+
 class Database {
 	public $link;
 	var $prefix;
@@ -99,7 +100,7 @@ class Database {
 	}
 	
 	function field_exists($table, $field) {
-		$result = $db->query('SHOW COLUMNS FROM `' . $this->prefix . $table . '` LIKE \'' . $field . '\'') or enhanced_error('Failed to show columns');
+		$result = $this->query('SHOW COLUMNS FROM `' . $this->prefix . $table . '` LIKE \'' . $field . '\'') or enhanced_error('Failed to show columns');
 		return $this->num_rows($result);
 	}
 	
@@ -117,7 +118,7 @@ class Database {
 			return true;
 		}
 		
-		return ($db->query('ALTER TABLE `' . $this->prefix . $oldname . '` RENAME TO `' . $this->prefix . $newname . '`') or enhanced_error('Failed to rename table'));
+		return ($this->query('ALTER TABLE `' . $this->prefix . $oldname . '` RENAME TO `' . $this->prefix . $newname . '`') or enhanced_error('Failed to rename table'));
 	}
 	
 	function add_field($table, DBField $field, $after) {
@@ -131,5 +132,56 @@ class Database {
 		}
 		
 		return ($this->query('ALTER TABLE `' . $this->prefix . 'table` ADD ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ' AFTER ' . $after) or enhanced_error('Failed to add field'));
+	}
+	
+	function alter_field($table, DBField $field, $after = '') {
+		$default = '';
+		if ($field->default_val != null) {
+			$default = ' DEFAULT \'' . $this->escape($default) . '\'';
+		}
+		
+		return ($this->query('ALTER TABLE `' . $this->prefix . 'table` MODIFY ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ($after != '' ? ' AFTER ' . $after : '')) or enhanced_error('Failed to modify field'));
+	}
+	
+	function drop_field($table, $field) {
+		if (!$this->field_exists($table, $field)) {
+			return;
+		}
+		
+		return ($this->query('ALTER TABLE `' . $this->prefix . $oldname . '` DROP ' . $field) or enhanced_error('Failed to drop field'));
+	}
+	
+	function truncate($table) {
+		$this->query('TRUNCATE TABLE `' . $this->prefix . $table . '`') or enhanced_error('Failed to truncate table');
+	}
+	
+	function index_exists($table, $index) {
+		$index_exists = false;
+
+		$result = $this->query('SHOW INDEX FROM `' . $this->prefix . $table_name . '`');
+		while ($index = $this->fetch_assoc($result)) {
+			if (strtolower($cur_index['Key_name']) == strtolower($this->prefix . $table_name . '_' . $index_name)) {
+				$index_exists = true;
+				break;
+			}
+		}
+
+		return $index_exists;
+	}
+	
+	function add_index($table, $name, $fields, $unique) {
+		if ($this->index_exists($table, $name)) {
+			return;
+		}
+		
+		return ($this->query('ALTER TABLE `' . $this->prefix . $oldname . '` ADD ' . ($unique ? 'UNIQUE ' : '') . 'INDEX \'' . $this->prefix . $table . '_' . $name . '\'(' . implode(',', $fields) . ')') or enhanced_error('Failed to add index'));
+	}
+	
+	function drop_index($table, $name) {
+		if (!$this->index_exists($table, $name)) {
+			return;
+		}
+		
+		return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` DROP INDEX \'' . $table . '_' . $name , '\'') or enhanced_error('Failed to drop index'));
 	}
 }

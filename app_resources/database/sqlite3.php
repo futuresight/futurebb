@@ -50,7 +50,7 @@ class Database {
 			echo "\n\n" . 'Debug info:';
 			print_r(debug_backtrace()); die;
 		}
-		return $link->escapeString($str);
+		return $this->link->escapeString($str);
 	}
 	
 	function query($q) {
@@ -89,22 +89,14 @@ class Database {
 		$fields = array();
 		foreach ($table->fields as $val) {
 			$field = $val->name;
-			if (strpos($val->type, 'ENUM') === 0 || strpos($val->type, 'SET') === 0) {
-				$field .= 'TEXT';
+			if (strpos(strtoupper($val->type), 'ENUM') === 0 || strpos(strtoupper($val->type), 'SET') === 0) {
+				$field .= ' TEXT';
+			} else if (strstr($val->type, 'INT')) {
+				$field .= ' INTEGER';
 			} else {
 				$field .= ' ' . $val->type;
 			}
-			if ($val->default_val != null) {
-				$field .= ' DEFAULT ' . $val->default_val;
-			}
-			if (!empty($val->extra)) {
-				foreach ($val->extra as $extra) {
-					if ($extra == 'AUTO_INCREMENT') {
-						$extra = 'AUTOINCREMENT';
-					}
-				}
-				$field .= ' ' . implode(' ', $val->extra);
-			}
+			
 			if ($val->db_key != null) {
 				if ($val->db_key == 'UNIQUE') {
 					$field .= ' UNIQUE';
@@ -112,6 +104,23 @@ class Database {
 					$field .= ' ' . $val->db_key . ' KEY';
 				}
 			}
+			
+			if ($val->default_val != null) {
+				$field .= ' DEFAULT ' . $val->default_val;
+			}
+			if (!empty($val->extra)) {
+				foreach ($val->extra as $key => &$extra) {
+					if (strtoupper($extra) == 'AUTO_INCREMENT') {
+						$extra = 'AUTOINCREMENT';
+					}
+					if (stristr($extra, 'NULL')) {
+						$val->extra[sizeof($val->extra)] = $extra;
+						unset($val->extra[$key]);
+					}
+				}
+				$field .= ' ' . implode(' ', $val->extra);
+			}
+			
 			$fields[] = $field;
 		}
 		$query .= implode(',', $fields) . ');';
