@@ -25,7 +25,8 @@ class Database {
 	}
 	
 	function version() {
-		return $this->link->version();
+		$ver = $this->link->version();
+		return $ver['versionString'];
 	}
 	
 	function name() {
@@ -36,8 +37,13 @@ class Database {
 		return $this->link->lastErrorMsg();
 	}
 	
-	function num_rows($result) {
-		return $result->numRows();
+	function num_rows(SQLite3Result $result) {
+		$i = 0;
+		while ($result->fetchArray()) {
+			$i++;
+		}
+		$result->reset();
+		return $i;
 	}
 	
 	function escape($str) {
@@ -61,6 +67,7 @@ class Database {
 			echo "\n\n" . 'Debug info:';
 			print_r(debug_backtrace()); die;
 		}
+		$q = str_replace('RAND', 'RANDOM', $q);
 		return $this->link->query(str_replace('#^', $this->prefix, $q));
 	}
 	

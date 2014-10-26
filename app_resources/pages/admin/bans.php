@@ -50,7 +50,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 								<td><input type="text" name="username" /></td>
 							</tr>
 							<tr>
-								<td><?php echo translate('ip_addr'); ?></td>
+								<td><?php echo translate('ipaddr'); ?></td>
 								<td><input type="text" name="ip" /></td>
 							</tr>
 							<tr>
