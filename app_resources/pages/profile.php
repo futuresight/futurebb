@@ -27,10 +27,14 @@ if ($user == $futurebb_user['username'] || $futurebb_user['g_admin_privs']) {
 	}
 }
 $result = $db->query('SELECT u.*,g.* FROM `#^users` AS u LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE LOWER(username)=\'' . $db->escape(strtolower($user)) . '\'') or error('Failed to get user', __FILE__, __LINE__, $db->error());
-$cur_user = $db->fetch_assoc($result);
-if (!$db->num_rows($result) || ($cur_user['deleted'] == 1 && !$futurebb_user['g_admin_privs'])) {
+if (!$db->num_rows($result)) {
 	httperror(404);
 }
+$cur_user = $db->fetch_assoc($result);
+if ($cur_user['deleted'] == 1 && !$futurebb_user['g_admin_privs']) {
+	httperror(404);
+}
+
 if ($cur_user['username'] != $user) {
 	unset($dirs[0], $dirs[1], $dirs[2]);
 	header('Location: ' . $base_config['baseurl'] . '/users/' . $cur_user['username'] . '/' . implode('/', $dirs));

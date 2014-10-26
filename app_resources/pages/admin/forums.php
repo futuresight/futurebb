@@ -209,7 +209,11 @@ if (isset($_POST['form_sent_categories'])) {
 		</form>
 	</div>
 </div>
+<?php
+if ($db_info['type'] != 'sqlite3') {
+?>
 <script type="text/javascript">
 //redirect people if their browser supports JS
 window.location = "<?php echo $base_config['baseurl']; ?>/admin/forums/enhanced";
 </script>
+<?php } ?>

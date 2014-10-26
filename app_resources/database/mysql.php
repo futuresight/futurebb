@@ -122,16 +122,21 @@ class Database {
 	}
 	
 	function add_field($table, DBField $field, $after) {
-		if ($this->field_exists($table, $field)) {
+		if ($this->field_exists($table, $field->name)) {
 			return true;
 		}
 		
 		$default = '';
 		if ($field->default_val != null) {
-			$default = ' DEFAULT \'' . $this->escape($default) . '\'';
+			if (stristr($field->type, 'int')) {
+				$default = ' DEFAULT ' . $field->default_val;
+			} else {
+				$default = ' DEFAULT \'' . $this->escape($field->default_val) . '\'';
+			}
 		}
 		
-		return ($this->query('ALTER TABLE `' . $this->prefix . 'table` ADD ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ' AFTER ' . $after) or enhanced_error('Failed to add field'));
+		$q = 'ALTER TABLE `' . $this->prefix . $table . '` ADD ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ' AFTER ' . $after;
+		return ($this->query($q) or enhanced_error('Failed to add field<br />' . $q, true));
 	}
 	
 	function alter_field($table, DBField $field, $after = '') {
@@ -140,7 +145,7 @@ class Database {
 			$default = ' DEFAULT \'' . $this->escape($default) . '\'';
 		}
 		
-		return ($this->query('ALTER TABLE `' . $this->prefix . 'table` MODIFY ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ($after != '' ? ' AFTER ' . $after : '')) or enhanced_error('Failed to modify field'));
+		return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` MODIFY ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ($after != '' ? ' AFTER ' . $after : '')) or enhanced_error('Failed to modify field', true));
 	}
 	
 	function drop_field($table, $field) {
@@ -148,7 +153,7 @@ class Database {
 			return;
 		}
 		
-		return ($this->query('ALTER TABLE `' . $this->prefix . $oldname . '` DROP ' . $field) or enhanced_error('Failed to drop field'));
+		return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` DROP ' . $field) or enhanced_error('Failed to drop field', true));
 	}
 	
 	function truncate($table) {
@@ -158,13 +163,14 @@ class Database {
 	function index_exists($table, $index) {
 		$index_exists = false;
 
-		$result = $this->query('SHOW INDEX FROM `' . $this->prefix . $table_name . '`');
-		while ($index = $this->fetch_assoc($result)) {
-			if (strtolower($cur_index['Key_name']) == strtolower($this->prefix . $table_name . '_' . $index_name)) {
+		$result = $this->query('SHOW INDEX FROM `' . $this->prefix . $table . '`');
+		while ($cur_index = $this->fetch_assoc($result)) {
+			if (strtolower($cur_index['Key_name']) == strtolower($this->prefix . $table . '_' . $index)) {
 				$index_exists = true;
 				break;
 			}
 		}
+		die;
 
 		return $index_exists;
 	}
@@ -174,7 +180,9 @@ class Database {
 			return;
 		}
 		
-		return ($this->query('ALTER TABLE `' . $this->prefix . $oldname . '` ADD ' . ($unique ? 'UNIQUE ' : '') . 'INDEX \'' . $this->prefix . $table . '_' . $name . '\'(' . implode(',', $fields) . ')') or enhanced_error('Failed to add index'));
+		$q = 'ALTER TABLE `' . $this->prefix . $table . '` ADD ' . ($unique ? 'UNIQUE ' : '') . 'INDEX ' . $this->prefix . $table . '_' . $name . ' (' . implode(',', $fields) . ')';
+		
+		return ($this->query($q) or enhanced_error('Failed to add index<br />' . $q, true));
 	}
 	
 	function drop_index($table, $name) {

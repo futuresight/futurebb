@@ -169,7 +169,7 @@ switch ($dirs[3]) {
 		$per_page = 300;
 		if (!isset($_GET['start'])) {
 			$_GET['start'] = 0;
-			$db->query('TRUNCATE TABLE `#^search_index`') or error('Failed to erase search index', __FILE__, __LINE__, $db->error());
+			$db->truncate('search_index') or error('Failed to erase search index', __FILE__, __LINE__, $db->error());
 		}
 		$result = $db->query('SELECT MAX(id) FROM `#^posts`') or error('Failed to find post count', __FILE__, __LINE__, $db->error());
 		list($post_count) = $db->fetch_row($result);

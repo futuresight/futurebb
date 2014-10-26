@@ -133,4 +133,8 @@ class Database {
 		$query .= implode(',', $fields) . ');';
 		$this->query($query) or enhanced_error('Failed to create table ' . $table->name . "\n" . $query, true);
 	}
+	
+	function truncate($table) {
+		return ($this->query('DELETE FROM `' . $this->prefix . $table . '`') or enhanced_error('Failed to truncate table'));
+	}
 }

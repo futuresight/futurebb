@@ -24,11 +24,18 @@ if (isset($_GET['query'])) {
 		$addl_sql .= ' AND p.deleted IS NULL AND t.deleted IS NULL';
 	}
 	if ($_GET['query'] != '') {
-		$where = 'si.word IN (' . implode(',', $terms) . ') AND';
+		$where = 'LOWER(si.word) IN (' . strtolower(implode(',', $terms)) . ') AND';
 	} else {
 		$where = '';
 	}
-	$result = $db->query('SELECT g.g_title AS user_title,u.username AS author,p.poster AS author_id,u.parsed_signature AS signature,p.posted,p.id,p.parsed_content,p.last_edited,p.deleted AS post_deleted,leu.username AS last_edited_by,si.num_matches,f.name AS forum,f.url AS furl,c.name AS category,t.deleted AS topic_deleted FROM `#^search_index` AS si LEFT JOIN `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster ON p.id=si.post_id LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^categories` AS c ON c.id=f.cat_id WHERE ' . $where . ' f.view_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\' ' . $addl_sql) or error('Failed to execute search', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT g.g_title AS user_title,u.username AS author,p.poster AS author_id,u.parsed_signature AS signature,p.posted,p.id,p.parsed_content,p.last_edited,p.deleted AS post_deleted,leu.username AS last_edited_by,si.num_matches,f.name AS forum,f.url AS furl,c.name AS category,t.deleted AS topic_deleted FROM `#^search_index` AS si
+	LEFT JOIN `#^posts` AS p ON p.id=si.post_id
+	LEFT JOIN `#^users` AS u ON u.id=p.poster
+	LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id
+	LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by
+	LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id
+	LEFT JOIN `#^categories` AS c ON c.id=f.cat_id
+	WHERE ' . $where . ' f.view_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\' ' . $addl_sql) or error('Failed to execute search', __FILE__, __LINE__, $db->error());
 	$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 	$posts = array();
 	while ($cur_post = $db->fetch_assoc($result)) {
@@ -57,6 +64,7 @@ if (isset($_GET['query'])) {
 	
 	//take a quick break for pagination
 	$num_pages = ceil(sizeof($posts) / $futurebb_config['posts_per_page']);
+	if ($db->num_rows($result)) {
 	?>
 	<p><?php echo translate('pages');
 	$linktext = '<a href="' . $base_config['baseurl'] . '/search?query=' . htmlspecialchars($_GET['query']);
@@ -69,6 +77,7 @@ if (isset($_GET['query'])) {
 	$linktext .= '&page=$page$"$bold$>$page$</a>';
 	echo paginate($linktext, $page, $num_pages);
 	echo '</p>';
+	}
 	
 	$i = 0;
 	foreach ($posts as $cur_post) {
