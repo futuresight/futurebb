@@ -600,7 +600,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
-		$new_fld = new DBField('avatar_extension','VARCHAR(3)');
+		$new_fld = new DBField('avatar_extension','VARCHAR(4)');
 		$new_fld->set_default('NULL');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('rss_token','VARCHAR(50)');
@@ -735,10 +735,11 @@ if (isset($_GET['downloadconfigxml'])) {
 		set_config('allow_privatemsg', 0);
 		set_config('allow_notifications', 1);
 		set_config('imghostrestriction', 'none|');
-		set_config('lastupdatecheck', 0);
+		set_config('last_update_check', 0);
 		set_config('new_version', 0);
 		set_config('max_quote_depth', 4);
 		set_config('disable_registrations', 0);
+		set_config('db_version', 1);
 		
 		//create guest user
 		$insert = new DBInsert('users', array(

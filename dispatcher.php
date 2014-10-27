@@ -25,6 +25,13 @@ error_reporting(E_ALL);
 define('FORUM_ROOT', dirname(__FILE__));
 include FORUM_ROOT . '/app_resources/includes/startup.php';
 
+if (!isset($futurebb_config['db_version'])) {
+	//outdated database, upgrade is needed
+	include FORUM_ROOT . '/app_resources/database/upgrades/db_upgrade.php';
+	$db->close();
+	die;
+}
+
 // Get the list of pages
 $page_info = false;
 include FORUM_ROOT . '/app_config/pages.php';

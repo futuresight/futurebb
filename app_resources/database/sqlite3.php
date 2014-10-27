@@ -134,6 +134,47 @@ class Database {
 		$this->query($query) or enhanced_error('Failed to create table ' . $table->name . "\n" . $query, true);
 	}
 	
+	function add_field($table, DBField $field, $after) {
+		if ($this->field_exists($table, $field->name)) {
+			return true;
+		}
+		
+		$default = '';
+		if ($field->default_val != null) {
+			if (stristr($field->type, 'int')) {
+				$default = ' DEFAULT ' . $field->default_val;
+			} else {
+				$default = ' DEFAULT \'' . $this->escape($field->default_val) . '\'';
+			}
+		}
+		
+		$field = $field->name . ' ';
+		if (strpos(strtoupper($val->type), 'ENUM') === 0 || strpos(strtoupper($val->type), 'SET') === 0) {
+			$field .= ' TEXT';
+		} else if (strstr($val->type, 'INT')) {
+			$field .= ' INTEGER';
+		} else {
+			$field .= ' ' . $field->type;
+		}
+		if (!empty($val->extra)) {
+			foreach ($val->extra as $key => &$extra) {
+				if (strtoupper($extra) == 'AUTO_INCREMENT') {
+					$extra = 'AUTOINCREMENT';
+				}
+				if (stristr($extra, 'NULL')) {
+					$val->extra[sizeof($val->extra)] = $extra;
+					unset($val->extra[$key]);
+				}
+			}
+			$field .= ' ' . implode(' ', $val->extra);
+		}
+		
+		$field .= ' ' .  $default . ' AFTER ' . $after;
+		
+		$q = 'ALTER TABLE `' . $this->prefix . $table . '` ADD ' . $field;
+		return ($this->query($q) or enhanced_error('Failed to add field<br />' . $q, true));
+	}
+	
 	function truncate($table) {
 		return ($this->query('DELETE FROM `' . $this->prefix . $table . '`') or enhanced_error('Failed to truncate table'));
 	}

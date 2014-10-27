@@ -246,4 +246,10 @@ $pagessubdirs = array (
     'template' => false,
     'nocontentbox' => true,
   ),
+  '/embed' => 
+  array (
+    'file' => 'embed.php',
+    'template' => false,
+    'nocontentbox' => true,
+  ),
 );

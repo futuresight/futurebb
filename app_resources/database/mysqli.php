@@ -128,11 +128,7 @@ class Database {
 		
 		$default = '';
 		if ($field->default_val != null) {
-			if (stristr($field->type, 'int')) {
-				$default = ' DEFAULT ' . $field->default_val;
-			} else {
-				$default = ' DEFAULT \'' . $this->escape($field->default_val) . '\'';
-			}
+			$default = ' DEFAULT ' . $field->default_val;
 		}
 		
 		$q = 'ALTER TABLE `' . $this->prefix . $table . '` ADD ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ' AFTER ' . $after;
@@ -142,10 +138,11 @@ class Database {
 	function alter_field($table, DBField $field, $after = '') {
 		$default = '';
 		if ($field->default_val != null) {
-			$default = ' DEFAULT \'' . $this->escape($default) . '\'';
+			$default = ' DEFAULT ' . $field->default_val . '';
 		}
 		
-		return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` MODIFY ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ($after != '' ? ' AFTER ' . $after : '')) or enhanced_error('Failed to modify field', true));
+		$q = 'ALTER TABLE `' . $this->prefix . $table . '` MODIFY ' . $field->name . ' ' . $field->type . ' ' . implode(' ', $field->extra) . $default . ($after != '' ? ' AFTER ' . $after : '');
+		return ($this->query($q) or enhanced_error('Failed to modify field<br />' . $q, true));
 	}
 	
 	function drop_field($table, $field) {
