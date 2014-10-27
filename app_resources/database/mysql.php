@@ -12,7 +12,10 @@ class Database {
 		//error('Invalid table prefix; contact board administrator', __FILE__, __LINE__, '');
 		$this->prefix = $info['prefix'];
 		$this->link = @mysql_connect($info['host'], $info['username'], $info['password'], $info['name']);
-		mysql_select_db($info['name'], $this->link);
+		if (!$this->link) {
+			return;
+		}
+		@mysql_select_db($info['name'], $this->link);
 		if (!$this->link && !isset($info['hide_errors'])) {
 			error('Failed to start database: ' . mysqli_connect_error());
 		}

@@ -895,18 +895,19 @@ if (isset($_GET['downloadconfigxml'])) {
 	add_cookie_data('dbname', $_POST['dbname']);
 	add_cookie_data('dbprefix', $_POST['dbprefix']);
 	
-	//test database
-	if (test_db()) {
-		$pages['syscfg'] = true;
-		$page = 'syscfg';
-	} else {
-		db_fail();
-	}
 	if (isset($_POST['back'])) {
 		$pages['dbtype'] = true;
 		$page = 'dbtype';
 		$pages['syscfg'] = false;
 		$pages['dbsetup'] = false;
+	} else {
+		//test database
+		if (test_db()) {
+			$pages['syscfg'] = true;
+			$page = 'syscfg';
+		} else {
+			db_fail();
+		}
 	}
 } else if (isset($_POST['dbtype'])) {
 	//check a valid database was entered
@@ -1045,7 +1046,7 @@ if (isset($_GET['downloadconfigxml'])) {
 							}
                             ?>
                             </select></p>
-                            <p><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+                            <p><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /></p>
                         </form>
                         <?php
 						break;
@@ -1098,7 +1099,7 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><input type="text" name="dbprefix" value="<?php echo get_cookie_data('dbprefix') ? get_cookie_data('dbprefix') : 'futurebb_'; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="hidden" name="dbsetup" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continuetest'); ?> &rarr;" /></p>
+							<p><input type="submit" value="<?php echo translate('continuetest'); ?> &rarr;" /><input type="hidden" name="dbsetup" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /></p>
 						</form>
 						<?php
 						break;
@@ -1118,7 +1119,7 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><input type="text" name="basepath" value="<?php echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
 								</tr>
 							</table>
-							<p><input type="hidden" name="syscfg" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+							<p><input type="hidden" name="syscfg" value="1" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /></p>
 						</form>
 						<?php
 						break;
@@ -1149,7 +1150,7 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><input type="email" name="adminemail" value="<?php echo get_cookie_data('adminemail') ? get_cookie_data('adminemail') : ''; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="hidden" name="adminacc" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+							<p><input type="hidden" name="adminacc" value="1" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /></p>
 						</form>
 						<?php
 						break;
@@ -1163,7 +1164,7 @@ if (isset($_GET['downloadconfigxml'])) {
 									<td><input type="text" name="config[board_title]" value="<?php echo get_cookie_data('board_title') ? get_cookie_data('board_title') : ''; ?>" /></td>
 								</tr>
 							</table>
-							<p><input type="hidden" name="brdsettings" value="1" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /></p>
+							<p><input type="hidden" name="brdsettings" value="1" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /></p>
 						</form>
 						<?php
 						break;
