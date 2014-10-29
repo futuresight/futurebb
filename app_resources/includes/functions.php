@@ -322,17 +322,25 @@ abstract class URLEngine {
 				return $replace;
 		
 		foreach ($pages as $url => $val) {
-			if (strpos($url, $str) === 0) {
-				$str = '0' . $str;
+			$parts = explode('/', $url);
+			if (strlen($url) > 1 && $url{1} != '/' && isset($parts[1]) && strpos($str, $parts[1]) === 0) {
+				$str = '0-' . $str;
+				break;
 			}
 		}		
 		
 		foreach ($pagessubdirs as $url => $val) {
-			if (strpos($url, '/' . $str) === 0) {
-				$str = '0' . $str;
+			$parts = explode('/', $url);
+			if (strlen($url) > 1 && $url{1} != '/' && isset($parts[1]) && strpos($str, $parts[1]) === 0) {
+				$str = '0-' . $str;
+				break;
 			}
 		}
-	
+		
+		if ($str == 'static') {
+			$str = '0-static';
+		}
+		
 		return $str;
 	}
 }
