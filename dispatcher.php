@@ -117,7 +117,7 @@ if ($page_info) {
 		include FORUM_ROOT . '/app_resources/includes/footer.php';
 	}
 	$page_contents = ob_get_contents();
-	$page_contents = str_replace('<$page_title/>', $page_title, $page_contents);
+	$page_contents = str_replace('<$page_title/>', htmlspecialchars($page_title), $page_contents);
 	if (isset($breadcrumbs)) {
 		$str = '';
 		$first = true;
