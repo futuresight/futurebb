@@ -21,6 +21,11 @@ $pages = array (
     'file' => 'css/default.css',
     'template' => false,
   ),
+  '/styles/embed.css' => 
+  array (
+    'file' => 'css/embed.css',
+    'template' => false,
+  ),
   '/search' => 
   array (
     'file' => 'search.php',

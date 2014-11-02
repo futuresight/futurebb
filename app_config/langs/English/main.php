@@ -52,6 +52,7 @@ $lang = array(
 	'yes'					=>	'Yes',
 	'no'					=>	'No',
 	'none'					=>	'None',
+	'toc'					=>	'Table of contents',
 	
 	//index
 	'markallread'			=>	'Mark all topics as read',
@@ -155,6 +156,7 @@ $lang = array(
 	'opentopic'				=>	'Open topic',
 	'sticktopic'			=>	'Stick topic',
 	'unsticktopic'			=>	'Unstick topic',
+	'embed'					=>	'Embed topic',
 	
 	//user list
 	'usergroup'				=>	'User group',

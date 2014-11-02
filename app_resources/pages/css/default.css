@@ -49,6 +49,10 @@ header('Content-type: text/css');
 	box-shadow: 3px 3px 5px -1px #AAA;
 }
 
+#futurebb .nomaxheight {
+	min-height:0px;
+}
+
 /* header */
 #futurebb .forum_header {
 	background-color: #DDD;
@@ -101,16 +105,16 @@ header('Content-type: text/css');
 
 /* header/notifications */
 
-.whitebox {
+#futurebb .whitebox {
 	background-color: #FFF;
 	border: 2px ridge #CCC;
 }
 
-.usertag {
+#futurebb .usertag {
 	color: #22A;
 }
 
-.notifications_count {
+#futurebb .notifications_count {
 	color: #FFF;
 	background-color: #33C;
 	border-radius: 5px;

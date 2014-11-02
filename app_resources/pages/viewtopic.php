@@ -242,6 +242,14 @@ if ($futurebb_user['id'] != 0) { ?>
 	</div>
 </div>
 <?php }
+?>
+<div class="cat_wrap">
+	<h2 class="cat_header"><?php echo translate('embed'); ?></h2>
+	<div class="cat_body">
+		<textarea rows="5" cols="30" readonly="readonly"><?php echo htmlspecialchars('<iframe src="' . $base_config['baseurl'] . '/embed?tid=' . $cur_topic['id'] . '&amp;page=' . $page . '" width="400px" height="600px"></iframe>'); ?></textarea>
+	</div>
+</div>
+<?php
 //should we mark the forum as read?
 $result = $db->query('SELECT 1 FROM `#^read_tracker` WHERE user_id=' . $futurebb_user['id'] . ' AND forum_id=' . $cur_topic['forum_id']) or error('Failed to check if forum is read');
 if ($futurebb_user['id'] != 0 && !$db->num_rows($result) && $cur_topic['tracker_id'] == null) {

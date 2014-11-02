@@ -1255,15 +1255,15 @@ if (isset($_GET['downloadconfigxml'])) {
 							?>
                             <p><?php echo translate('addtonginx'); ?></p>
           					<pre>
-location <?php echo substr(get_cookie_data('basepath'), 1); ?> {
-    rewrite ^(.*)$ <?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php;
+location /<?php echo substr(get_cookie_data('basepath'), 1); ?> {
+    rewrite ^(.*)$ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php;
     location ~ (install\.php|app_resources.*|app_config.*|doc.*|temp.*)$ {
         error_page 566 = @futurebb_rewrite;
         return 566;
     }
 }
 location @futurebb_rewrite {
-    rewrite ^(.*)$ <?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php last;
+    rewrite ^(.*)$ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php last;
 }
                       </pre>
                             <?php

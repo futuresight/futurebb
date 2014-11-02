@@ -98,7 +98,8 @@ if (ini_get('allow_url_fopen')) {
 		}
 		echo '</ul></div>';
 	} ?>
-    <div class="forum_content rightbox admin">
+	<div class="forum_content rightbox admin">
+    	<h3><?php echo translate('toc'); ?></h3>
     	<ul>
         	<li><a href="#boardsettings"><?php echo translate('boardsettings'); ?></a></li>
             <li><a href="#registration"><?php echo translate('registration'); ?></a></li>
@@ -108,8 +109,6 @@ if (ini_get('allow_url_fopen')) {
             <li><a href="#avatars"><?php echo translate('avatars'); ?></a></li>
             <li><a href="#maint"><?php echo translate('maintenance'); ?></a></li>
         </ul>
-    </div>
-	<div class="forum_content rightbox admin">
 		<form action="<?php echo $base_config['baseurl']; ?>/admin" method="post" enctype="multipart/form-data">
 		<h3 id="boardsettings"><?php echo translate('boardsettings'); ?></h3>
 		<table border="0" class="optionstable">
