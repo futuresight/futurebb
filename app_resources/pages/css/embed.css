@@ -94,6 +94,7 @@ header('Content-type: text/css');
 	border-left:0px solid #000;
 	border-right:0px solid #000;
 	margin-top:0px;
+	vertical-align:middle;
 }
 
 #futurebb .cat_wrap .cat_header {
@@ -158,24 +159,6 @@ header('Content-type: text/css');
 #futurebb embed.svgimg {
 	overflow: visible;
 	text-align: center;
-	vertical-align: middle;
-}
-
-#futurebb .postleft {
-	float:left;
-	width:10em;
-	display:block;
-	margin-left:0px;
-	padding:0px;
-	background-color:#e9e9e9;
-	margin-bottom: 0px;
-	height:100%;
-	position: absolute;
-	clear:both;
-}
-
-#futurebb .postleft p {
-	margin:3px;
 }
 
 #futurebb .cat_body {
@@ -183,9 +166,7 @@ header('Content-type: text/css');
 }
 
 #futurebb .postright {
-	margin-left:11em;
-	min-height:120px;
-	padding-top:10px;
+	padding-top:5px;
 	word-wrap:break-word;
 	word-break:normal;
 }
@@ -196,6 +177,7 @@ header('Content-type: text/css');
 
 #futurebb h2.cat_header a {
 	text-decoration: none;
+	font-size:16px;
 }
 
 #futurebb span.closedlabel {
@@ -211,8 +193,8 @@ header('Content-type: text/css');
 }
 
 #futurebb img.avatar {
-	max-width:64px;
-	max-height:64px;
+	max-width:16px;
+	max-height:16px;
 }
 
 #futurebb .clearboth {

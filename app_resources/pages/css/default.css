@@ -244,6 +244,10 @@ ul#navlist li {
 	border-bottom:0px solid #000;
 }
 
+#futurebb h2.lonecatheader {
+	border-bottom: 1px solid #000 !important;
+}
+
 #futurebb .cat_body table th {
 	text-align:left;
 }

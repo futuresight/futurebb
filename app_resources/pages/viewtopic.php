@@ -244,10 +244,13 @@ if ($futurebb_user['id'] != 0) { ?>
 <?php }
 ?>
 <div class="cat_wrap">
-	<h2 class="cat_header"><?php echo translate('embed'); ?></h2>
-	<div class="cat_body">
+	<h2 class="cat_header lonecatheader"><?php echo translate('embed'); ?> <a style="cursor:pointer" onclick="document.getElementById('embeddiv').style.display = 'block'; this.style.display = 'none'; this.parentElement.style.borderBottom = 'none';">(<?php echo translate('show'); ?>)</a></h2>
+	<div class="cat_body" id="embeddiv">
 		<textarea rows="5" cols="30" readonly="readonly"><?php echo htmlspecialchars('<iframe src="' . $base_config['baseurl'] . '/embed?tid=' . $cur_topic['id'] . '&amp;page=' . $page . '" width="400px" height="600px"></iframe>'); ?></textarea>
 	</div>
+    <script type="text/javascript">
+	document.getElementById('embeddiv').style.display = 'none';
+	</script>
 </div>
 <?php
 //should we mark the forum as read?

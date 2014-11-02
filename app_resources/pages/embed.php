@@ -34,56 +34,36 @@ $cur_topic = $db->fetch_assoc($result);
             //get all of the posts
             $result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_edited,u.username AS author,u.id AS author_id,u.parsed_signature AS signature,u.last_page_load,u.num_posts,u.avatar_extension,g.g_title AS user_title,leu.username AS last_edited_by FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by WHERE p.topic_id=' . $cur_topic['id'] . ' AND p.deleted IS NULL ORDER BY p.posted ASC LIMIT ' . (($page - 1) * intval($futurebb_config['posts_per_page'])) . ',' . intval($futurebb_config['posts_per_page'])) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
             
-            $count = 0;
             while ($cur_post = $db->fetch_assoc($result)) {
-                $count++;
                 ?>
                 <div class="catwrap" id="post<?php echo $cur_post['id']; ?>">
-            <h2 class="cat_header">
-            <?php echo '<span class="floatright">#' . ((($page - 1) * intval($futurebb_config['posts_per_page'])) + $count) . '</span><span style="display:none">: </span>'; ?>
-            <a href="<?php echo $base_config['baseurl']; ?>/posts/<?php echo $cur_post['id']; ?>"><?php echo user_date($cur_post['posted']); ?></a><?php
-            // Show edit timestamp if available
-            if ($cur_post['last_edited'] != null) {
-                echo ' - <span style="cursor: default;" title="' . translate('lastedited', htmlspecialchars($cur_post['last_edited_by']), user_date($cur_post['last_edited'])) . '">' . translate('edited') . '</span>';
-            }
-            ?></h2>
-            <div class="cat_body">
-                <div class="postleft">
-                    <p><?php if($futurebb_config['online_timeout'] > 0) {
-                        if ($cur_post['last_page_load'] > time() - $futurebb_config['online_timeout']) {
-                            echo '<img class="svgimg" src="' . $base_config['baseurl'] . '/static/img/status/online.png" height="10" alt="online" title="Online" />';
-                        } else {
-                            echo '<img class="svgimg" src="' . $base_config['baseurl'] . '/static/img/status/offline.png" height="10" alt="offline" title="Offline" />';
-                        }
-                    }
-                    ?>
-                    <a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($cur_post['author']); ?>" target="_BLANK"><?php echo htmlspecialchars($cur_post['author']); ?></a><br /></p>
-                    <p><b><?php echo $cur_post['user_title']; ?></b>
+                    <h2 class="cat_header">
+                    <?php echo '<span class="floatright"><a href="' . $base_config['baseurl'] . '/posts/' . $cur_post['id'] . '">' . user_date($cur_post['posted']) . '</a></span><span style="display:none">: </span>'; ?>
                     <?php
-                    if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/avatars/' . $cur_post['author_id'] . '.' . $cur_post['avatar_extension'])) {
-                        echo '<br /><img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_post['author_id'] . '.' . $cur_post['avatar_extension'] . '" alt="user avatar" class="avatar" />';
+                    // Show edit timestamp if available
+                    if ($cur_post['last_edited'] != null) {
+                        echo ' - <span style="cursor: default;" title="' . translate('lastedited', htmlspecialchars($cur_post['last_edited_by']), user_date($cur_post['last_edited'])) . '">' . translate('edited') . '</span>';
                     }
-                    if ($futurebb_config['show_post_count']) {
-                        echo '<br />' . translate('posts:') . $cur_post['num_posts'];
-                    }
-                    ?>
-                    </p>
+					if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/avatars/' . $cur_post['author_id'] . '.' . $cur_post['avatar_extension'])) {
+						echo '<img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_post['author_id'] . '.' . $cur_post['avatar_extension'] . '" alt="user avatar" class="avatar" />';
+					}
+					?> <a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($cur_post['author']); ?>" target="_BLANK" title="<?php echo $cur_post['user_title']; ?>"><?php echo htmlspecialchars($cur_post['author']); ?></a></h2>
+                    <div class="cat_body">
+                        <div class="postright">
+                            <p><?php echo str_replace('<a', '<a target="_BLANK"', $cur_post['parsed_content']); ?></p>
+                            <?php
+                            if ($cur_post['signature']) {
+                                echo '<hr /><p';
+                                if ($futurebb_config['sig_max_height']) {
+                                    echo ' style="max-height:' . $futurebb_config['sig_max_height'] . 'px; overflow:hidden"';
+                                }
+                                echo '>' . $cur_post['signature'] . '</p>';
+                            }
+                            ?>
+                        </div>
+                    </div>
                 </div>
-                <div class="postright">
-                    <p><?php echo str_replace('<a', '<a target="_BLANK"', $cur_post['parsed_content']); ?></p>
-                    <?php
-                    if ($cur_post['signature']) {
-                        echo '<hr /><p';
-                        if ($futurebb_config['sig_max_height']) {
-                            echo ' style="max-height:' . $futurebb_config['sig_max_height'] . 'px; overflow:hidden"';
-                        }
-                        echo '>' . $cur_post['signature'] . '</p>';
-                    }
-                    ?>
-                </div>
-            </div>
-        </div>
-        <?php
+                <?php
             }
         ?>
         <p><?php echo translate('pages');

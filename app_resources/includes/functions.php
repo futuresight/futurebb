@@ -500,12 +500,14 @@ function paginate($url, $page, $count) {
 	if ($page > 1) {
 		$text = str_replace('$page$', $page - 1, $url);
 		$text = str_replace('>' . ($page - 1) . '<', '>' . translate('prev') . '<', $text);
-		$text = str_replace('$bold', '', $text);
+		$text = str_replace('$bold$', '', $text);
 		$links[] = $text;
 	}	
 	$text = str_replace('$page$', 1, $url);
 	if ($page == 1) {
 		$text = str_replace('$bold$', ' style="font-weight:bold"', $text);
+	} else {
+		$text = str_replace('$bold$', '', $text);
 	}
 	$links[] = $text;
 	if ($page > 4) {
@@ -515,6 +517,8 @@ function paginate($url, $page, $count) {
 		$text = str_replace('$page$', $i, $url);
 		if ($i == $page) {
 			$text = str_replace('$bold$', ' class="bold"', $text);
+		} else {
+			$text = str_replace('$bold$', '', $text);
 		}
 		$links[] = $text;
 	}
@@ -524,14 +528,16 @@ function paginate($url, $page, $count) {
 	if ($count > 1) {
 		$text = str_replace('$page$', $count, $url);
 		if ($page == $count) {
-			$text = str_replace('$bold$', ' style="font-weight:bold"', $text);
+			$text = str_replace('$bold$', ' class="bold"', $text);
+		} else {
+			$text = str_replace('$bold$', '', $text);
 		}
 		$links[] = $text;
 	}
 	if ($page < $count) {
 		$text = str_replace('$page$', $page + 1, $url);
 		$text = str_replace('>' . ($page + 1) . '<', '>' . translate('next') . '<', $text);
-		$text = str_replace('$bold', '', $text);
+		$text = str_replace('$bold$', '', $text);
 		$links[] = $text;
 	}
 	return implode(' ', $links);
