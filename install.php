@@ -740,6 +740,11 @@ if (isset($_GET['downloadconfigxml'])) {
 		set_config('max_quote_depth', 4);
 		set_config('disable_registrations', 0);
 		set_config('db_version', 1);
+		set_config('enable_bbcode', 1);
+		set_config('enable_smilies', 1);
+		set_config('avatar_max_filesize', 1024);
+		set_config('avatar_max_width', 64);
+		set_config('avatar_max_height', 64);
 		
 		//create guest user
 		$insert = new DBInsert('users', array(
@@ -995,7 +1000,7 @@ if (isset($_GET['downloadconfigxml'])) {
 							echo '<p style="color:#F00; font-weight:bold">mod_rewrite is not installed in Apache. This means that the URL system will not work. Please install it.</p>';
 						}
 						if (!strstr($_SERVER['SERVER_SOFTWARE'], 'Apache')) {
-							echo '<p style="color:#A00; font-weight:bold">You are not running Apache. This means the automatic rewrite configuration is not available. You will have to set it up yourself.</p>';
+							echo '<p style="color:#A00; font-weight:bold">You are not running Apache. Please do not continue setting up this software unless you know what you are doing and are familiar with how to operate your server software. Specifically, you need to be knowledgeable about the available URL rewrite tools.</p>';
 						}
 						?>
 						<form action="install.php" method="post" enctype="multipart/form-data">
@@ -1250,10 +1255,17 @@ if (isset($_GET['downloadconfigxml'])) {
 							?>
                             <p><?php echo translate('addtonginx'); ?></p>
           					<pre>
-location <?php echo substr(get_cookie_data('basepath'), 1); ?> { 
-    rewrite ^ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php; 
+location <?php echo substr(get_cookie_data('basepath'), 1); ?> {
+    rewrite ^(.*)$ <?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php;
+    location ~ (install\.php|app_resources.*|app_config.*|doc.*|temp.*)$ {
+        error_page 566 = @futurebb_rewrite;
+        return 566;
+    }
 }
-                            </pre>
+location @futurebb_rewrite {
+    rewrite ^(.*)$ <?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php last;
+}
+                      </pre>
                             <?php
 						}
 						break;

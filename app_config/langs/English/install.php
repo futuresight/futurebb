@@ -57,5 +57,5 @@ $lang_addl = array(
 	'adminemail'	=> 'Administrator email',
 	'dbfile'		=> 'File to store SQLite',
 	'installcomplete'=> 'Installation complete!',
-	'addtonginx'	=> 'Add the following information to your nginx configuration file in order to make URLs rewrite (item #2 above):',
+	'addtonginx'	=> 'The code below is a sample of what you probably need to add to your nginx configuration file (item #2 above). Please note that it needs to be put in the proper location and may not work in all configurations. See <a href="http://nginx.org/en/docs/http/ngx_http_rewrite_module.html" target="_BLANK">the nginx website</a> for more information.',
 );
