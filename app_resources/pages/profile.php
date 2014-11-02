@@ -200,7 +200,7 @@ if(isset($_POST['pm_sent'])) {
 						if ($me) {
 							LoginController::LogInUser($futurebb_user['id'], futurebb_hash($_POST['pwd1']), $_SERVER['HTTP_USER_AGENT']);
 						}
-						redirect($base_config['baseurk'] . '/users/' . rawurlencode($dirs[2]));
+						redirect($base_config['baseurl'] . '/users/' . rawurlencode($dirs[2]));
 					}
 				}
 				echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '/security" method="post" enctype="multipart/form-data">';

@@ -187,6 +187,6 @@ class Database {
 			return;
 		}
 		
-		return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` DROP INDEX \'' . $table . '_' . $name , '\'') or enhanced_error('Failed to drop index'));
+		return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` DROP INDEX \'' . $this->prefix . $table . '_' . $name , '\'') or enhanced_error('Failed to drop index'));
 	}
 }

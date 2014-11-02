@@ -6,7 +6,7 @@ translate('<addfile>', 'admin');
 $page_title = translate('style');
 include FORUM_ROOT . '/app_resources/includes/admin.php';
 
-if (isset($_POST['form_sent'])) {
+if (isset($_POST['form_sent']) && isset($POST['extension_file'])) {
 	switch (pathinfo($_FILES['extension_file']['name'], PATHINFO_EXTENSION)) {
 		case 'css':
 			$fname = basename($_FILES['extension_file']['name']);
@@ -66,7 +66,7 @@ if (isset($_FILES['icon_file']) && is_uploaded_file($_FILES['icon_file']['tmp_na
 			</form>
 			<h3><?php echo translate('favicon'); ?></h3>
 			<form action="<?php echo $base_config['baseurl']; ?>/admin/style" method="post" enctype="multipart/form-data">
-				<p><?php echo translate('icofile'); ?> <input type="file" name="icon_file" accept="image/x-icon" /></p>
+				<p><?php echo translate('icofile'); ?> <input type="file" name="extension_file" accept="image/x-icon" /></p>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('replace'); ?>" /></p>
 			</form>
 			<?php
