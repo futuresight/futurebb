@@ -89,5 +89,3 @@ if (isset($page_info['admin']) && !$futurebb_user['g_admin_privs']) {
 if (isset($page_info['mod']) && !$futurebb_user['g_mod_privs']) {
 	httperror(403);
 }
-
-define('SRV_ROOT', realpath(dirname(__FILE__) . '/../../..'));

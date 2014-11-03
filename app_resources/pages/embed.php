@@ -40,14 +40,10 @@ $cur_topic = $db->fetch_assoc($result);
                     <h2 class="cat_header">
                     <?php echo '<span class="floatright"><a href="' . $base_config['baseurl'] . '/posts/' . $cur_post['id'] . '">' . user_date($cur_post['posted']) . '</a></span><span style="display:none">: </span>'; ?>
                     <?php
-                    // Show edit timestamp if available
-                    if ($cur_post['last_edited'] != null) {
-                        echo ' - <span style="cursor: default;" title="' . translate('lastedited', htmlspecialchars($cur_post['last_edited_by']), user_date($cur_post['last_edited'])) . '">' . translate('edited') . '</span>';
-                    }
 					if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/avatars/' . $cur_post['author_id'] . '.' . $cur_post['avatar_extension'])) {
 						echo '<img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_post['author_id'] . '.' . $cur_post['avatar_extension'] . '" alt="user avatar" class="avatar" />';
 					}
-					?> <a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($cur_post['author']); ?>" target="_BLANK" title="<?php echo $cur_post['user_title']; ?>"><?php echo htmlspecialchars($cur_post['author']); ?></a></h2>
+					?> <span class="username"><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($cur_post['author']); ?>" target="_BLANK" title="<?php echo $cur_post['user_title']; ?>"><?php echo htmlspecialchars($cur_post['author']); ?></a></span></h2>
                     <div class="cat_body">
                         <div class="postright">
                             <p><?php echo str_replace('<a', '<a target="_BLANK"', $cur_post['parsed_content']); ?></p>

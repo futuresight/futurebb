@@ -23,7 +23,7 @@ header('Content-type: text/css');
 }
 
 #futurebb h2, #futurebb h3, #futurebb h4, #futurebb h5 {
-	margin-bottom: 2px;
+	/*margin-bottom: 2px;*/
 }
 
 #futurebb p {
@@ -81,8 +81,10 @@ header('Content-type: text/css');
 	border: 1px solid #000;
 	margin-bottom: 0px;
 	margin-top: 2px;
+	padding-top: 2px;
 	padding-left: 4px;
 	font-size: 18px;
+	vertical-align:middle;
 }
 
 #futurebb .forum_content {
@@ -185,13 +187,6 @@ header('Content-type: text/css');
 	font-style: italic;
 }
 
-#futurebb span.postactions {
-	float:right;
-	display:block;
-	clear:both;
-	padding-right:5px;
-}
-
 #futurebb img.avatar {
 	max-width:16px;
 	max-height:16px;
@@ -202,7 +197,20 @@ header('Content-type: text/css');
 }
 
 #futurebb .floatright {
+	/* just timestamps in this case */
 	float:right;
+	font-weight:normal;
+	padding-top:1px;
+}
+
+#futurebb .floatright a {
+	color:#555;
+	padding-right:3px;
+}
+
+#futurebb span.username {
+	position:relative;
+	bottom:2px;
 }
 
 /* bbcode */
