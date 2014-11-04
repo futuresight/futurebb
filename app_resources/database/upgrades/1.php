@@ -1,5 +1,6 @@
 <?php
 //upgrade from v1.0 to v1.1 (DB 0 -> 1)
+//since v1.0 only supported MySQL, SQLite compatibility is not necessary in this version
 //add new config values
 set_config('last_update_check', 0);
 set_config('new_version', 0);
@@ -42,3 +43,35 @@ $new_fld->add_extra('NOT NULL');
 $new_fld->set_default('1');
 $db->add_field('user_groups', $new_fld, 'g_post_topics');
 echo '<li>RV1: Adding new user group privileges... success</li>';
+
+//add extensions table
+$tables = array();
+$tables['extensions'] = new DBTable('extensions');
+$new_fld = new DBField('id','INT');
+$new_fld->add_key('PRIMARY');
+$new_fld->add_extra('NOT NULL');
+$new_fld->add_extra('AUTO_INCREMENT');
+$tables['extensions']->add_field($new_fld);
+$new_fld = new DBField('name','VARCHAR(50)');
+$new_fld->add_extra('NOT NULL');
+$new_fld->set_default('\'\'');
+$new_fld->set_default('\'\'');
+$tables['extensions']->add_field($new_fld);
+$new_fld = new DBField('website','TEXT');
+$new_fld->set_default('\'\'');
+$new_fld->set_default('\'\'');
+$tables['extensions']->add_field($new_fld);
+$new_fld = new DBField('support_url','TEXT');
+$new_fld->set_default('\'\'');
+$new_fld->set_default('\'\'');
+$tables['extensions']->add_field($new_fld);
+$new_fld = new DBField('uninstallable','TINYINT(1)');
+$new_fld->add_extra('NOT NULL');
+$new_fld->set_default(0);
+$tables['extensions']->add_field($new_fld);
+$tables['extensions']->commit();
+
+//RSS tokens
+$q = new DBUpdate('users', 'rss_token=md5(id+RAND())', '1', 'Failed to set RSS tokens');
+$q->commit();
+echo '<li>RV1: Giving RSS tokens... success</li>';
