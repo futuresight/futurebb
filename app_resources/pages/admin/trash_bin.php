@@ -45,7 +45,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 					<th><?php echo translate('deletedby'); ?></th>
 				</tr>
 			<?php
-			$result = $db->query('SELECT p.parsed_content,p.deleted,du.username AS deleted_by,t.url AS turl,f.url AS furl,t.subject,u.username AS poster FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS du ON du.id=p.deleted_by LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE p.deleted IS NOT NULL LIMIT 10') or error('Failed to find recent deleted posts', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT p.parsed_content,p.deleted,du.username AS deleted_by,t.url AS turl,f.url AS furl,t.subject,u.username AS poster FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS du ON du.id=p.deleted_by LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE p.deleted IS NOT NULL ORDER BY p.deleted DESC LIMIT 10') or error('Failed to find recent deleted posts', __FILE__, __LINE__, $db->error());
 			while ($cur_post = $db->fetch_assoc($result)) {
 				echo '<tr>
 					<td class="quotebox">' . $cur_post['parsed_content'] . '</td>

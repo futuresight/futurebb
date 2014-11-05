@@ -24,7 +24,7 @@ if (isset($_GET['download'])) {
 	}
 	ob_end_clean();
 	header('Content-type: application/xml');
-	header('Content-disposition: attachment');
+	header('Content-disposition: attachment; filename=censoring.xml');
 	echo $xml->asXML();
 	$db->close();
 	die;

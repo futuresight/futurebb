@@ -72,6 +72,5 @@ $tables['extensions']->add_field($new_fld);
 $tables['extensions']->commit();
 
 //RSS tokens
-$q = new DBUpdate('users', 'rss_token=md5(id+RAND())', '1', 'Failed to set RSS tokens');
-$q->commit();
+$db->query('UPDATE `#^users` SET rss_token=md5(id+RAND())') or error('Failed to update rss tokens', __FILE__, __LINE__, $db->error());
 echo '<li>RV1: Giving RSS tokens... success</li>';

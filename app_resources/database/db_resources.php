@@ -62,7 +62,13 @@ class DBUpdate {
 				$set_sql .= $key . '=\'' . $db->escape($val) . '\'';
 			}
 		}
-		$db->query('UPDATE `' . $db->prefix . $this->table . '` SET ' . $set_sql . ' WHERE ' . $this->where) or enhanced_error($this->error . '<br />Query: ' . $set_sql, true);
+		if ($this->where) {
+			$where = ' WHERE ' . $this->where;
+		} else {
+			$where = '';
+		}
+		$q = 'UPDATE `' . $db->prefix . $this->table . '` SET ' . $set_sql . $where;
+		$db->query($q) or enhanced_error($this->error . '<br />Query: ' . $q, true);
 	}
 }
 
