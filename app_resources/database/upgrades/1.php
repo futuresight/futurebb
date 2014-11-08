@@ -16,7 +16,7 @@ $new_fld->set_default('\'post\'');
 $db->alter_field('reports', $new_fld, '');
 echo '<li>RV1: Updating reports table... success</li>';
 
-//add avatar extension and rss token to users
+//add avatar extension, DST, and rss token to users
 $new_fld = new DBField('avatar_extension','VARCHAR(4)');
 $new_fld->set_default('NULL');
 $db->add_field('users', $new_fld, 'last_page_load');
@@ -24,6 +24,10 @@ $new_fld = new DBField('rss_token','VARCHAR(50)');
 $new_fld->add_extra('NOT NULL');
 $new_fld->set_default('\'\'');
 $db->add_field('users', $new_fld, 'avatar_extension');
+$new_fld = new DBField('dst', 'TINYINT(1)');
+$new_fld->add_extra('NOT NULL');
+$new_fld->set_default('0');
+$db->add_field('users', $new_fld, 'timezone');
 
 //add new user group privileges
 $new_fld = new DBField('g_access_board','TINYINT(1)');

@@ -208,4 +208,8 @@ $lang_addl = array(
 	'enablebbcodedesc'		=>	'Allow BBCode in posts - if this box is changed, it will not affect existing posts unless the &quot;reparse posts&quot; tool is used on the maintenance page',
 	'enablesmilies'			=>	'Enable smilies',
 	'enablesmiliesdesc'		=>	'Enable smilies - if this box is changed, it will not affect existing posts unless the &quot;reparse posts&quot; tool is used on the maintenance page',
+	
+	//trash bin
+	'undeletepostheader'	=>	'Are you sure you want to undelete the post? You can view it below.',
+	'undeletetopicheader'	=>	'Are you sure you wish to undelete this topic?',
 );

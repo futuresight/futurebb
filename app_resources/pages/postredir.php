@@ -1,7 +1,7 @@
 <?php
 ob_end_clean();
 $pid = intval($dirs[2]);
-$result = $db->query('SELECT t.id,t.url AS turl, f.url AS furl FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE p.id=' . $pid . ' AND p.deleted IS NULL AND t.deleted IS NULL') or error('Failed to get topic location', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT t.id,t.url AS turl, f.url AS furl FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE p.id=' . $pid . ($futurebb_user['g_mod_privs'] ? '' : ' AND p.deleted IS NULL AND t.deleted IS NULL')) or error('Failed to get topic location', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result)) {
 	httperror(404);
 }

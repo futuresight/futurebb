@@ -82,6 +82,7 @@ if(isset($_POST['pm_sent'])) {
 						//format: 'name'		=> 'type'
 						'email'				=> 'string',
 						'timezone'			=> 'int',
+						'dst'				=> 'bool',
 						'style'				=> 'string',
 						'language'			=> 'string',
 						'block_pm'			=> 'bool',
@@ -172,6 +173,10 @@ if(isset($_POST['pm_sent'])) {
 						}
 						?></select></td>
 					</tr>
+                    <tr>
+                    	<td><?php echo translate('dstprofile'); ?></td>
+                        <td><input type="checkbox" name="dst"<?php if ($cur_user['dst']) echo ' checked="checked"'; ?> /></td>
+                    </td>
                     <tr>
 						<td><?php echo translate('rsstoken'); ?></td>
 						<td><input type="text" name="rss_token" value="<?php echo htmlspecialchars($cur_user['rss_token']); ?>" size="50" /></td>

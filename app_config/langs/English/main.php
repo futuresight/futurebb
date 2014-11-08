@@ -126,6 +126,7 @@ $lang = array(
 	'warnings'				=>	'Warnings',
 	'sentby'				=>	'Sent by',
 	'sentto'				=>	'Sent to',
+	'dstprofile'			=>	'Daylight Saving Time (advance one hour)',
 	
 	//forum viewer
 	'pages'					=>	'Pages: ',
@@ -251,6 +252,7 @@ $lang = array(
 	//delete post
 	'deletepost'			=>	'Delete post',
 	'deletepostwarning'		=>	'Are you sure you want to delete this post? If you delete it, you will not be able to recover it. Below is the message you are deleting:',
+	'deletetopicwarning'	=>	'If you delete this post, the whole topic will be permanently deleted.',
 	
 	//edit post
 	'editpost'				=>	'Edit post',

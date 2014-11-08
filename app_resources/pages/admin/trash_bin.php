@@ -1,5 +1,5 @@
 <?php
-if (!$futurebb_user['g_mod_privs'] && !$futurebb_user['g_admin_privs']) {
+if (!$futurebb_user['g_admin_privs']) {
 	httperror(403);
 }
 translate('<addfile>', 'admin');
@@ -9,33 +9,91 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 <div class="container">
 	<?php make_admin_menu(); ?>
 	<div class="forum_content rightbox admin">
-		<?php if (isset($dirs[3]) && $dirs[3] == 'posts') {
-			if (!isset($dirs[4])) {
+    	<?php
+		if (isset($dirs[3]) && $dirs[3] == 'undelete') {
+			if (isset($_POST['form_sent'])) {
+				if (isset($_POST['post_id'])) {
+					//undeleting a single post
+					$result = $db->query('SELECT topic_id FROM `#^posts` AS p WHERE deleted IS NOT NULL AND id=' . intval($_POST['post_id'])) or enhanced_error('Failed to get topic', true);
+					if (!$db->num_rows($result)) {
+						httperror(404);
+					}
+					list($tid) = $db->fetch_row($result);
+					$db->query('UPDATE `#^posts` SET deleted=NULL,deleted_by=NULL WHERE id=' . intval($_POST['post_id']) . ' AND deleted IS NOT NULL') or enhanced_error('Failed to undelete post', true);
+					//update counts and stuff
+					$result = $db->query('SELECT id,posted FROM `#^posts` WHERE topic_id=' . $tid . ' AND deleted IS NULL ORDER BY posted DESC') or error('Failed to get new last post', __FILE__, __LINE__, $db->error());
+					list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+					$db->query('UPDATE `#^topics` SET num_replies=num_replies+1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $tid) or error('Failed to update post count in topic', __FILE__, __LINE__, $db->error());
+					$db->query('UPDATE `#^forums` SET num_posts=num_posts-1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $cur_post['fid']) or error('Failed to update post count in forum', __FILE__, __LINE__, $db->error());
+					redirect($base_config['baseurl'] . '/posts/' . intval($_POST['post_id']));
+				} else if (isset($_POST['topic_id'])) {
+					//undeleting a whole topic
+					$result = $db->query('SELECT f.url AS furl,t.url AS turl,t.forum_id AS fid FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.deleted IS NOT NULL AND t.id=' . intval($_POST['topic_id'])) or enhanced_error('Failed to get topic', true);
+					if (!$db->num_rows($result)) {
+						httperror(404);
+					}
+					list($furl,$turl,$fid) = $db->fetch_row($result);
+					//update counts and stuff
+					$db->query('UPDATE `#^topics` SET deleted=NULL,deleted_by=NULL WHERE id=' . intval($_POST['topic_id'])) or enhanced_error('Failed to undelete topic', true);
+					$result = $db->query('SELECT 1 FROM `#^posts` WHERE topic_id=' . intval($_POST['topic_id']) . ' AND deleted IS NULL') or error('Failed to get number of replies', __FILE__, __LINE__, $db->error());
+					$num_replies = $db->num_rows($result);
+					$result = $db->query('SELECT p.id,p.posted FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id WHERE p.deleted IS NULL AND t.deleted IS NULL AND t.forum_id=' . $fid . ' ORDER BY p.posted DESC') or enhanced_error('Failed to find last post', true);
+					list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+					$db->query('UPDATE `#^forums` SET num_posts=num_posts+' . $num_replies . ',num_topics=num_topics+1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $fid) or error('Failed to update post count<br />' . $q, __FILE__, __LINE__, $db->error());
+					redirect($base_config['baseurl'] . '/' . $furl . '/' . $turl);
+				} else {
+					httperror(404);
+				}
+			} else if (isset($_POST['cancel'])) {
+				redirect($base_config['baseurl'] . '/admin/trash_bin');
+			}
+			$id = intval($dirs[5]);
+			?>
+            <form action="<?php echo $base_config['baseurl']; ?>/admin/trash_bin/undelete/<?php echo htmlspecialchars($dirs[4]); ?>/<?php echo htmlspecialchars($id); ?>" method="post" enctype="multipart/form-data">
+            	<h2><?php echo translate('undelete'); ?></h2>
+            <?php
+			if ($dirs[4] == 'topic') {
+				$result = $db->query('SELECT t.subject,t.url AS turl,f.name AS forum_name,f.url AS furl FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.deleted IS NOT NULL AND t.id=' . $id) or enhanced_error('Failed to get topic', true);
+				if (!$db->num_rows($result)) {
+					httperror(404);
+				}
+				$cur_topic = $db->fetch_assoc($result);
+				?>
+                <p><?php echo translate('undeletetopicheader'); ?><input type="hidden" name="topic_id" value="<?php echo $id; ?>" /></p>
+                <p><a href="<?php echo $base_config['baseurl'] . '/' . htmlspecialchars($cur_topic['furl']); ?>"><?php echo htmlspecialchars($cur_topic['forum_name']); ?></a> &raquo; <a href="<?php echo $base_config['baseurl'] . '/' . htmlspecialchars($cur_topic['furl']). '/' . htmlspecialchars($cur_topic['turl']); ?>"><?php echo htmlspecialchars($cur_topic['subject']); ?></a></p>
+                <?php
+			} else if ($dirs[4] == 'post') {
+				$result = $db->query('SELECT p.id,p.parsed_content,t.subject,t.url AS turl,f.name AS forum_name,f.url AS furl FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE p.deleted IS NOT NULL AND p.id=' . $id) or enhanced_error('Failed to get post', true);
+				if (!$db->num_rows($result)) {
+					httperror(404);
+				}
+				$cur_post = $db->fetch_assoc($result);
+			?>
+           		<p><?php echo translate('undeletepostheader'); ?><input type="hidden" name="post_id" value="<?php echo $id; ?>" /></p>
+                <p><a href="<?php echo $base_config['baseurl'] . '/' . htmlspecialchars($cur_post['furl']); ?>"><?php echo htmlspecialchars($cur_post['forum_name']); ?></a> &raquo; <a href="<?php echo $base_config['baseurl'] . '/' . htmlspecialchars($cur_post['furl']). '/' . htmlspecialchars($cur_post['turl']); ?>"><?php echo htmlspecialchars($cur_post['subject']); ?></a> &raquo; <a href="<?php echo $base_config['baseurl'] . '/posts/' . htmlspecialchars($cur_post['id']); ?>"><?php echo translate('post') . ' #' . $cur_post['id']; ?></a></p>
+            	<p class="quotebox"><?php echo $cur_post['parsed_content']; ?></p>
+            <?php
+			} else {
 				httperror(404);
 			}
-			$pid = intval($dirs[4]);
-			$result = $db->query('SELECT u.username AS poster,p.id,p.parsed_content,p.deleted,p.posted,du.username AS deleted_by,tdu.username AS topic_deleted_by,t.url AS turl,t.subject,t.deleted AS topic_deleted,f.url AS furl,f.name AS forum_name,t.subject FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS du ON du.id=p.deleted_by LEFT JOIN `#^users` AS tdu ON tdu.id=t.deleted_by LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE (p.deleted IS NOT NULL OR t.deleted IS NOT NULL) AND p.id=' . $pid . ' LIMIT 10') or error('Failed to find recent deleted posts', __FILE__, __LINE__, $db->error());
-			$cur_post = $db->fetch_assoc($result);
-			echo '<p><a href="' . $base_config['baseurl'] . '/admin/trash_bin">' . translate('trashbin') . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $cur_post['furl'] . '">' . htmlspecialchars($cur_post['forum_name']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $cur_post['furl'] . '/' . $cur_post['turl'] . '">' . htmlspecialchars($cur_post['subject']) . '</a><br />' . translate('posted') . ' ' . user_date($cur_post['posted']) . ' ' . translate('by') . ' <b>' . htmlspecialchars($cur_post['poster']) . '</b><br />';
-			if ($cur_post['deleted_by']) {
-				echo translate('deletedbyon', translate('post'), user_date($cur_post['deleted']), htmlspecialchars($cur_post['deleted_by']));
-			} else if ($cur_post['topic_deleted_by']) {
-				translate('deletedbyon', translate('topic'), user_date($cur_post['topic_deleted']), htmlspecialchars($cur_post['topic_deleted_by']));
-			}
-			echo '<div class="quotebox" id="post' . $cur_post['id'] . '"><p>' . $cur_post['parsed_content'] . '</p></div>';
-		} else if (!isset($dirs[3]) || $dirs[3] == '') { ?>
+			?>
+            	<p><input type="submit" name="form_sent" value="<?php echo translate('yes'); ?>" /> <input type="submit" name="cancel" value="<?php echo translate('no'); ?>" /></p>
+            </form>
+            <?php
+		} else if (!isset($dirs[3]) || $dirs[3] == '') {
+			?>
 			<h2><?php echo translate('trashbin'); ?></h2>
 			<p><?php echo translate('trashbindesc'); ?></p>
-			<h3><?php echo translate('recentdeleted', translate('topics')); ?></h3>
+			<h3><?php echo translate('recentdeleted', strtolower(translate('topics'))); ?></h3>
 			<ul>
 			<?php
-			$result = $db->query('SELECT url,subject FROM `#^topics` WHERE deleted IS NOT NULL ORDER BY deleted DESC LIMIT 20') or error('Failed to find recent deleted topics', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT t.url,t.subject,f.url AS furl FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.deleted IS NOT NULL ORDER BY t.deleted DESC LIMIT 20') or error('Failed to find recent deleted topics', __FILE__, __LINE__, $db->error());
 			while ($cur_topic = $db->fetch_assoc($result)) {
-				echo '<li><a href="' . $base_config['baseurl'] . '/admin/trash_bin/' . htmlspecialchars($cur_topic['url']) . '">' . htmlspecialchars($cur_topic['subject']) . '</a></li>';
+				echo '<li><a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($cur_topic['furl']) . '/' . htmlspecialchars($cur_topic['url']) . '">' . htmlspecialchars($cur_topic['subject']) . '</a></li>';
 			}
 			?>
 			</ul>
-			<h3><?php echo translate('recentdeleted', translate('posts')); ?></h3>
+			<h3><?php echo translate('recentdeleted', strtolower(translate('posts'))); ?></h3>
 			<table border="0">
 				<tr>
 					<th><?php echo translate('post'); ?></th>
@@ -45,10 +103,10 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 					<th><?php echo translate('deletedby'); ?></th>
 				</tr>
 			<?php
-			$result = $db->query('SELECT p.parsed_content,p.deleted,du.username AS deleted_by,t.url AS turl,f.url AS furl,t.subject,u.username AS poster FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS du ON du.id=p.deleted_by LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE p.deleted IS NOT NULL ORDER BY p.deleted DESC LIMIT 10') or error('Failed to find recent deleted posts', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT p.id,p.parsed_content,p.deleted,du.username AS deleted_by,t.url AS turl,f.url AS furl,t.subject,u.username AS poster FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS du ON du.id=p.deleted_by LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE p.deleted IS NOT NULL ORDER BY p.deleted DESC LIMIT 10') or error('Failed to find recent deleted posts', __FILE__, __LINE__, $db->error());
 			while ($cur_post = $db->fetch_assoc($result)) {
 				echo '<tr>
-					<td class="quotebox">' . $cur_post['parsed_content'] . '</td>
+					<td><a href="' . $base_config['baseurl'] . '/posts/' . $cur_post['id'] . '">#' . $cur_post['id'] . '</a></td>
 					<td><a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($cur_post['furl']) . '/' . htmlspecialchars($cur_post['turl']) . '">' . htmlspecialchars($cur_post['subject']) . '</a></td>
 					<td><a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_post['poster']) . '">' . htmlspecialchars($cur_post['poster']) . '</a></td>
 					<td>' . user_date($cur_post['deleted']) . '</td>
@@ -57,20 +115,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 			}
 			?>
 			</table>
-			<?php
-		} else if (isset($dirs[3]) && $dirs[3] != '') {
-			$result = $db->query('SELECT t.id,t.url,t.subject FROM `#^topics` AS t WHERE t.url=\'' . $db->escape($dirs[3]) . '\'') or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
-			if (!$db->num_rows($result)) {
-				httperror(404);
-			}
-			$cur_topic = $db->fetch_assoc($result);
-			$breadcrumbs = array(translate('trashbin') => 'admin/trash_bin', $cur_topic['subject'] => '!nourl!');
-			$result = $db->query('SELECT p.id,p.parsed_content,p.posted,u.username AS poster FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE p.topic_id=' . $cur_topic['id']) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
-			while ($cur_post = $db->fetch_assoc($result)) {
-				echo '<h3><a href="#post' . $cur_post['id'] . '">' . user_date($cur_post['posted']) . '</a></h3>
-				<p>' . translate('by') . ' <a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_post['poster']) . '">' . htmlspecialchars($cur_post['poster']) . '</a></p>';
-				echo '<div class="fullwidth quotebox" id="post' . $cur_post['id'] . '"><p>' . $cur_post['parsed_content'] . '</p></div>';
-			}
+            <?php
 		}
 		?>
 	</div>

@@ -169,6 +169,9 @@ function set_config($c_name, $c_value) {
 function user_date($unix_stamp, $date_only = false) {
 	global $futurebb_user;
 	$unix_stamp += intval($futurebb_user['timezone']) * 3600;
+	if ($futurebb_user['dst']) {
+		$unix_stamp += 3600;
+	}
 	if ($date_only) {
 		return gmdate('d M y', $unix_stamp);
 	} else {

@@ -16,7 +16,7 @@ if (isset($_GET['query'])) {
 	if (isset($_GET['show']) && ($futurebb_user['g_admin_privs'] || $futurebb_user['g_mod_privs'])) {
 		switch ($_GET['show']) {
 			case 'deleted':
-				$addl_sql .= ' AND ((p.deleted IS NOT NULL AND p.deleted_by=p.poster) OR (t.deleted IS NOT NULL))'; break;
+				$addl_sql .= ' AND p.deleted IS NOT NULL OR t.deleted IS NOT NULL'; break;
 			default:
 				$addl_sql .= ' AND p.deleted IS NULL AND t.deleted IS NULL'; break;
 		}
@@ -85,7 +85,7 @@ if (isset($_GET['query'])) {
 		if ($i > ($page - 1) * $futurebb_config['posts_per_page'] && $i <= $page * $futurebb_config['posts_per_page']) {
 			?>
 			<div class="catwrap" id="post<?php echo $cur_post['id']; ?>">
-				<h2 class="cat_header"><?php echo htmlspecialchars($cur_post['category']); ?> &raquo; <a href="<?php echo $base_config['baseurl']; ?>/<?php echo htmlspecialchars($cur_post['furl']); ?>"><?php echo htmlspecialchars($cur_post['forum']); ?></a> &raquo; <a href="<?php if ($cur_post['post_deleted'] || $cur_post['topic_deleted']) echo $base_config['baseurl'] . '/admin/trash_bin/posts/' . $cur_post['id'];  else echo $base_config['baseurl'] . '/posts/' . $cur_post['id']; ?>"><?php echo user_date($cur_post['posted']); ?></a></h2>
+				<h2 class="cat_header"><?php echo htmlspecialchars($cur_post['category']); ?> &raquo; <a href="<?php echo $base_config['baseurl']; ?>/<?php echo htmlspecialchars($cur_post['furl']); ?>"><?php echo htmlspecialchars($cur_post['forum']); ?></a> &raquo; <a href="<?php echo $base_config['baseurl'] . '/posts/' . $cur_post['id']; ?>"><?php echo user_date($cur_post['posted']); ?></a></h2>
 				<div class="cat_body">
 					<div class="postleft">
 						<p><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($cur_post['author']); ?>"><?php echo htmlspecialchars($cur_post['author']); ?></a></p>
