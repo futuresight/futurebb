@@ -421,6 +421,10 @@ ul#navlist li {
 	float:right;
 }
 
+#futurebb .deleted_post {
+	background-color:#999;
+}
+
 /* bbcode */
 
 #futurebb .quotebox {

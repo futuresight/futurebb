@@ -1,6 +1,6 @@
 <?php
 //$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,rt.id AS tracker_id,rtf.id AS ftracker_id FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^read_tracker` AS rtf ON rtf.forum_id=f.id AND rtf.user_id=' . $futurebb_user['id'] . ' AND rtf.topic_id IS NULL WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.deleted IS NULL') or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
-$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,rt.id AS tracker_id FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.forum_id=f.id AND t.deleted IS NULL') or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,t.deleted,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,rt.id AS tracker_id,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.forum_id=f.id ' . ($futurebb_user['g_mod_privs'] ? '' : ' AND t.deleted IS NULL')) or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result)) {
 	httperror(404);
 }
@@ -103,15 +103,20 @@ if (isset($_GET['page'])) {
 	$page = 1;
 }
 
-$result = $db->query('SELECT COUNT(id) FROM `#^posts` WHERE topic_id=' . $cur_topic['id']) or error('Failed to get topic count', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT COUNT(id) FROM `#^posts` WHERE topic_id=' . $cur_topic['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND deleted IS NULL')) or error('Failed to get post count', __FILE__, __LINE__, $db->error());
 list($num_posts) = $db->fetch_row($result);
 
 //get all of the posts
-$result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_edited,u.username AS author,u.id AS author_id,u.parsed_signature AS signature,u.last_page_load,u.num_posts,u.avatar_extension,g.g_title AS user_title,leu.username AS last_edited_by FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by WHERE p.topic_id=' . $cur_topic['id'] . ' AND p.deleted IS NULL ORDER BY p.posted ASC LIMIT ' . (($page - 1) * intval($futurebb_config['posts_per_page'])) . ',' . intval($futurebb_config['posts_per_page'])) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_edited,p.deleted AS deleted,u.username AS author,u.id AS author_id,u.parsed_signature AS signature,u.last_page_load,u.num_posts,u.avatar_extension,g.g_title AS user_title,leu.username AS last_edited_by,du.username AS deleted_by FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by LEFT JOIN `#^users` AS du ON du.id=p.deleted_by WHERE p.topic_id=' . $cur_topic['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND p.deleted IS NULL') . ' ORDER BY p.posted ASC LIMIT ' . (($page - 1) * intval($futurebb_config['posts_per_page'])) . ',' . intval($futurebb_config['posts_per_page'])) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
 
 ?>
 <p><?php echo translate('pages');
 echo paginate('<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '?page=$page$" $bold$>$page$</a>', $page, ceil($num_posts / $futurebb_config['posts_per_page']));
+?></p>
+<p><?php
+if ($cur_topic['deleted']) {
+	echo translate('deletedbyon', translate('topic'), htmlspecialchars($cur_topic['deleted_by']), user_date($cur_topic['deleted']));
+}
 ?></p>
 <?php
 
@@ -124,14 +129,21 @@ while ($cur_post = $db->fetch_assoc($result)) {
 	?>
 	<div class="catwrap" id="post<?php echo $cur_post['id']; ?>">
 		<h2 class="cat_header">
-		<?php echo '<span class="floatright">#' . ((($page - 1) * intval($futurebb_config['posts_per_page'])) + $count) . '</span><span style="display:none">: </span>'; ?>
+		<?php echo '<span class="floatright">#' . ((($page - 1) * intval($futurebb_config['posts_per_page'])) + $count) . '</span><span style="display:none">: </span>'; 
+		if ($cur_post['deleted'] || $cur_topic['deleted']) {
+			echo '&#10060;';
+		}
+		?>
 		<a href="<?php echo $base_config['baseurl']; ?>/posts/<?php echo $cur_post['id']; ?>"><?php echo user_date($cur_post['posted']); ?></a><?php
 		// Show edit timestamp if available
 		if ($cur_post['last_edited'] != null) {
 			echo ' - <span style="cursor: default;" title="' . translate('lastedited', htmlspecialchars($cur_post['last_edited_by']), user_date($cur_post['last_edited'])) . '">' . translate('edited') . '</span>';
 		}
+		if ($cur_post['deleted']) {
+			echo '<br />' . translate('deletedbyon', translate('post'), htmlspecialchars($cur_post['deleted_by']), user_date($cur_post['deleted']));
+		}
 		?></h2>
-		<div class="cat_body">
+		<div class="cat_body<?php if ($cur_post['deleted'] || $cur_topic['deleted']) echo ' deleted_post'; ?>">
 			<div class="postleft">
 				<p><?php if($futurebb_config['online_timeout'] > 0) {
 					if ($cur_post['last_page_load'] > time() - $futurebb_config['online_timeout']) {
@@ -165,6 +177,9 @@ while ($cur_post = $db->fetch_assoc($result)) {
 				}
 				if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && (!$cur_topic['closed'] || $futurebb_user['g_mod_privs'])) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/post/topic/' . $cur_topic['id'] . '?quote=' . $cur_post['id'] . '">' . translate('quote') . '</a>';
+				}
+				if ($futurebb_user['g_mod_privs'] && $cur_post['deleted']) {
+					$actions[] = '<a href="' . $base_config['baseurl'] . '/admin/trash_bin/undelete/' . $cur_topic['id'] . '">' . translate('undelete') . '</a>';
 				}
 				?>
 			</div>

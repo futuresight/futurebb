@@ -12,9 +12,8 @@ $output = '<?xml version="1.0" encoding="utf-8"?>
 	<generator>FutureBB</generator>';
 if (isset($dirs[3]) && $dirs[3] != '') {
 	//topic is given, use it
-	$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[2]) . '\' WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[3]) . '\' AND t.deleted IS NULL') or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[2]) . '\' WHERE f.id IS NOT NULL AND f.id=t.forum_id AND t.url=\'' . $db->escape($dirs[3]) . '\' AND t.deleted IS NULL') or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result)) {
-		die;
 		httperror(404);
 	}
 	$cur_topic = $db->fetch_assoc($result);
@@ -25,7 +24,7 @@ if (isset($dirs[3]) && $dirs[3] != '') {
 	$description = translate('latestpostsin', $cur_topic['subject']);
 	$link = $base_config['baseurl'] . '/' . htmlspecialchars($dirs[2]) . '/' . htmlspecialchars($dirs[3]);
 	
-	$q = new DBSelect('posts', array('p.id','p.parsed_content','u.username AS poster','p.posted'), 'p.topic_id=' . $cur_topic['id'], 'Failed to get posts');
+	$q = new DBSelect('posts', array('p.id','p.parsed_content','u.username AS poster','p.posted'), 'p.topic_id=' . $cur_topic['id'] . ' AND p.deleted IS NULL', 'Failed to get posts');
 	$q->add_join(new DBJoin('users', 'u', 'u.id=p.poster', 'LEFT'));
 	$q->table_as('p');
 	$q->set_order('p.posted DESC');

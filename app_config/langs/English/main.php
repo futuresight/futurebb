@@ -157,6 +157,7 @@ $lang = array(
 	'sticktopic'			=>	'Stick topic',
 	'unsticktopic'			=>	'Unstick topic',
 	'embed'					=>	'Embed topic',
+	'undelete'				=>	'Undelete',
 	
 	//user list
 	'usergroup'				=>	'User group',
