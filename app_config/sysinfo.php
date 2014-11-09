@@ -1,3 +1,3 @@
 <?php
-define('FUTUREBB_VERSION', '1.1 Beta');
+define('FUTUREBB_VERSION', '1.1');
 define('DB_VERSION', 1);

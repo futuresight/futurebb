@@ -7,6 +7,11 @@ set_config('new_version', 0);
 set_config('max_quote_depth', 4);
 set_config('disable_registrations', 0);
 set_config('db_version', 1);
+set_config('enable_bbcode', 1);
+set_config('enable_smilies', 1);
+set_config('avatar_max_filesize', 1024);
+set_config('avatar_max_width', 64);
+set_config('avatar_max_height', 64);
 echo '<li>RV1: Set new configuration values... success</li>';
 
 //allow "special" reports

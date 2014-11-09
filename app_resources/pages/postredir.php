@@ -7,7 +7,7 @@ if (!$db->num_rows($result)) {
 }
 list($tid,$turl,$furl) = $db->fetch_row($result);
 
-$result = $db->query('SELECT id FROM `#^posts` WHERE topic_id=' . $tid) or error('Failed to get post list', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT id FROM `#^posts` WHERE topic_id=' . $tid . ($futurebb_user['g_mod_privs'] ? '' : ' AND p.deleted IS NULL AND t.deleted IS NULL')) or error('Failed to get post list', __FILE__, __LINE__, $db->error());
 $i = 0;
 while (list($id) = $db->fetch_row($result)) {
 	$i++;

@@ -21,7 +21,12 @@ if (isset($_POST['form_sent'])) {
 		$num_replies = $db->num_rows($result);
 		//update forum last post data
 		$result = $db->query('SELECT p.id,p.posted FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id WHERE p.deleted IS NULL AND t.deleted IS NULL AND t.forum_id=' . $cur_post['fid'] . ' ORDER BY p.posted DESC') or enhanced_error('Failed to find last post', true);
-		list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+		if ($db->num_rows($result)) {
+			list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+		} else {
+			$last_post_id = 0;
+			$last_post_time = 0;
+		}
 		$db->query('UPDATE `#^forums` SET num_posts=num_posts-' . $num_replies . ',num_topics=num_topics-1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $cur_post['fid']) or error('Failed to update post count<br />' . $q, __FILE__, __LINE__, $db->error());
 		
 		redirect($base_config['baseurl']);
@@ -30,7 +35,12 @@ if (isset($_POST['form_sent'])) {
 		$db->query('UPDATE `#^posts` SET deleted=' . time() . ',deleted_by=' . $futurebb_user['id'] . ' WHERE id=' . $pid) or error('Failed to delete post', __FILE__, __LINE__, $db->error());
 		//update topic last post data
 		$result = $db->query('SELECT id,posted FROM `#^posts` WHERE topic_id=' . $cur_post['tid'] . ' AND deleted IS NULL ORDER BY posted DESC') or error('Failed to get new last post', __FILE__, __LINE__, $db->error());
-		list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+		if ($db->num_rows($result)) {
+			list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+		} else {
+			$last_post_id = 0;
+			$last_post_time = 0;
+		}
 		$db->query('UPDATE `#^topics` SET num_replies=num_replies-1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $cur_post['tid']) or error('Failed to delete post', __FILE__, __LINE__, $db->error());
 		$db->query('UPDATE `#^forums` SET num_posts=num_posts-1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $cur_post['fid']) or error('Failed to update topic count', __FILE__, __LINE__, $db->error());
 		redirect($base_config['baseurl'] . '/' . $cur_post['furl'] . '/' . $cur_post['turl']); return;

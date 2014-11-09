@@ -89,7 +89,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		$tid = $db->insert_id();
 		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies'], $futurebb_config['enable_bbcode']
 		));
-		$db->query('INSERT INTO `#^posts`(poster,poster_ip,content,parsed_content,posted,topic_id,disable_smilies) VALUES(' . $futurebb_user['id'] . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',\'' . $db->escape($_POST['message']) . '\',\'' . $db->escape($parsedtext) . '\',' . time() . ',' . $tid . ',' . intval(isset($_POST['hidesmilies'])) . ')') or error('Failed to make first post', __FILE__, __LINE__, $db->error());
+		$db->query('INSERT INTO `#^posts`(poster,poster_ip,content,parsed_content,posted,topic_id,disable_smilies) VALUES(' . $futurebb_user['id'] . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',\'' . $db->escape($_POST['message']) . '\',\'' . $db->escape($parsedtext) . '\',' . time() . ',' . $tid . ',' . intval(isset($_POST['hidesmilies'])) . ')') or error('Failed to make first post<br />' . $q, __FILE__, __LINE__, $db->error());
 		$pid = $db->insert_id();
 		// Let's take a break to fire any notifications from @ tags
 		if($futurebb_config['allow_notifications'] == 1) {

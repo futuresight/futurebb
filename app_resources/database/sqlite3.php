@@ -84,7 +84,7 @@ class Database {
 	}
 	
 	function insert_id() {
-		$this->link->lastInsertRowId();
+		return $this->link->lastInsertRowId();
 	}
 	
 	function close() {

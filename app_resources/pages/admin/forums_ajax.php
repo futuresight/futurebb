@@ -117,6 +117,7 @@ if (isset($_POST['form_sent'])) {
 <div class="container">
 	<?php make_admin_menu(); ?>
     <script type="text/javascript">
+	//<![CDATA[
 	var numNewForums = 9999;
 	function addForum(cat_id) {
 		//add a new forum to a category
@@ -331,6 +332,7 @@ if (isset($_POST['form_sent'])) {
 			alert('You have modified a forum or already have one open for editing. Please refresh the page and then try again.');
 		}
 	}
+	//]]>
 	</script>
 	<div class="forum_content rightbox admin">
     	<form action="<?php echo $base_config['baseurl']; ?>/admin/forums" method="post" enctype="multipart/form-data">
@@ -361,7 +363,9 @@ if (isset($_POST['form_sent'])) {
 					}
 				}
             }
-            echo '</table></div>';
+			if ($last_cat_id != -1) {
+            	echo '</table></div>';
+			}
             ?>
             <p id="submitBox" style="display:none"><input type="submit" value="Save" name="form_sent" onclick="return prepareSubmit();" /></p>
     	</form>

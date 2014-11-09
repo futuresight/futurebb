@@ -195,7 +195,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['categories']->add_field($new_fld);
 		$new_fld = new DBField('sort_position','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['categories']->add_field($new_fld);
 		$tables['categories']->commit();
 		
@@ -234,7 +234,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['extensions']->add_field($new_fld);
 		$new_fld = new DBField('uninstallable','TINYINT(1)');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['extensions']->add_field($new_fld);
 		$tables['extensions']->commit();
 		
@@ -317,7 +317,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('send_time','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('contents','MEDIUMTEXT');
 		$new_fld->add_extra('NOT NULL');
@@ -330,7 +330,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('read_time','INT');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('read_ip','VARCHAR(50)');
@@ -346,7 +346,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('AUTO_INCREMENT');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('poster','INT');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('poster_ip','VARCHAR(50)');
@@ -368,7 +368,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('NOT NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('topic_id','INT');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('deleted','INT');
@@ -401,7 +401,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['read_tracker']->add_field($new_fld);
 		$new_fld = new DBField('user_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['read_tracker']->add_field($new_fld);
 		$new_fld = new DBField('topic_id','INT');
 		$new_fld->add_extra('NULL');
@@ -420,7 +420,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('AUTO_INCREMENT');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('post_id','INT');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('post_type','enum(\'post\',\'msg\',\'special\')');
@@ -433,11 +433,11 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('reported_by','INT');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('time_reported','INT');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('zapped','INT');
@@ -461,7 +461,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('AUTO_INCREMENT');
 		$tables['search_index']->add_field($new_fld);
 		$new_fld = new DBField('post_id','INT');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['search_index']->add_field($new_fld);
 		$new_fld = new DBField('word','VARCHAR(255)');
@@ -470,7 +470,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['search_index']->add_field($new_fld);
 		$new_fld = new DBField('num_matches','INT');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['search_index']->add_field($new_fld);
 		$tables['search_index']->commit();
@@ -493,7 +493,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('forum_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('deleted','INT');
 		$new_fld->add_extra('NULL');
@@ -505,15 +505,15 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('last_post','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('last_post_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('first_post_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('closed','TINYINT(1)');
 		$new_fld->add_extra('NOT NULL');
@@ -573,7 +573,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('registered','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('registration_ip','VARCHAR(50)');
 		$new_fld->add_extra('NOT NULL');
@@ -590,7 +590,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('group_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('signature','TEXT');
 		$new_fld->add_extra('NOT NULL');
@@ -604,7 +604,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('last_visit','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('timezone','TINYINT(3)');
 		$new_fld->add_extra('NOT NULL');
@@ -704,19 +704,19 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_promote_group','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_promote_posts','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_promote_operator','TINYINT(1)');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_promote_days','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default(0);
+		$new_fld->set_default('0');
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_post_flood','INT');
 		$new_fld->add_extra('NOT NULL');
@@ -813,7 +813,8 @@ if (isset($_GET['downloadconfigxml'])) {
 			'registration_ip'	=> $_SERVER['REMOTE_ADDR'],
 			'group_id'			=> 1,
 			'last_visit'		=> time(),
-			'last_page_load'	=> time()
+			'last_page_load'	=> time(),
+			'rss_token'			=> md5(time())
 		), 'Failed to create admin user');
 		$insert->commit();
 		

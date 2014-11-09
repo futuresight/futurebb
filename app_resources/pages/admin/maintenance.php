@@ -10,7 +10,7 @@ if (!isset($dirs[3])) {
 }
 switch ($dirs[3]) {
 	case 'removeorphans':
-		$result = $db->query('SELECT t.id FROM `#^topics` AS t LEFT JOIN `#^posts` AS p ON p.topic_id=t.id AND p.deleted IS NULL WHERE p.id IS NULL AND t.deleted IS NULL LIMIT 30') or error('Failed to find orphans', __FILE__, __LINE__, $db->error());
+		$result = $db->query('SELECT t.id FROM `#^topics` AS t LEFT JOIN `#^posts` AS p ON p.topic_id=t.id WHERE p.id IS NULL LIMIT 30') or error('Failed to find orphans', __FILE__, __LINE__, $db->error());
 		if (!$db->num_rows($result)) {
 			header('Location: ' . $base_config['baseurl'] . '/admin/maintenance'); return;
 		}
@@ -18,7 +18,7 @@ switch ($dirs[3]) {
 		while (list($id) = $db->fetch_row($result)) {
 			$ids[] = $id;
 		}
-		$db->query('UPDATE `#^topics` SET deleted=' . time() . ',deleted_by=0 WHERE id IN(' . implode(',', $ids) . ')') or error('Failed to delete orphans', __FILE__, __LINE__, $db->error());
+		$db->query('DELETE FROM `#^topics` WHERE id IN(' . implode(',', $ids) . ')') or error('Failed to delete orphans', __FILE__, __LINE__, $db->error());
 		header('Refresh: 1');
 		break;
 	case 'updatelastposts':
