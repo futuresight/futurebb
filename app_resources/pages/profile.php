@@ -232,6 +232,8 @@ if(isset($_POST['pm_sent'])) {
 				if (isset($dirs[4]) && $dirs[4] == 'remove') {
 					$q = new DBUpdate('users', array('avatar_extension' => null), 'username=\'' . $db->escape($user) . '\'', 'Failed to remove avatar extension');
 					$q->commit();
+					unlink(FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.' . $cur_user['avatar_extension']);
+					redirect($base_config['baseurl'] . '/users/' . $cur_user['username'] . '/avatar');
 				}
 				if (isset($_POST['form_sent'])) {
 					// Make sure the upload worked right
