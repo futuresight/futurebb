@@ -89,3 +89,15 @@ if (isset($page_info['admin']) && !$futurebb_user['g_admin_privs']) {
 if (isset($page_info['mod']) && !$futurebb_user['g_mod_privs']) {
 	httperror(403);
 }
+//automatically check for updates
+if (ini_get('allow_url_fopen')) {
+	if ($futurebb_config['last_update_check'] < time() - 60 * 60 * 24 && !$futurebb_config['new_version']) {
+		$version = file_get_contents('http://futuresight.org/api/getversion/futurebb');
+		if ($version > FUTUREBB_VERSION) {
+			$q = new DBInsert('reports', array('post_type' => 'special', 'reason' => translate('newversionmsg'), 'time_reported' => time()), 'Failed to insert update notification');
+			$q->commit();
+			set_config('new_version', 1);
+		}
+		set_config('last_update_check', time());
+	}
+}
