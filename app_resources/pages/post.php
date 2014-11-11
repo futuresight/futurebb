@@ -35,7 +35,7 @@ if ($dirs[2] == 'forum') {
 	$page_title = translate('posttopic') . ' - ' . $forum_info['name'];
 	$breadcrumbs = array(translate('index') => '', $forum_info['name'] => $forum_info['url'], translate('posttopic') => '!nourl!');
 } else if ($dirs[2] == 'topic') {
-	$result = $db->query('SELECT t.subject,t.url,t.closed,f.name AS forum_name,f.url AS forum_url,f.id AS f_id,f.reply_groups FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . intval($dirs[3]) . ' AND t.deleted IS NULL') or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT t.subject,t.url,t.closed,t.deleted,f.name AS forum_name,f.url AS forum_url,f.id AS f_id,f.reply_groups FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . intval($dirs[3]) . ($futurebb_user['g_admin_privs'] ? '' : ' AND t.deleted IS NULL')) or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result)) {
 		httperror(404);
 	}
@@ -144,7 +144,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		
 		// Continue posting
 		$db->query('UPDATE `#^topics` SET last_post=' . time() . ',last_post_id=' . $pid . ',num_replies=num_replies+1 WHERE id=' . $tid) or error('Failed to update topic info', __FILE__, __LINE__, $db->error());
-		$db->query('UPDATE `#^forums` SET last_post=' . time() . ',last_post_id=' . $pid . ',num_posts=num_posts+1 WHERE id=' . $cur_topic['f_id']) or error('Failed to forum last post', __FILE__, __LINE__, $db->error());
+		$db->query('UPDATE `#^forums` SET last_post=' . time() . ',last_post_id=' . $pid . ($cur_topic['deleted'] ? '' : ',num_posts=num_posts+1') . ' WHERE id=' . $cur_topic['f_id']) or error('Failed to forum last post', __FILE__, __LINE__, $db->error());
 		$db->query('DELETE FROM `#^read_tracker` WHERE (forum_id=' . $cur_topic['f_id'] . ' OR topic_id=' . $tid . ') AND user_id<>' . $futurebb_user['id']) or error('Failed to update read tracker', __FILE__, __LINE__, $db->error());
 		$db->query('UPDATE `#^users` SET num_posts=num_posts+1 WHERE id=' . $futurebb_user['id']) or error('Failed to update number of posts', __FILE__, __LINE__, $db->error());
 		
