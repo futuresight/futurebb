@@ -41,7 +41,7 @@ switch ($dirs[3]) {
 			$per_page = 40;
 			$result = $db->query('SELECT MAX(id) FROM `#^topics`') or error('Failed to get topic count', __FILE__, __LINE__, $db->error());
 			list($num_topics) = $db->fetch_row($result);
-			$result = $db->query('SELECT id FROM `#^topics` WHERE deleted IS NULL ORDER BY id LIMIT ' . $start . ',' . intval($per_page)) or error('Failed to get IDs', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT id FROM `#^topics` ORDER BY id LIMIT ' . $start . ',' . intval($per_page)) or error('Failed to get IDs', __FILE__, __LINE__, $db->error());
 			echo '<div class="forum_content">';
 			if (!$db->num_rows($result)) {
 				header('Location: ?part=forums'); return;
@@ -54,7 +54,7 @@ switch ($dirs[3]) {
 				</p>';
 					$first = false;
 				}
-				$r2 = $db->query('SELECT id,posted FROM `#^posts` WHERE topic_id=' . $id . ' AND deleted IS NULL ORDER BY posted DESC LIMIT 1') or error('Failed to get last post', __FILE__, __LINE__, $db->error());
+				$r2 = $db->query('SELECT id,posted FROM `#^posts` WHERE topic_id=' . $id . '  AND deleted IS NULL ORDER BY posted DESC LIMIT 1') or error('Failed to get last post', __FILE__, __LINE__, $db->error());
 				echo '<p>' . translate('updatingtopic', $id . '/' . $num_topics) . '.</p>';
 				if ($db->num_rows($r2)) {
 					list($lastpostid,$lastposttime) = $db->fetch_row($r2);
