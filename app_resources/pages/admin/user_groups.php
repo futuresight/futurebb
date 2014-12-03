@@ -18,10 +18,6 @@ if (isset($_POST['form_sent_update'])) {
 			'g_user_list_groups'	=> 'string',
 			'g_user_list'			=> 'bool',
 			'g_view_forums'			=> 'bool',
-		));
-	}
-	if ($group_id == 2) { //stuff only for guests
-		$cfg_list = array_merge($cfg_list, array(
 			'g_access_board'		=> 'bool',
 		));
 	}
@@ -127,7 +123,7 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 					<td><?php echo translate('usertitle'); ?></td>
 					<td><input type="text" name="config[g_title]" value="<?php echo $cur_group['g_title']; ?>" /><br /><?php echo translate('usertitledesc'); ?></td>
 				</tr>
-                <?php if ($group_id == 2) { //only for guests ?>
+                <?php if ($group_id != 1) { //not for admins ?>
                 <tr>
 					<td><?php echo translate('accessboard'); ?></td>
 					<td><input type="checkbox" name="config[g_access_board]" id="g_access_board" <?php if ($cur_group['g_access_board']) echo 'checked="checked" '; ?>/> <label for="g_access_board"><?php echo translate('enable?'); ?></label><br /><?php echo translate('accessboarddesc'); ?></td>

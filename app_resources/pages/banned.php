@@ -9,5 +9,11 @@ if ($ban_type == 'ban') {
 <?php } else if ($ban_type == 'no_guest') {
 	$page_title = translate('accessdenied'); ?>
 	<h2><?php echo translate('accessdenied'); ?></h2>
-    <p><?php echo translate('noguests'); ?></p>
+    <p><?php
+	if ($futurebb_user['id'] == 0) {
+		echo translate('noguests');
+	} else {
+		echo translate('nogroupview'); 
+	}
+	?></p>
 <?php } ?>

@@ -192,6 +192,7 @@ $lang = array(
 	'bannedmsg3'			=>	'To contact the board administrator, you may send an email to <a href="mailto:$1">$1</a>.',
 	'accessdenied'			=>	'Access denied',
 	'noguests'				=>	'You must log in to view this forum.',
+	'nogroupview'			=>	'You do not have permission to view these forums.',
 	
 	//maintenance page
 	'maintintro'			=>	'This forum is down for maintenance. The forum administrator said this:',
