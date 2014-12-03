@@ -306,7 +306,18 @@ if(isset($_POST['pm_sent'])) {
 				}
 				?></p>
 				<h3><?php echo translate('newavatar'); ?></h3>
-				<p><?php echo translate('avataruploaddesc', $futurebb_config['avatar_max_filesize'], $futurebb_config['avatar_max_width'], $futurebb_config['avatar_max_height']); ?></p>
+				<p><?php echo translate('avataruploaddesc'); ?>
+				<?php
+				if ($futurebb_config['avatar_max_filesize'] != 0) {
+					echo '<br />' . translate('avatarmaxsize', $futurebb_config['avatar_max_filesize']);
+				}
+				if ($futurebb_config['avatar_max_width'] != 0) {
+					echo '<br />' . translate('avatarmaxwidth', $futurebb_config['avatar_max_width']);
+				}
+				if ($futurebb_config['avatar_max_height'] != 0) {
+					echo '<br />' . translate('avatarmaxheight', $futurebb_config['avatar_max_height']);
+				}
+				?></p>
 				<p><input type="file" name="avatar" accept="image/png" /></p>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('save'); ?>" /></p>
 				<?php
