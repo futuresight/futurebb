@@ -73,7 +73,7 @@ if (isset($_POST['form_sent_forums'])) {
 	}
 	$result = $db->query('SELECT id,url,name FROM `#^forums` ORDER BY id ASC') or error('Failed to get forums', __FILE__, __LINE__, $db->error());
 	while (list($id,$furl,$title) = $db->fetch_row($result)) {
-		if ($_POST['title'][$id] != $title && isset($_POST['title'][$id]) && $_POST['title'][$id] != '') {
+		if (isset($_POST['title'][$id]) && $_POST['title'][$id] != $title && $_POST['title'][$id] != '') {
 			//make redirect forum
 			$base_name = URLEngine::make_friendly($_POST['title'][$id]);
 			$name = $base_name;

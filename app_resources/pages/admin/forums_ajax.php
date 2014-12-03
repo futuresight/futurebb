@@ -14,7 +14,7 @@ if (isset($_POST['form_sent'])) {
 			$q->commit();
 		}
 		$title = $forum['forum_name'];
-		if ($_POST['title'][$id] != $title && isset($_POST['title'][$id]) && $_POST['title'][$id] != '') {
+		if (isset($_POST['title'][$id]) && $_POST['title'][$id] != $title && $_POST['title'][$id] != '') {
 			//make redirect forum
 			$furl = $forum['furl'];
 			$base_name = URLEngine::make_friendly($_POST['title'][$id]);
