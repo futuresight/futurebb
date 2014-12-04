@@ -6,7 +6,7 @@ if (!$db->num_rows($result)) {
 	httperror(404);
 }
 $cur_post = $db->fetch_assoc($result);
-if (!$futurebb_user['g_admin_privs'] && !$futurebb_user['g_mod_privs'] && ($cur_post['poster'] != $futurebb_user['id'] || !$futurebb_user['g_delete_posts']) || strstr($futurebb_user['restricted_privs'], 'edit')) {
+if (!$futurebb_user['g_admin_privs'] && !$futurebb_user['g_mod_privs'] && ($cur_post['poster'] != $futurebb_user['id'] || !$futurebb_user['g_edit_posts']) || strstr($futurebb_user['restricted_privs'], 'edit')) {
 	httperror(403);
 }
 $can_edit_subject = ($cur_post['first_post_id'] == $pid); //only allow subject editing if the first post

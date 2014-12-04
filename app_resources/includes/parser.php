@@ -28,6 +28,9 @@ abstract class BBCodeController {
 	
 	static function parse_msg($text, $show_smilies = true, $preview = false, $bbcode = true) {
 		global $db, $futurebb_user, $futurebb_config;
+		
+		//take out list tags
+		
 		if ($bbcode && empty(self::$pattern)) {
 			self::$pattern = array();
 			self::$replace = array();
@@ -61,7 +64,7 @@ abstract class BBCodeController {
 		$text = preg_replace('%\[code\](.*?)\[/code\]%msie', 'self::handle_code_tag(\'$1\', 2);', $text);
 		
 		$text = preg_replace('%\[list(=(\*|1))?\](.*?)\[/list\]%msie', 'self::handle_list_tag(\'$2\', \'$3\');', $text);
-		
+	
 		$text = self::add_line_breaks($text);
 		
 		$text = censor($text);
@@ -110,6 +113,32 @@ abstract class BBCodeController {
 		$text = str_replace("\r", '<br />', $text);
 		$text = str_replace("\n", '<br />', $text);
 		return $text;
+	}
+	
+	static function prepare_list_tag($text, $mode) {
+		static $i1, $i2, $code_matches;
+		//MODES: 1 = extract, 2 = replace
+		
+		if (!isset($code_matches)) {
+			$code_matches = array();
+		}
+		
+		if ($mode == 1) {
+			if (!isset($i1)) {
+				$i1 = 0;
+			}
+			$i1++;
+			$code_matches[$i1] = $text;
+			return '[code]' . $i1 . '[/code]';
+		} else if ($mode == 2) {
+			if (!isset($i2)) {
+				$i2 = 0;
+			}
+			$i2++;
+			return '<div class="quotebox" style="font-family:Courier">' . $code_matches[$i2] . '</div>';
+		} else {
+			return '';
+		}
 	}
 	
 	static function handle_code_tag($text, $mode) {
