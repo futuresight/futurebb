@@ -39,19 +39,22 @@ abstract class BBCodeController {
 			self::add_bbcode('%\[quote\](.*?)\[/quote\]%ms', '</p><div class="quotebox">$1</div><p>');
 			self::add_bbcode('%\[quote=(.*?)\](.*?)\[/quote\]%ms', '</p><div class="quotebox"><p><b>$1 ' . translate('wrote') . '</b><br />$2</p></div><p>');
 			self::add_bbcode('%\[colou?r=(white|black|red|green|blue|orange|yellow|pink|gray|magenta|#[0-9a-fA-F]{6}|\#[0-9a-fA-F]{3})\](.*?)\[/colou?r\]%m', '<span style="color:$1">$2</span>');
-			self::add_bbcode('%\[url=?(.*?)\](.*?)\[/url\]%se', 'self::handle_url_tag(\'$1\',\'$2\');');
-			self::add_bbcode('%\[img\](.*?)\[/img\]%se', 'self::handle_img_tag(\'$1\');');
 		}
 		
-		$text = htmlspecialchars($text);
+		$text = htmlspecialchars($text); //clear out any funny business
+		
+		//links and images (these can't be grouped with the rest because they use a different function
+		$text = preg_replace_callback('%\[url=?(.*?)\](.*?)\[/url\]%s', 'self::handle_url_tag', $text);
+		$text = preg_replace_callback('%\[img\](.*?)\[/img\]%s', 'self::handle_img_tag', $text);
 
-		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_remove', $text);
+		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
 		
 		// Format @username into tags
 		if($futurebb_config['allow_notifications'] == 1) {
 			$text = preg_replace('%@([a-zA-Z0-9_\-]+)%', '<span class="usertag">@$1</span>', $text);
 		}
 		
+		//run the bbcode parser with the items entered into the array at the beginning of this function
 		if ($bbcode) {
 			self::parse_bbcode($text);
 		}
@@ -59,7 +62,7 @@ abstract class BBCodeController {
 			self::parse_smilies($text);
 		}
 		
-		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_replace', $text);
+		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_replace', $text); //put [code] tags back
 		
 		$text = self::add_line_breaks($text);
 		
@@ -156,7 +159,9 @@ abstract class BBCodeController {
 		}
 	}
 	
-	static function handle_url_tag($v1, $v2) {
+	static function handle_url_tag($matches) {
+		$v1 = $matches[1];
+		$v2 = isset($matches[2]) ? $matches[2] : '';
 		if ($v1 == '') {
 			$url = $v2;
 			$text = $v2;
@@ -174,7 +179,8 @@ abstract class BBCodeController {
 		return '<a href="' . $url . '">' . $text . '</a>';
 	}
 	
-	static function handle_img_tag($url) {
+	static function handle_img_tag($matches) {
+		$url = $matches[1];
 		if (!preg_match('%^(ht|f)tps?://%', $url)) {
 			$url = 'http://' . $url;
 		}
