@@ -170,7 +170,6 @@ if (isset($_GET['quote'])) {
 	list($post,$poster) = $db->fetch_row($result);
 }
 ?>
-<link href="/app_resources/pages/css/default.css" rel="stylesheet" type="text/css" />
 
 <form action="<?php echo $base_config['baseurl']; ?>/post/<?php echo htmlspecialchars($dirs[2]); ?>/<?php echo htmlspecialchars($dirs[3]); ?>" method="post" enctype="multipart/form-data">
 	<?php if ($dirs[2] == 'forum') { ?><p><?php echo translate('subject'); ?> <input type="text" name="subject" size="50"<?php if (isset($_POST['subject'])) echo ' value="' . htmlspecialchars($_POST['subject']) . '"'; ?> /></p><?php } ?>

@@ -45,7 +45,7 @@ abstract class BBCodeController {
 		
 		$text = htmlspecialchars($text);
 
-		$text = preg_replace('%\[code\](.*?)\[/code\]%msie', 'self::handle_code_tag(\'$1\', 1);', $text);
+		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_remove', $text);
 		
 		// Format @username into tags
 		if($futurebb_config['allow_notifications'] == 1) {
@@ -59,51 +59,61 @@ abstract class BBCodeController {
 			self::parse_smilies($text);
 		}
 		
-		$text = preg_replace('%\[code\](.*?)\[/code\]%msie', 'self::handle_code_tag(\'$1\', 2);', $text);
+		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_replace', $text);
 		
-		$text = preg_replace('%\[list(=(\*|1))?\](.*?)\[/list\]%msie', 'self::handle_list_tag(\'$2\', \'$3\');', $text);
-	
 		$text = self::add_line_breaks($text);
+		
+		//handle list tags last, they're weird
+		$text = self::handle_list_tags($text);
 		
 		$text = censor($text);
 		return $text;
 	}
 	
-	static function handle_list_tag($type, $text) {
-		if ($type == '') {
-			$type = '*';
-		}
-		//pull out everything in item tags
-		$text = preg_replace('%\[\*\](.*?)\[/\*\]%msie', 'self::handle_list_item_tag(\'$1\');', $text);
-		
-		if ($type == '*') {
-			$text = '</p><ul>' . self::handle_list_item_tag('', 1) . '</ul><p>';
-		} else if ($type == '1') {
-			$text = '</p><ol>' . self::handle_list_item_tag('', 1) . '</ol><p>';
-		}
-		
-		self::handle_list_item_tag('', 2);
-		
-		return $text;
-	}
-	
-	static function handle_list_item_tag($item, $action = 0) {
-		static $items;
-		if ($action == 2) {
-			$items = array();
-		}
-		if (!isset($items)) {
-			$items = array();
-		}
-		if ($action == 0) {
-			$items[] = $item;
-			return '';
-		} else if ($action == 1) {
-			foreach ($items as &$val) {
-				$val = '<li>' . $val . '</li>';
+	static function handle_list_tags($text) {
+		//all other tags have been already parsed, so we can just look at [list] tags
+		$list_tags = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+		//split the message into [list] or [*] tags and start parsing
+		$open_tags = array();
+		$output = '';
+		foreach ($list_tags as $val) {
+			if (sizeof($open_tags) != 0) {
+				//no line breaks inside lists
+				$val = str_replace('<br />', '', $val);
 			}
-			return implode($items);
+			//go inside each list
+			if (preg_match('%^\[(list(=(\*|1))?)\]%', $val, $matches)) {
+				//we're inside a list!
+				$open_tags[] = $matches[1] . '=' . (isset($matches[3]) ? $matches[3] : '*');
+				if (isset($matches[3]) && $matches[3] == '1') {
+					$val = preg_replace('%^\[list=1\]%', '<ol>', $val);
+				} else {
+					$val = preg_replace('%^\[list(=\*)?\]%', '<ul>', $val);
+				}
+			} else if (preg_match('%^\[\*\]%', $val)) {
+				$open_tags[] = '*';
+				$val = preg_replace('%^\[\*\]%', '<li>', $val);
+			} else if (preg_match('%^\[/(\*|list)\]%', $val, $matches)) {
+				$last_tag = array_pop($open_tags);
+				if (strpos($last_tag, $matches[1]) === 0) {
+					if ($matches[1] == '*') {
+						$val = preg_replace('%^\[/\*\]%', '</li>', $val);;
+					} else {
+						if ($last_tag == 'list=*') {
+							$val = preg_replace('%^\[/list\]%', '</ul>', $val);
+						} else {
+							$val = preg_replace('%^\[/list\]%', '</ol>', $val);
+						}
+					}
+					
+				} else {
+					error('List parsing error: expected ' . $matches[1] . ' but had ' . $last_tag, __FILE__, __LINE__);
+				}
+			} else if (preg_match('%^\[/list\]%', $val)) {
+			}
+			$output .= $val;
 		}
+		return $output;
 	}
 	
 	static function add_line_breaks($text) {
@@ -111,6 +121,13 @@ abstract class BBCodeController {
 		$text = str_replace("\r", '<br />', $text);
 		$text = str_replace("\n", '<br />', $text);
 		return $text;
+	}
+	
+	static function handle_code_tag_remove($matches) {
+		return self::handle_code_tag($matches[1], 1);
+	}
+	static function handle_code_tag_replace($matches) {
+		return self::handle_code_tag($matches[1], 2);
 	}
 	
 	static function handle_code_tag($text, $mode) {
