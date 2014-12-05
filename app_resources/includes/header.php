@@ -32,6 +32,7 @@
 	}
 	//]]>
 	</script>
+	<$other_head_stuff/>
 </head>
 
 <body>

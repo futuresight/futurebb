@@ -109,7 +109,8 @@ function httperror($errorcode) {
 	$page_contents = str_replace('<$page_title/>', $page_title, $page_contents);
 	$page_contents = str_replace('<$breadcrumbs/>', '', $page_contents);
 	$page_contents = str_replace('<$debug_info/>', '', $page_contents);
-	$page_contents = str_replace('<$addl_head_stuff/>', '', $page_contents);
+	$page_contents = str_replace('<$other_head_stuff/>', '', $page_contents);
+	header('Content-type: text/html');
 	echo $page_contents;
 	$db->close();
 	die;

@@ -8,8 +8,11 @@ $cur_topic = $db->fetch_assoc($result);
 if (!strstr($cur_topic['view_groups'], '-' . $futurebb_user['group_id'] . '-')) {
 	httperror(403);
 }
+
+//page header stuff
 $breadcrumbs = array(translate('index') => '', $cur_topic['forum_name'] => $cur_topic['forum_url'], $cur_topic['subject'] => $cur_topic['forum_url'] . '/' . $cur_topic['url']);
 $page_title = $cur_topic['subject'] . ' - ' . $cur_topic['forum_name'];
+$other_head_stuff = array('<link rel="alternate" type="application/rss+xml" href="' . $base_config['baseurl'] . '/rss/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '" title="' . translate('rssfeed') . '" />');
 
 if ($cur_topic['redirect_id'] != null) {
 	$result = $db->query('SELECT t.url AS turl,f.url AS furl FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . $cur_topic['redirect_id']) or error('Failed to get redirect info', __FILE__, __LINE__, $db->error());

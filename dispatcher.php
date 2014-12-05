@@ -140,6 +140,11 @@ if ($page_info) {
 	} else {
 		$page_contents = str_replace('<$breadcrumbs/>', '', $page_contents);
 	}
+	if (isset($other_head_stuff)) {
+		$page_contents = str_replace('<$other_head_stuff/>', implode("\t\n", $other_head_stuff), $page_contents);
+	} else {
+		$page_contents = str_replace('<$other_head_stuff/>', '', $page_contents);
+	}
 	ob_end_clean();
 } else {
 	// No valid page info, display 404 not found
