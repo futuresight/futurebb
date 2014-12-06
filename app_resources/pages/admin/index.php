@@ -32,7 +32,6 @@ if(isset($_POST['form_sent'])) {
 		'default_language'		=> 'string',
 		'allow_privatemsg'		=> 'bool',
 		'allow_notifications'	=> 'bool',
-		'addl_header_links'		=> 'string',
 		'online_timeout'		=> 'int',
 		'topics_per_page'		=> 'int',
 		'posts_per_page'		=> 'int',
@@ -158,7 +157,6 @@ if(isset($_POST['form_sent'])) {
 		<input name="config[announcement_enable]" type="checkbox" <?php if($futurebb_config['announcement_enable'] == 1) echo 'checked="checked"'; ?> value="1" id="announcement_enable" /> <label for="announcement_enable"><?php echo translate('enableannouncement'); ?></label><br />
 		<textarea name="config[announcement_text]" cols="50" rows="4"><?php echo htmlspecialchars($futurebb_config['announcement_text']); ?></textarea></p>
 		<p><?php echo translate('customfooter'); ?><br /><textarea name="config[footer_text]" cols="50" rows="3"><?php echo htmlspecialchars($futurebb_config['footer_text']); ?></textarea></p>
-		<p><?php echo translate('addl_header_links'); ?><br /><textarea name="config[addl_header_links]" cols="50" rows="3"><?php echo htmlspecialchars($futurebb_config['addl_header_links']); ?></textarea></p>
 		<p><input type="text" name="config[topics_per_page]" value="<?php echo $futurebb_config['topics_per_page']; ?>" size="3" /> <?php echo translate('topicsperpage'); ?><br /><input type="text" name="config[posts_per_page]" value="<?php echo $futurebb_config['posts_per_page']; ?>" size="3" /> <?php echo translate('postsperpage'); ?></p>
 		<p><input name="config[show_post_count]" type="checkbox" <?php if($futurebb_config['show_post_count'] == 1) echo 'checked="checked"'; ?> value="1" id="show_post_count" /> <label for="show_post_count"><?php echo translate('showpostcounts'); ?></label> - <?php echo translate('showpostcountsdesc'); ?></p>
         

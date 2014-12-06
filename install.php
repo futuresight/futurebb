@@ -1040,6 +1040,10 @@ if (isset($_GET['downloadconfigxml'])) {
 							$ok = false;
 							echo '<p style="color:#F00; font-weight:bold">The directory &quot;temp&quot; is not writable. Please change the permissions so that it is (chmod to 0777 if in doubt)</p>';
 						}
+						if (!writable(FORUM_ROOT . '/app_config/cache/')) {
+							$ok = false;
+							echo '<p style="color:#F00; font-weight:bold">The directory &quot;app_config/cache&quot; is not writable. Please change the permissions so that it is (chmod to 0777 if in doubt)</p>';
+						}
 						if (strstr($_SERVER['SERVER_SOFTWARE'], 'Apache') && function_exists('apache_get_modules') && !in_array('mod_rewrite', apache_get_modules())) { //check for mod_rewrite
 							$ok = false;
 							echo '<p style="color:#F00; font-weight:bold">mod_rewrite is not installed in Apache. This means that the URL system will not work. Please install it.</p>';

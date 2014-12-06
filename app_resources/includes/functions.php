@@ -546,3 +546,17 @@ function paginate($url, $page, $count) {
 	}
 	return implode(' ', $links);
 }
+
+abstract class CacheEngine {
+	static function CacheHeader() {
+		include_once FORUM_ROOT . '/app_resources/includes/cacher/interface.php';
+		cache_header();
+	}
+	
+	static function replace_interface_strings($text) {
+		global $futurebb_user;
+		$text = str_replace('$username$', $futurebb_user['username'], $text);
+		$text = str_replace('$reghash$', futurebb_hash(LoginController::GetRandID()), $text);
+		return $text;
+	}
+}

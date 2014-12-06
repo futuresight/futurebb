@@ -83,41 +83,10 @@
 		<div id="navlistwrap">
 			<ul id="navlist">
 				<?php
-				$nav_items = array();
-				$nav_items[] = '<a href="' . $base_config['baseurl'] . '">' . translate('index') . '</a>';
-				if ($futurebb_user['id'] != 0) {
-					$nav_items[] = '<a href="' . $base_config['baseurl'] . '/users/' . $futurebb_user['username'] . '">' . translate('profile') . '</a>';
-				} else {
-					$nav_items[] = '<a href="' . $base_config['baseurl'] . '/register/' . futurebb_hash(LoginController::GetRandId()) . '">' . translate('register') . '</a>';
+				if (!file_exists(FORUM_ROOT . '/app_config/cache/header.php')) {
+					CacheEngine::CacheHeader();
 				}
-				if ($futurebb_user['g_user_list']) {
-					$nav_items[] = '<a href="' . $base_config['baseurl']. '/users">' . translate('userlist') . '</a>';
-				}
-				$nav_items[] = '<a href="' .  $base_config['baseurl'] . '/search">' . translate('search') . '</a>';
-				if ($futurebb_user['g_admin_privs']) {
-					$nav_items[] = '<a href="' . $base_config['baseurl'] . '/admin">' . translate('administration') . '</a>';
-				}
-				if ($futurebb_user['g_mod_privs'] && !$futurebb_user['g_admin_privs']) {
-					$nav_items[] = '<a href="' . $base_config['baseurl'] . '/admin/bans">' . translate('bans') . '</a>';
-					$nav_items[] = '<a href="' . $base_config['baseurl'] . '/admin/trash_bin">' . translate('trashbin') . '</a>';
-					$nav_items[] = '<a href="' . $base_config['baseurl'] . '/admin/reports">' . translate('reports') . '</a>';
-				}
-				if ($futurebb_user['id'] != 0) {
-					$nav_items[] = '<a href="' . $base_config['baseurl'] . '/logout">' . translate('logout') . '</a>';
-				}
-				if ($futurebb_config['addl_header_links']) {
-					$addl_links = str_replace("\r\n", "\n", $futurebb_config['addl_header_links']);
-					$addl_links = str_replace("\r", chr(1), $addl_links);
-					$addl_links = str_replace("\n", chr(1), $addl_links);
-					$addl_links = explode(chr(1), $addl_links);
-					foreach ($addl_links as $val) {
-						$link_parts = explode(':', $val, 2);
-						if (sizeof($link_parts) == 2 && $link_parts[0] == intval($link_parts[0])) {
-							$nav_items = array_move($nav_items, $link_parts[0], 1);
-							$nav_items[$link_parts[0]] = $link_parts[1];
-						}
-					}
-				}
+				require FORUM_ROOT . '/app_config/cache/header.php';
 				foreach ($nav_items as $val) {
 					echo '<li>' . $val . '</li>';
 				}

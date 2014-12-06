@@ -179,7 +179,6 @@ $lang_addl = array(
 	'enableannouncement'	=>	'Enable announcement?',
 	'siteappearance'		=>	'Site appearance',
 	'customfooter'			=>	'Here you may specify custom text to appear below the &quot;Powered by FutureBB&quot; message.',
-	'addl_header_links'		=>	'Additional header links<br />Enter them in the following format: <code>3:&lt;a href=&quot;http://yoursite.com&quot;&gt;My website&lt;/a&gt;</code><br />That example would make it appear as the third header link.',
 	'topicsperpage'			=>	'Topics per page',
 	'postsperpage'			=>	'Posts per page',
 	'showpostcounts'		=>	'Show user post counts',
