@@ -1,48 +1,68 @@
 <?php
-//WARNING
-//THIS FILE NO LONGER HAS ANY USE AND WILL BE REMOVED PRIOR TO THE RELEASE OF VERSION 1.2. RELYING ON IT FROM NOW ON WILL CAUSE SOFTWARE PROBLEMS. THE CACHED VERSION OF THIS PAGE WILL BE STORED IN app_config/cache/pages.php AND THE ACTUAL CONTENT WILL BE STORED IN THE "pages" TABLE OF THE DATABASE
 $pages = array (
   '/' => 
   array (
     'file' => 'index.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
   '/login' => 
   array (
     'file' => 'login.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/logout' => 
   array (
     'file' => 'logout.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/styles/default.css' => 
   array (
     'file' => 'css/default.css',
     'template' => false,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/styles/embed.css' => 
   array (
     'file' => 'css/embed.css',
     'template' => false,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/search' => 
   array (
     'file' => 'search.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
   '/online_list' => 
   array (
     'file' => 'online_list.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/messages' => 
   array (
     'file' => 'messages.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/admin' => 
   array (
@@ -50,6 +70,7 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/censoring' => 
   array (
@@ -57,6 +78,7 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/style' => 
   array (
@@ -64,6 +86,7 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/extensions' => 
   array (
@@ -71,43 +94,63 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '//' => 
   array (
     'file' => 'index.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
   '/login/' => 
   array (
     'file' => 'login.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/logout/' => 
   array (
     'file' => 'logout.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/styles/default.css/' => 
   array (
     'file' => 'css/default.css',
     'template' => false,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/search/' => 
   array (
     'file' => 'search.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
   '/online_list/' => 
   array (
     'file' => 'online_list.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/messages/' => 
   array (
     'file' => 'messages.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/admin/' => 
   array (
@@ -115,6 +158,7 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/censoring/' => 
   array (
@@ -122,6 +166,7 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/style/' => 
   array (
@@ -129,6 +174,7 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/extensions/' => 
   array (
@@ -136,12 +182,15 @@ $pages = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/bbcodehelp' => 
   array (
     'file' => 'bbcodehelp.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
 );
 $pagessubdirs = array (
@@ -150,47 +199,72 @@ $pagessubdirs = array (
     'file' => 'profile.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
   '/embed' => 
   array (
     'file' => 'embed.php',
     'template' => false,
     'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
   '/register/' => 
   array (
     'file' => 'register.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/post/' => 
   array (
     'file' => 'post.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/delete/' => 
   array (
     'file' => 'delete.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/edit/' => 
   array (
     'file' => 'edit.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/posts/' => 
   array (
     'file' => 'postredir.php',
     'template' => false,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/report/' => 
   array (
     'file' => 'report.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/mass_import' => 
   array (
     'file' => 'massimport.php',
     'template' => true,
+    'nocontentbox' => false,
+    'admin' => false,
+    'mod' => false,
   ),
   '/admin/user_groups' => 
   array (
@@ -198,6 +272,7 @@ $pagessubdirs = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/maintenance' => 
   array (
@@ -205,12 +280,14 @@ $pagessubdirs = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/trash_bin' => 
   array (
     'file' => 'admin/trash_bin.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
     'mod' => true,
   ),
   '/admin/forums' => 
@@ -219,12 +296,14 @@ $pagessubdirs = array (
     'template' => true,
     'nocontentbox' => true,
     'admin' => true,
+    'mod' => false,
   ),
   '/admin/bans' => 
   array (
     'file' => 'admin/bans.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
     'mod' => true,
   ),
   '/admin/reports' => 
@@ -232,6 +311,7 @@ $pagessubdirs = array (
     'file' => 'admin/reports.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
     'mod' => true,
   ),
   '/admin/ip_tracker' => 
@@ -239,6 +319,7 @@ $pagessubdirs = array (
     'file' => 'admin/ip_tracking.php',
     'template' => true,
     'nocontentbox' => true,
+    'admin' => false,
     'mod' => true,
   ),
   '/rss' => 
@@ -246,17 +327,15 @@ $pagessubdirs = array (
     'file' => 'rss.php',
     'template' => false,
     'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
   '/usernotifsrss' => 
   array (
     'file' => 'notifsrss.php',
     'template' => false,
     'nocontentbox' => true,
-  ),
-  '/embed' => 
-  array (
-    'file' => 'embed.php',
-    'template' => false,
-    'nocontentbox' => true,
+    'admin' => false,
+    'mod' => false,
   ),
 );

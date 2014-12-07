@@ -34,7 +34,10 @@ if (!isset($futurebb_config['db_version'])) {
 
 // Get the list of pages
 $page_info = false;
-include FORUM_ROOT . '/app_config/pages.php';
+if (!file_exists(FORUM_ROOT . '/app_config/cache/pages.php')) {
+	CacheEngine::CachePages();
+}
+include FORUM_ROOT . '/app_config/cache/pages.php';
 foreach ($pages as $key => $val) {
 	$pages[$key . '/'] = $val;
 }

@@ -559,4 +559,9 @@ abstract class CacheEngine {
 		$text = str_replace('$reghash$', futurebb_hash(LoginController::GetRandID()), $text);
 		return $text;
 	}
+	
+	static function CachePages() {
+		include_once FORUM_ROOT . '/app_resources/includes/cacher/pages.php';
+		cache_pages();
+	}
 }
