@@ -1,4 +1,5 @@
 <?php
+//THIS FILE IS NO LONGER USEFUL AND WILL BE REMOVED BEFORE THE RELEASE OF VERSION 1.1. IT IS ONLY STILL HERE FOR REFERENCE.
 $lang = array(
 	//general
 	'index'					=>	'Index',

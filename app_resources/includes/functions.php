@@ -420,34 +420,34 @@ abstract class ExtensionConfig {
 		set_config('mod_pages', base64_encode(implode("\n", $lines)));
 	}
 	static function add_language_key($key, $text, $language = 'English') {
-		if (!file_exists(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php')) {
-			trigger_error('Illegal argument: $language is not a valid language', E_USER_ERROR);
-		}
-		$lang_data = file_get_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php');
-		$lines = explode("\n", $lang_data);
-		foreach ($lines as $lineno => $line) {
-			if (trim($line) == '//extensions') {
-				$lines = array_move($lines, $lineno + 1, 1);
-				$lines[$lineno + 1] = "\t" . '\'' . $key . '\' => \'' . addslashes($text) . '\',';
-				break;
+		$q = new DBInsert('language', array('language' => $language, 'langkey' => $key, 'value' => $text, 'category' => 'main'), 'Failed to insert language key');
+		$q->commit();
+		
+		//clear the cache
+		$maindir = FORUM_ROOT . '/app_config/cache/language/' . $language;
+		if (file_exists($maindir) && is_dir($maindir)) {
+			$handle = opendir($maindir);
+			while ($file = readdir($handle)) {
+				if ($file != '.' && $file != '..') {
+					unlink($maindir . '/' . $file);
+				}
 			}
 		}
-		file_put_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php', implode("\n", $lines));
 	}
 	static function remove_language_key($key, $language = 'English') {
-		if (!file_exists(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php')) {
-			trigger_error('Illegal argument: $language is not a valid language', E_USER_ERROR);
-		}
-		$lang_data = file_get_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php');
-		$lines = explode("\n", $lang_data);
-		foreach ($lines as $lineno => $line) {
-			if (strpos(trim($line), '\'' . $key . '\'') === 0) {
-				$lines = array_move($lines, $lineno + 1, -1);
-				unset($lines[$lineno]);
-				break;
+		$q = new DBDelete('language', 'language=\'' . $db->escape($language) . '\' AND langkey=\'' . $db->escape($key) . '\'', 'Failed to delete langauge key');
+		$q->commit();
+		
+		//clear the cache
+		$maindir = FORUM_ROOT . '/app_config/cache/language/' . $language;
+		if (file_exists($maindir) && is_dir($maindir)) {
+			$handle = opendir($maindir);
+			while ($file = readdir($handle)) {
+				if ($file != '.' && $file != '..') {
+					unlink($maindir . '/' . $file);
+				}
 			}
 		}
-		file_put_contents(FORUM_ROOT . '/app_config/langs/' . $language . '/main.php', implode("\n", $lines));
 	}
 }
 
@@ -455,17 +455,23 @@ function translate() {
 	global $futurebb_user, $base_config;
 	static $lang;
 	if (!isset($lang)) {
-		if (!file_exists(FORUM_ROOT . '/app_config/langs/' . basename($futurebb_user['language']) . '/main.php')) {
+		//is there a cache file present? if not, we need to make one
+		if (!file_exists(FORUM_ROOT . '/app_config/cache/language/' . basename($futurebb_user['language']) . '/main.php')) {
+			CacheEngine::CacheLanguage();
+		}
+		
+		//is there still not a cache file present? then we don't have a valid language
+		if (!file_exists(FORUM_ROOT . '/app_config/cache/language/' . basename($futurebb_user['language']) . '/main.php')) {
 			error('Invalid language file specified');
 		}
-		include FORUM_ROOT . '/app_config/langs/' . basename($futurebb_user['language']) . '/main.php';
+		include FORUM_ROOT . '/app_config/cache/language/' . basename($futurebb_user['language']) . '/main.php';
 	}
 	if (func_num_args() == 0) {
 		trigger_error('A text string was not provided to the translate function', E_USER_ERROR);
 	}
 	$args = func_get_args();
 	if ($args[0] == '<addfile>') {
-		include FORUM_ROOT . '/app_config/langs/' . basename($futurebb_user['language']) . '/' . $args[1] . '.php';
+		include FORUM_ROOT . '/app_config/cache/language/' . basename($futurebb_user['language']) . '/' . $args[1] . '.php';
 		$lang = array_merge($lang, $lang_addl);
 	}
 	if (!isset($lang[$args[0]])) {
@@ -578,5 +584,10 @@ abstract class CacheEngine {
 	static function CacheAdminPages() {
 		include_once FORUM_ROOT . '/app_resources/includes/cacher/pages.php';
 		cache_admin_pages();
+	}
+	
+	static function CacheLanguage() {
+		include_once FORUM_ROOT . '/app_resources/includes/cacher/interface.php';
+		cache_language();
 	}
 }
