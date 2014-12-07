@@ -54,7 +54,7 @@ function cache_header() {
 }
 
 function cache_language() {
-	global $db;
+	global $db, $base_config;
 	$q = new DBSelect('language', array('*'), '', 'Failed to get language entries');
 	$result = $q->commit();
 	$lang = array();
@@ -67,27 +67,27 @@ function cache_language() {
 		}
 		$lang[$lang_entry['language']][$lang_entry['category']][$lang_entry['langkey']] = $lang_entry['value'];
 	}
-	
+		
 	foreach ($lang as $language => $categories) {
 		if (!file_exists(FORUM_ROOT . '/app_config/cache/language')) {
 			mkdir(FORUM_ROOT . '/app_config/cache/language');
-			if (!file_exists(FORUM_ROOT . '/app_config/cache/language/' . $language)) {
-				mkdir(FORUM_ROOT . '/app_config/cache/language/' . $language);
+		}
+		if (!file_exists(FORUM_ROOT . '/app_config/cache/language/' . $language)) {
+			mkdir(FORUM_ROOT . '/app_config/cache/language/' . $language);
+		}
+		foreach ($categories as $category => $lang_entries) {
+			$lang_subset = array();
+			foreach ($lang_entries as $key => $val) {
+				$lang_subset[$key] = str_replace('$baseurl$', $base_config['baseurl'], $val);
 			}
-			foreach ($categories as $category => $lang_entries) {
-				$lang_subset = array();
-				foreach ($lang_entries as $key => $val) {
-					$lang_subset[$key] = str_replace('$baseurl$', $base_config['baseurl'], $val);
-				}
-				$out = '<?php' . "\n";
-				if ($category == 'main') {
-					$out .= '$lang = ';
-				} else {
-					$out .= '$lang_addl = ';
-				}
-				$out .= var_export($lang_subset, true) . ';';
-				file_put_contents(FORUM_ROOT . '/app_config/cache/language/' . $language . '/' . $category . '.php', $out);
+			$out = '<?php' . "\n";
+			if ($category == 'main') {
+				$out .= '$lang = ';
+			} else {
+				$out .= '$lang_addl = ';
 			}
+			$out .= var_export($lang_subset, true) . ';';
+			file_put_contents(FORUM_ROOT . '/app_config/cache/language/' . $language . '/' . $category . '.php', $out);
 		}
 	}
 }
