@@ -380,22 +380,14 @@ function array_move($array, $start, $count) {
 
 abstract class ExtensionConfig {
 	static function add_page($url, array $details) {
-		include FORUM_ROOT . '/app_config/pages.php';
-		if (!is_array($details)) {
-			trigger_error('Illegal arguments given to add_page: must be array', E_USER_ERROR);
-		}
-		$pages[$url] = $details;
-		file_put_contents(FORUM_ROOT . '/app_config/pages.php', '<?php' . "\n" . '$pages = ' . var_export($pages, true) . ';' . "\n" . '$pagessubdirs = ' . var_export($pagessubdirs, true) . ';');
+		$db->query('INSERT INTO `#^pages`(url,file,template,nocontentbox,admin,moderator,subdirs) VALUES(\'' . $db->escape($url) . '\',\'' . $db->escape($details['file']) . '\',' . (isset($details['template']) && $details['template'] ? '1' : '0') . ',' . (isset($details['nocontentbox']) && $details['nocontentbox'] ? '1' : '0') . ',' . (isset($details['admin']) && $details['admin'] ? '1' : '0') . ',' . (isset($details['mod']) && $details['mod'] ? '1' : '0') . ',' . (isset($details['subdirs']) && $details['subdirs'] ? '1' : '0') . ')') or enhanced_error('Failed to add page to database', true);
+		
+		CacheEngine::CachePages();
 	}
 	static function remove_page($url) {
-		include FORUM_ROOT . '/app_config/pages.php';
-		if (isset($pages[$url])) {
-			unset($pages[$url]);
-		}
-		if (isset($pagessubdirs[$url])) {
-			unset($pagessubdirs[$url]);
-		}
-		file_put_contents(FORUM_ROOT . '/app_config/pages.php', '<?php' . "\n" . '$pages = ' . var_export($pages, true) . ';' . "\n" . '$pagessubdirs = ' . var_export($pagessubdirs, true) . ';');
+		$db->query('DELETE FROM `#^pages` WHERE url=\'' . $db->escape($url) . '\'') or enhanced_error('Failed to remove page from database', true);
+		
+		CacheEngine::CachePages();
 	}
 	static function add_admin_menu($title, $url, $mod = false) {
 		include FORUM_ROOT . '/app_config/admin_pages.php';
