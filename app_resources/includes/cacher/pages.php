@@ -9,10 +9,12 @@ function cache_pages() {
 		$page = array(
 			'file'			=> $cur_page['file'],
 			'template'		=> ($cur_page['template'] ? true : false),
-			'nocontentbox'	=> ($cur_page['nocontentbox'] ? true : false),
 			'admin'			=> ($cur_page['admin'] ? true : false),
 			'mod'			=> ($cur_page['moderator'] ? true : false),
 		);
+		if (isset($cur_page['nocontentbox']) && $cur_page['nocontentbox']) {
+			$page['nocontentbox'] = ($cur_page['nocontentbox'] ? true : false);
+		}
 		if ($cur_page['subdirs']) {
 			$pagessubdirs[$cur_page['url']] = $page;
 		} else {

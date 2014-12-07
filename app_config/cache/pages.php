@@ -4,15 +4,14 @@ $pages = array (
   array (
     'file' => 'index.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/login' => 
   array (
     'file' => 'login.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -20,7 +19,6 @@ $pages = array (
   array (
     'file' => 'logout.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -28,7 +26,6 @@ $pages = array (
   array (
     'file' => 'css/default.css',
     'template' => false,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -36,7 +33,6 @@ $pages = array (
   array (
     'file' => 'css/embed.css',
     'template' => false,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -44,15 +40,14 @@ $pages = array (
   array (
     'file' => 'search.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/online_list' => 
   array (
     'file' => 'online_list.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -60,7 +55,6 @@ $pages = array (
   array (
     'file' => 'messages.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -68,47 +62,46 @@ $pages = array (
   array (
     'file' => 'admin/index.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/censoring' => 
   array (
     'file' => 'admin/censoring.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/style' => 
   array (
     'file' => 'admin/style.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/extensions' => 
   array (
     'file' => 'admin/extensions.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '//' => 
   array (
     'file' => 'index.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/login/' => 
   array (
     'file' => 'login.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -116,7 +109,6 @@ $pages = array (
   array (
     'file' => 'logout.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -124,7 +116,6 @@ $pages = array (
   array (
     'file' => 'css/default.css',
     'template' => false,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -132,15 +123,14 @@ $pages = array (
   array (
     'file' => 'search.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/online_list/' => 
   array (
     'file' => 'online_list.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -148,7 +138,6 @@ $pages = array (
   array (
     'file' => 'messages.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -156,41 +145,41 @@ $pages = array (
   array (
     'file' => 'admin/index.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/censoring/' => 
   array (
     'file' => 'admin/censoring.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/style/' => 
   array (
     'file' => 'admin/style.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/extensions/' => 
   array (
     'file' => 'admin/extensions.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/bbcodehelp' => 
   array (
     'file' => 'bbcodehelp.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
 );
 $pagessubdirs = array (
@@ -198,23 +187,22 @@ $pagessubdirs = array (
   array (
     'file' => 'profile.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/embed' => 
   array (
     'file' => 'embed.php',
     'template' => false,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/register/' => 
   array (
     'file' => 'register.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -222,7 +210,6 @@ $pagessubdirs = array (
   array (
     'file' => 'post.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -230,7 +217,6 @@ $pagessubdirs = array (
   array (
     'file' => 'delete.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -238,7 +224,6 @@ $pagessubdirs = array (
   array (
     'file' => 'edit.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -246,7 +231,6 @@ $pagessubdirs = array (
   array (
     'file' => 'postredir.php',
     'template' => false,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -254,7 +238,6 @@ $pagessubdirs = array (
   array (
     'file' => 'report.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -262,7 +245,6 @@ $pagessubdirs = array (
   array (
     'file' => 'massimport.php',
     'template' => true,
-    'nocontentbox' => false,
     'admin' => false,
     'mod' => false,
   ),
@@ -270,72 +252,72 @@ $pagessubdirs = array (
   array (
     'file' => 'admin/user_groups.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/maintenance' => 
   array (
     'file' => 'admin/maintenance.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/trash_bin' => 
   array (
     'file' => 'admin/trash_bin.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => true,
+    'nocontentbox' => true,
   ),
   '/admin/forums' => 
   array (
     'file' => 'admin/forums.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => true,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/admin/bans' => 
   array (
     'file' => 'admin/bans.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => true,
+    'nocontentbox' => true,
   ),
   '/admin/reports' => 
   array (
     'file' => 'admin/reports.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => true,
+    'nocontentbox' => true,
   ),
   '/admin/ip_tracker' => 
   array (
     'file' => 'admin/ip_tracking.php',
     'template' => true,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => true,
+    'nocontentbox' => true,
   ),
   '/rss' => 
   array (
     'file' => 'rss.php',
     'template' => false,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
   '/usernotifsrss' => 
   array (
     'file' => 'notifsrss.php',
     'template' => false,
-    'nocontentbox' => true,
     'admin' => false,
     'mod' => false,
+    'nocontentbox' => true,
   ),
 );
