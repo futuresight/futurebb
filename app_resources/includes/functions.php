@@ -554,6 +554,7 @@ abstract class CacheEngine {
 	}
 	
 	static function replace_interface_strings($text) {
+		//this is for header text, when spitting it out in real time to replace stuff like $username$
 		global $futurebb_user;
 		$text = str_replace('$username$', $futurebb_user['username'], $text);
 		$text = str_replace('$reghash$', futurebb_hash(LoginController::GetRandID()), $text);
@@ -563,5 +564,10 @@ abstract class CacheEngine {
 	static function CachePages() {
 		include_once FORUM_ROOT . '/app_resources/includes/cacher/pages.php';
 		cache_pages();
+	}
+	
+	static function CacheAdminPages() {
+		include_once FORUM_ROOT . '/app_resources/includes/cacher/pages.php';
+		cache_admin_pages();
 	}
 }

@@ -1,7 +1,10 @@
 <?php
 function make_admin_menu() {
 	global $dirs, $futurebb_user, $base_config;
-	include FORUM_ROOT . '/app_config/admin_pages.php';
+	if (!file_exists(FORUM_ROOT . '/app_config/cache/admin_pages.php')) {
+		CacheEngine::CacheAdminPages();
+	}
+	include FORUM_ROOT . '/app_config/cache/admin_pages.php';
 	?>
 	<div class="forum_content leftmenu">
 		<h2 class="boxtitle">Administration</h2>
