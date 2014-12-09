@@ -1,7 +1,7 @@
 <?php
 /*
 ***** FutureBB Development Framework *****
-Copyright (C)2012-2013 FutureSight Technologies - ALL RIGHTS RESERVED
+Copyright (C)2012-2014 FutureSight Technologies - ALL RIGHTS RESERVED
 See README.txt for more license details
 
 ***** DISPATCHER.PHP *****
@@ -11,11 +11,11 @@ This file handles the requests and sends them off to the appropriate unit or scr
 Variables created in this file may be used globally in the rest of the forum.
 These include:
 
-TYPE			NAME						NOTES
+TYPE		NAME					NOTES
 array		base_config				Basic persistent configuration (stored in config.xml)
 array		db_info					SQL Database settings
 array		futurebb_config			Miscellaneous site configuration (stored in database)
-array		user_info					Information about the user from database
+array		futurebb_user			Information about the user from database
 */
 
 $start_time = microtime();

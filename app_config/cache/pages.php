@@ -320,4 +320,12 @@ $pagessubdirs = array (
     'mod' => false,
     'nocontentbox' => true,
   ),
+  '/admin/interface' => 
+  array (
+    'file' => 'admin/interface/main.php',
+    'template' => true,
+    'admin' => true,
+    'mod' => false,
+    'nocontentbox' => true,
+  ),
 );

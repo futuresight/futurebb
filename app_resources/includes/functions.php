@@ -391,19 +391,22 @@ abstract class ExtensionConfig {
 	}
 	static function add_admin_menu($title, $url, $mod = false) {
 		global $futurebb_config;
-		$lines = explode("\n", $futurebb_config['admin_pages']);
+		$lines = explode("\n", base64_decode($futurebb_config['admin_pages']));
 		$lines[] = $url . '=>' . $title;
 		set_config('admin_pages', base64_encode(implode("\n", $lines)));
 		
 		if ($mod) {
-			$lines = explode("\n", $futurebb_config['mod_pages']);
+			$lines = explode("\n", base64_decode($futurebb_config['mod_pages']));
 			$lines[] = $url . '=>' . $title;
 			set_config('mod_pages', base64_encode(implode("\n", $lines)));
+		}
+		if (file_exists(FORUM_ROOT . '/cache/admin_pages.php')) { //clear the cache
+			unlink(FORUM_ROOT . '/cache/admin_pages.php');
 		}
 	}
 	static function remove_admin_menu($url) {
 		global $futurebb_config;
-		$lines = explode("\n", $futurebb_config['admin_pages']);
+		$lines = explode("\n", base64_decode($futurebb_config['admin_pages']));
 		foreach ($lines as $key => $line) {
 			if (strpos($line, $url . '=>') === 0) {
 				unset($lines[$key]);
@@ -411,13 +414,16 @@ abstract class ExtensionConfig {
 		}
 		set_config('admin_pages', base64_encode(implode("\n", $lines)));
 		
-		$lines = explode("\n", $futurebb_config['mod_pages']);
+		$lines = explode("\n", base64_decode($futurebb_config['mod_pages']));
 		foreach ($lines as $key => $line) {
 			if (strpos($line, $url . '=>') === 0) {
 				unset($lines[$key]);
 			}
 		}
 		set_config('mod_pages', base64_encode(implode("\n", $lines)));
+		if (file_exists(FORUM_ROOT . '/cache/admin_pages.php')) { //clear the cache
+			unlink(FORUM_ROOT . '/cache/admin_pages.php');
+		}
 	}
 	static function add_language_key($key, $text, $language = 'English') {
 		$q = new DBInsert('language', array('language' => $language, 'langkey' => $key, 'value' => $text, 'category' => 'main'), 'Failed to insert language key');
