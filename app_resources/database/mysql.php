@@ -157,7 +157,7 @@ class Database {
 	}
 	
 	function truncate($table) {
-		$this->query('TRUNCATE TABLE `' . $this->prefix . $table . '`') or enhanced_error('Failed to truncate table');
+		$this->query('TRUNCATE TABLE `' . $this->prefix . $table . '`') or enhanced_error('Failed to truncate table', true);
 	}
 	
 	function index_exists($table, $index) {
