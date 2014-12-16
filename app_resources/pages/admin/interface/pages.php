@@ -1,10 +1,12 @@
 <?php
 $page_title = 'Edit page list';
-$breadcrumbs = array(translate('administration') => 'admin', translate('interface') => 'admin/interface', 'Page list' => 'admin/interface/pages');
+$breadcrumbs = array(translate('administration') => 'admin', translate('interface') => 'admin/interface', 'URL Mapping' => 'admin/interface/pages');
 
 $q = new DBSelect('pages', array('*'), '', 'Failed to get page list');
 $result = $q->commit();
 ?>
+<h3>URL Mapping</h3>
+<p style="color:#C00; font-weight:bold">Warning: Use extreme caution on this page. Certain URL mappings are critical to proper operation of FutureBB. If you edit them, you run the risk of blocking all access to your forum.</p>
 <table border="0">
 	<tr>
 		<th>URL</th>

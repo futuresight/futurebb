@@ -104,7 +104,7 @@ if ($db->num_rows($result) && $dirs[1] != 'styles') {
 }
 
 //check if user is in a group not allowed to access the board
-if (!$futurebb_user['g_access_board'] && $dirs[1] != 'login' && $dirs[1] != 'register' && $dirs[1] != 'styles') {
+if (!$futurebb_user['g_access_board'] && isset($dirs[1]) && $dirs[1] != 'login' && $dirs[1] != 'register' && $dirs[1] != 'styles') {
 	$ban_type = 'no_guest';
 	$page_info = array('file' => 'banned.php', 'template' => true);
 }
