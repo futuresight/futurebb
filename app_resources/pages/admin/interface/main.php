@@ -24,6 +24,11 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 		} else {
 			?>
 			<h3>Interface Editor</h3>
+			<?php
+			if ($futurebb_user['language'] != 'English') {
+				echo '<p style="color:#A00; font-weight:bold">' . translate('notranslation') . '</p>';
+			}
+			?>
 			<p>Welcome to the interface editor! You are able to edit the interface that determines how FutureBB looks and works from here.</p>
 			<p style="color:#C00; font-weight:bold">WARNING: IMPROPERLY EDITING THE INTERFACE COULD CAUSE YOUR FORUM TO STOP WORKING.<br />PLEASE BACK UP ALL FILES AND DATABASES BEFORE YOU EDIT ANYTHING.<br />SERIOUSLY, BACK THEM UP. DON&apos;T JUST START MESSING WITH STUFF.</p>
 			<p>Here are the parts you can edit:</p>
