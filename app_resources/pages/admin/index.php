@@ -69,7 +69,9 @@ if(isset($_POST['form_sent'])) {
 				case 'int':
 					$val = intval($_POST['config'][$name]);
 			}
-			set_config($name, $val);
+			if ($futurebb_config[$name] != $val) {
+				set_config($name, $val);
+			}
 		}
 		header('Refresh: 0'); return;
 	}
