@@ -32,7 +32,7 @@ function cache_admin_pages() {
 	$lines = explode("\n", $admin_text);
 	$admin_pages = array();
 	foreach ($lines as $line) {
-		$parts = explode('=>', $line);
+		$parts = explode('=>', $line, 2);
 		$admin_pages[$parts[0]] = $parts[1];
 	}
 	
@@ -40,7 +40,7 @@ function cache_admin_pages() {
 	$lines = explode("\n", $mod_text);
 	$mod_pages = array();
 	foreach ($lines as $line) {
-		$parts = explode('=>', $line);
+		$parts = explode('=>', $line, 2);
 		$mod_pages[$parts[0]] = $parts[1];
 	}
 	

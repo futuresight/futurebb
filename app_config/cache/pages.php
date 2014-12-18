@@ -328,4 +328,11 @@ $pagessubdirs = array (
     'mod' => false,
     'nocontentbox' => true,
   ),
+  '/testpage' => 
+  array (
+    'file' => 'index.php',
+    'template' => true,
+    'admin' => false,
+    'mod' => false,
+  ),
 );

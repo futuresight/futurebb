@@ -21,7 +21,7 @@ if (isset($_POST['form_sent']) || isset($_POST['restore_default'])) {
 		try {
 			$xml = new SimpleXMLElement($_POST['content']);
 			if (isset($xml->link)) {
-				$q = new DBInsert('interface_history', array('action' => 'edit', 'area' => 'interface', 'user' => $futurebb_user['id'], 'time' => time(), 'old_value' => $futurebb_config['header_links']), 'Failed to update interface editing history');
+				$q = new DBInsert('interface_history', array('action' => 'edit', 'area' => 'interface', 'field' => 'header', 'user' => $futurebb_user['id'], 'time' => time(), 'old_value' => $futurebb_config['header_links']), 'Failed to update interface editing history');
 				$q->commit();
 				set_config('header_links', $_POST['content']);
 				CacheEngine::CacheHeader();

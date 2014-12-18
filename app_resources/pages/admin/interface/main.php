@@ -16,6 +16,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 				case 'pages':
 				case 'language':
 				case 'admin_pages':
+				case 'history':
 					include FORUM_ROOT . '/app_resources/pages/admin/interface/' . $dirs[3] . '.php';
 					break;
 				default:

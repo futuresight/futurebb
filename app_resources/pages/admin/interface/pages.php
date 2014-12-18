@@ -8,13 +8,24 @@ if (isset($_POST['form_sent_b'])) {
 	if (futurebb_hash($_POST['confirmpwd']) == $futurebb_user['password']) {
 		foreach ($_POST as $key => $val) {
 			if (ctype_digit((string)$key)) {
+				//insert history entry
+				$select = new DBSelect('pages', array('*'), 'id=' . intval($key), 'Failed to get old value');
+				$result = $select->commit();
+				$element = $db->fetch_assoc($result);
+				$lines = array();
+				foreach ($element as $db_key => $db_val) {
+					$lines[] = $db_key . '=>' . $db_val;
+				}
+				$insertquery = new DBInsert('interface_history', array('action' => 'edit', 'area' => 'pages', 'field' => intval($key), 'user' => $futurebb_user['id'], 'time' => time(), 'old_value' => base64_encode(implode("\n", $lines))), 'Failed to insert history entry');
+				$insertquery->commit();
 				foreach ($val as $field => $field_value) {
+					//update the field
 					$updatequery = new DBUpdate('pages', array($field => $field_value), 'id=' . intval($key), 'Failed to update page entry');
 					$updatequery->commit();
-					CacheEngine::CachePages();
 				}
 			}
 		}
+		CacheEngine::CachePages();
 		redirect($base_config['baseurl'] . '/admin/interface/pages');
 	} else {
 		echo '<p>Your password was incorrect. Hit the back button to try again.</p>';
