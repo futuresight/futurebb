@@ -2,6 +2,63 @@
 $page_title = 'Edit page list';
 $breadcrumbs = array(translate('administration') => 'admin', translate('interface') => 'admin/interface', 'URL Mapping' => 'admin/interface/pages');
 
+if (isset($_POST['delete'])) {
+	if (isset($_POST['confirmpwd']) && futurebb_hash($_POST['confirmpwd']) == $futurebb_user['password']) {
+		$id = intval($_POST['delete_id']);
+		$q = new DBSelect('pages', array('*'), 'id=' . $id, 'Failed to get page to delete');
+		$result = $q->commit();
+		if (!$db->num_rows($result)) {
+			httperror(404);
+		}
+		$page = $db->fetch_assoc($result);
+		
+		$lines = array();
+		foreach ($page as $key => $val) {
+			$lines[] = $key . '=>' . $val;
+		}
+		
+		$q = new DBInsert('interface_history', array('action' => 'delete', 'area' => 'pages', 'field' => intval($id), 'user' => $futurebb_user['id'], 'time' => time(), 'old_value' => base64_encode(implode("\n", $lines))), 'Failed to insert history entry');
+		$q->commit();
+		
+		$q = new DBDelete('pages', 'id=' . $id, 'Failed to delete page entry');
+		$q->commit();
+		
+		CacheEngine::CachePages();
+	} else {
+		$_GET['delete'] = $_POST['delete_id'];
+	}
+}
+
+if (isset($_GET['delete'])) {
+	$id = intval($_GET['delete']);
+	$q = new DBSelect('pages', array('*'), 'id=' . $id, 'Failed to get page to delete');
+	$result = $q->commit();
+	if (!$db->num_rows($result)) {
+		httperror(404);
+	}
+	$page = $db->fetch_assoc($result);
+	?>
+	<form action="<?php echo $base_config['baseurl']; ?>/admin/interface/pages" method="post" enctype="multipart/form-data">
+		<h3>Delete the following page?</h3>
+		<?php
+		if (isset($_POST['delete'])) {
+			echo '<p>Invalid password. Please try again.</p>';
+		}
+		?>
+		<ul>
+		<?php
+		foreach ($page as $key => $val) {
+			echo '<li>' . htmlspecialchars($key) . ' - ' . htmlspecialchars($val) . '</li>';
+		}
+		?>
+		</ul>
+		<p>Enter your password: <input type="password" name="confirmpwd" /></p>
+		<p><input type="hidden" name="delete_id" value="<?php echo $id; ?>" /> <input type="submit" name="delete" value="Yes" /> <a href="<?php echo $base_config['baseurl']; ?>/admin/interface/pages">No</a></p>
+	</form>
+	<?php
+	return;
+}
+
 $q = new DBSelect('pages', array('*'), '', 'Failed to get page list');
 $result = $q->commit();
 if (isset($_POST['form_sent_b'])) {
@@ -136,10 +193,11 @@ if (isset($_POST['form_sent_b'])) {
 			<th>Moderators</th>
 			<th>Administrators</th>
 			<th>Subdirectories</th>
+			<th>Delete</th>
 		</tr>
 	<?php
 	while ($page = $db->fetch_assoc($result)) {
-		echo '<tr><td><input type="text" value="' . htmlspecialchars($page['url']) . '" size="25" name="url[' . $page['id'] . ']" /></td><td><input type="text" value="' . htmlspecialchars($page['file']) . '" size="27" name="file[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['template'] ? ' checked="checked"' : '') . ' name="template[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['nocontentbox'] ? ' checked="checked"' : '') . ' name="nocontentbox[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['moderator'] ? ' checked="checked"' : '') . ' name="moderator[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['admin'] ? ' checked="checked"' : '') . ' name="admin[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['subdirs'] ? ' checked="checked"' : '') . ' name="subdirs[' . $page['id'] . ']" /></td></tr>' . "\n";
+		echo '<tr><td><input type="text" value="' . htmlspecialchars($page['url']) . '" size="25" name="url[' . $page['id'] . ']" /></td><td><input type="text" value="' . htmlspecialchars($page['file']) . '" size="27" name="file[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['template'] ? ' checked="checked"' : '') . ' name="template[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['nocontentbox'] ? ' checked="checked"' : '') . ' name="nocontentbox[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['moderator'] ? ' checked="checked"' : '') . ' name="moderator[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['admin'] ? ' checked="checked"' : '') . ' name="admin[' . $page['id'] . ']" /></td><td><input type="checkbox"' . ($page['subdirs'] ? ' checked="checked"' : '') . ' name="subdirs[' . $page['id'] . ']" /></td><td><a href="' . $base_config['baseurl'] . '/admin/interface/pages?delete=' . $page['id'] . '" target="_BLANK" style="cursor:pointer; text-decoration:none">&#10060;</a></td></tr>' . "\n";
 	}
 	?>
 	</table>

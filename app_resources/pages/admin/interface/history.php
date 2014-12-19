@@ -24,18 +24,18 @@ while ($entry = $db->fetch_assoc($result)) {
 		if (!isset($page_edits[$entry['field']])) {
 			$page_edits[$entry['field']] = array();
 		}
-		$page_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => base64_decode($entry['old_value']), 'username' => $entry['username']);
+		$page_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => base64_decode($entry['old_value']), 'username' => $entry['username'], 'action' => $entry['action']);
 	} else if ($entry['area'] == 'interface') {
 		if (!isset($field_edits[$entry['field']])) {
 			$field_edits[$entry['field']] = array();
 		}
-		$field_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username']);
+		$field_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username'], 'action' => $entry['action']);
 	} else if ($entry['area'] == 'language') {
 		if (!isset($lang_edits[$entry['field']])) {
 			$lang_edits[$entry['field']] = array();
 			$lang_ids[] = $entry['field'];
 		}
-		$lang_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username']);
+		$lang_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username'], 'action' => $entry['action']);
 	}
 }
 
@@ -53,7 +53,9 @@ if (sizeof($lang_edits)) {
 
 foreach ($page_edits as $pageid => &$page_entry) {
 	for ($i = 0; $i < sizeof($page_entry); $i++) {
-		if ($i == 0) {
+		if ($page_entry[$i]['action'] == 'delete') {
+			$page_entry[$i]['new_value'] = '';
+		} else if ($i == 0) {
 			$lines = array();
 			foreach ($page_list[$pageid] as $db_key => $db_val) {
 				$lines[] = $db_key . '=>' . $db_val;
@@ -109,20 +111,24 @@ function diff($entry, &$old_disp, &$new_disp) {
 	$oldparts = array();
 	foreach ($oldlines as $line) {
 		$parts = explode('=>', $line, 2);
-		$oldparts[$parts[0]] = $parts[1];
+		if (sizeof($parts) > 1) {
+			$oldparts[$parts[0]] = $parts[1];
+		}
 	}
 	$newlines = explode("\n", $entry['new_value']);
 	$newparts = array();
 	foreach ($newlines as $line) {
 		$parts = explode('=>', $line, 2);
-		$newparts[$parts[0]] = $parts[1];
+		if (sizeof($parts) > 1) {
+			$newparts[$parts[0]] = $parts[1];
+		}
 	}
 	$old_disp = array();
 	$new_disp = array();
 	foreach ($oldparts as $key => $val) {
-		if ($newparts[$key] != $val) {
+		if (!isset($newparts[$key]) || $newparts[$key] != $val) {
 			$old_disp[] = '<b>' . $key . ':</b> ' . $val;
-			$new_disp[] = '<b>' . $key . ':</b> ' . $newparts[$key];
+			$new_disp[] = '<b>' . $key . ':</b> ' . (isset($newparts[$key]) ? $newparts[$key] : '<i>None</i>');
 		}
 	}
 }
@@ -148,6 +154,9 @@ if (!empty($page_edits)) {
 		usort($page_edit_final_list, 'pagediff');
 		foreach ($page_edit_final_list as $entry) {
 			diff($entry, $old_disp, $new_disp);
+			if ($entry['action'] == 'delete') {
+				$new_disp = array('<i>Deleted</i>');
+			}
 			echo '<tr><td>' . $entry['id'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
 		}
 		?>
