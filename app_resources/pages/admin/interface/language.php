@@ -30,7 +30,7 @@ if (isset($_POST['form_sent'])) {
 					$oldval[] = $db_key . '=>' . $db_val;
 				}
 				
-				$q2 = new DBInsert('interface_history', array('action' => 'edit', 'area' => 'language', 'field' => $id, 'old_value' => implode("\n", $oldval)), 'Failed to insert history entry');
+				$q2 = new DBInsert('interface_history', array('action' => 'edit', 'area' => 'language', 'field' => $id, 'user' => $futurebb_user['id'], 'time' => time(), 'old_value' => implode("\n", $oldval)), 'Failed to insert history entry');
 				$q2->commit();
 				$q2 = new DBUpdate('language', $changes, 'id=' . $id, 'Failed to update language');
 				$q2->commit();

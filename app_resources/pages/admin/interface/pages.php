@@ -118,6 +118,9 @@ if (isset($_POST['form_sent_b'])) {
 	</form>
 	<?php
 		return;
+	} else {
+		echo '<p>You didn&apos;t make any changes. Hit your browser&apos;s back button to try again.</p>';
+		return;
 	}
 }
 ?>

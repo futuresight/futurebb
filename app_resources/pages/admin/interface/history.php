@@ -31,11 +31,23 @@ while ($entry = $db->fetch_assoc($result)) {
 		}
 		$field_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username']);
 	} else if ($entry['area'] == 'language') {
-		if (!isset($field_edits[$entry['field']])) {
-			$field_edits[$entry['field']] = array();
+		if (!isset($lang_edits[$entry['field']])) {
+			$lang_edits[$entry['field']] = array();
 			$lang_ids[] = $entry['field'];
 		}
-		$field_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username']);
+		$lang_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username']);
+	}
+}
+
+//put the latest value for each language entry changed
+if (sizeof($lang_edits)) {
+	$result = $db->query('SELECT * FROM `#^language` WHERE id IN(' . implode(',', $lang_ids) . ')') or enhanced_error('Failed to find latest language values', true);
+	while ($lang_entry = $db->fetch_assoc($result)) {
+		$lines = array();
+		foreach ($lang_entry as $db_key => $db_val) {
+			$lines[] = $db_key . '=>' . $db_val;
+		}
+		$lang_edits[$lang_entry['id']][0]['new_value'] = implode("\n", $lines);
 	}
 }
 
@@ -51,6 +63,15 @@ foreach ($page_edits as $pageid => &$page_entry) {
 			$page_entry[$i]['new_value'] = $page_entry[$i - 1]['old_value'];
 		}
 		$page_entry[$i]['id'] = $pageid;
+	}
+}
+
+foreach ($lang_edits as $id => &$lang_entry) {
+	for ($i = 0; $i < sizeof($lang_entry); $i++) {
+		if ($i != 0) {
+			$lang_entry[$i]['new_value'] = $lang_entry[$i - 1]['old_value'];
+		}
+		$lang_entry[$i]['id'] = $id;
 	}
 }
 
@@ -105,31 +126,66 @@ function diff($entry, &$old_disp, &$new_disp) {
 		}
 	}
 }
-?>
-<h2>Page editing history</h2>
+
+if (!empty($page_edits)) {
+	?>
+	<h2>Page editing history</h2>
+	<table border="0">
+		<tr>
+			<th>Page ID</th>
+			<th>Username</th>
+			<th>Time</th>
+			<th>Old value</th>
+			<th>New value</th>
+		</tr>
+		<?php
+		$page_edit_final_list = array();
+		foreach ($page_edits as $pageid => $page_entry) {
+			for ($i = 0; $i < sizeof($page_entry); $i++) {
+				$page_edit_final_list[] = $page_entry[$i];
+			}
+		}
+		usort($page_edit_final_list, 'pagediff');
+		foreach ($page_edit_final_list as $entry) {
+			diff($entry, $old_disp, $new_disp);
+			echo '<tr><td>' . $entry['id'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
+		}
+		?>
+	</table>
+<?php
+}
+
+if (!empty($lang_edits)) {
+	?>
+<h2>Language editing history</h2>
 <table border="0">
 	<tr>
-		<th>Page ID</th>
+		<th>Language ID</th>
 		<th>Username</th>
 		<th>Time</th>
 		<th>Old value</th>
 		<th>New value</th>
 	</tr>
 	<?php
-	$page_edit_final_list = array();
-	foreach ($page_edits as $pageid => $page_entry) {
-		for ($i = 0; $i < sizeof($page_entry); $i++) {
-			$page_edit_final_list[] = $page_entry[$i];
+	$lang_edit_final_list = array();
+	foreach ($lang_edits as $id => $lang_entry) {
+		for ($i = 0; $i < sizeof($lang_entry); $i++) {
+			$lang_edit_final_list[] = $lang_entry[$i];
 		}
 	}
-	usort($page_edit_final_list, 'pagediff');
-	foreach ($page_edit_final_list as $entry) {
+	usort($lang_edit_final_list, 'pagediff');
+	foreach ($lang_edit_final_list as $entry) {
 		diff($entry, $old_disp, $new_disp);
 		echo '<tr><td>' . $entry['id'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
 	}
 	?>
 </table>
 
+<?php
+}
+
+if (!empty($field_edits)) {
+?>
 <h2>Field editing history</h2>
 <div style="max-width:100%; overflow: auto">
 	<table border="0">
@@ -162,3 +218,5 @@ function diff($entry, &$old_disp, &$new_disp) {
 		?>
 	</table>
 </div>
+<?php
+}
