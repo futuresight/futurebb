@@ -17,6 +17,8 @@ $result = $q->commit();
 
 $page_edits = array();
 $field_edits = array();
+$lang_edits = array();
+$lang_ids = array();
 while ($entry = $db->fetch_assoc($result)) {
 	if ($entry['area'] == 'pages') {
 		if (!isset($page_edits[$entry['field']])) {
@@ -26,6 +28,12 @@ while ($entry = $db->fetch_assoc($result)) {
 	} else if ($entry['area'] == 'interface') {
 		if (!isset($field_edits[$entry['field']])) {
 			$field_edits[$entry['field']] = array();
+		}
+		$field_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username']);
+	} else if ($entry['area'] == 'language') {
+		if (!isset($field_edits[$entry['field']])) {
+			$field_edits[$entry['field']] = array();
+			$lang_ids[] = $entry['field'];
 		}
 		$field_edits[$entry['field']][] = array('time' => $entry['time'], 'old_value' => $entry['old_value'], 'username' => $entry['username']);
 	}
