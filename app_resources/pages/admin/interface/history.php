@@ -146,16 +146,29 @@ if (!empty($page_edits)) {
 		</tr>
 		<?php
 		$page_edit_final_list = array();
-		foreach ($page_edits as $pageid => $page_entry) {
-			for ($i = 0; $i < sizeof($page_entry); $i++) {
-				$page_edit_final_list[] = $page_entry[$i];
+		foreach ($page_edits as $key => $cur_entry) {
+			foreach ($cur_entry as $subentry) {
+				$page_edit_final_list[] = $subentry;
 			}
 		}
+		//print_r($page_edit_final_list); die;
 		usort($page_edit_final_list, 'pagediff');
 		foreach ($page_edit_final_list as $entry) {
-			diff($entry, $old_disp, $new_disp);
-			if ($entry['action'] == 'delete') {
-				$new_disp = array('<i>Deleted</i>');
+			if ($entry['action'] == 'create') {
+				$old_disp = array('<i>New page</i>');
+				$lines = explode("\n", $entry['new_value']);
+				$new_disp = array();
+				foreach ($lines as $line) {
+					$parts = explode('=>', $line);
+					if (sizeof($parts) > 1) {
+						$new_disp[] = '<b>' . $parts[0] . '</b>: ' . $parts[1];
+					}
+				}
+			} else {
+				diff($entry, $old_disp, $new_disp);
+				if ($entry['action'] == 'delete') {
+					$new_disp = array('<i>Deleted</i>');
+				}
 			}
 			echo '<tr><td>' . $entry['id'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
 		}

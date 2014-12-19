@@ -2,6 +2,11 @@
 $page_title = 'Edit page list';
 $breadcrumbs = array(translate('administration') => 'admin', translate('interface') => 'admin/interface', 'URL Mapping' => 'admin/interface/pages');
 
+if (isset($dirs[4]) && $dirs[4] == 'new') {
+	include FORUM_ROOT . '/app_resources/pages/admin/interface/new_page.php';
+	return;
+}
+
 if (isset($_POST['delete'])) {
 	if (isset($_POST['confirmpwd']) && futurebb_hash($_POST['confirmpwd']) == $futurebb_user['password']) {
 		$id = intval($_POST['delete_id']);
@@ -183,6 +188,7 @@ if (isset($_POST['form_sent_b'])) {
 ?>
 <h3>URL Mapping</h3>
 <p style="color:#C00; font-weight:bold">Warning: Use extreme caution on this page. Certain URL mappings are critical to proper operation of FutureBB. If you edit them, you run the risk of blocking all access to your forum.</p>
+<p><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/pages/new">&#10010 Add new page</a></a>
 <form action="<?php echo $base_config['baseurl']; ?>/admin/interface/pages" method="post" enctype="multipart/form-data">
 	<table border="0">
 		<tr>
