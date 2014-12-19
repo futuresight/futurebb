@@ -328,7 +328,7 @@ $pagessubdirs = array (
     'mod' => false,
     'nocontentbox' => true,
   ),
-  '/testpage' => 
+  '/test' => 
   array (
     'file' => 'index.php',
     'template' => true,

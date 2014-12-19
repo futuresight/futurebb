@@ -52,6 +52,12 @@ foreach ($field_edits as $field => &$field_entry) {
 			if ($field == 'header') {
 				$field_entry[$i]['new_value'] = $futurebb_config['header_links'];
 			}
+			if ($field == 'mod_pages') {
+				$field_entry[$i]['new_value'] = base64_decode($futurebb_config['mod_pages']);
+			}
+			if ($field == 'admin_pages') {
+				$field_entry[$i]['new_value'] = base64_decode($futurebb_config['admin_pages']);
+			}
 		} else {
 			$field_entry[$i]['new_value'] = $field_entry[$i - 1]['old_value'];
 		}
@@ -66,6 +72,29 @@ function pagediff($page1, $page2) {
 		return 1;
 	} else {
 		return 0;
+	}
+}
+
+function diff($entry, &$old_disp, &$new_disp) {
+	$oldlines = explode("\n", $entry['old_value']);
+	$oldparts = array();
+	foreach ($oldlines as $line) {
+		$parts = explode('=>', $line, 2);
+		$oldparts[$parts[0]] = $parts[1];
+	}
+	$newlines = explode("\n", $entry['new_value']);
+	$newparts = array();
+	foreach ($newlines as $line) {
+		$parts = explode('=>', $line, 2);
+		$newparts[$parts[0]] = $parts[1];
+	}
+	$old_disp = array();
+	$new_disp = array();
+	foreach ($oldparts as $key => $val) {
+		if ($newparts[$key] != $val) {
+			$old_disp[] = '<b>' . $key . ':</b> ' . $val;
+			$new_disp[] = '<b>' . $key . ':</b> ' . $newparts[$key];
+		}
 	}
 }
 ?>
@@ -87,27 +116,8 @@ function pagediff($page1, $page2) {
 	}
 	usort($page_edit_final_list, 'pagediff');
 	foreach ($page_edit_final_list as $entry) {
-		$oldlines = explode("\n", $entry['old_value']);
-		$oldparts = array();
-		foreach ($oldlines as $line) {
-			$parts = explode('=>', $line, 2);
-			$oldparts[$parts[0]] = $parts[1];
-		}
-		$newlines = explode("\n", $entry['new_value']);
-		$newparts = array();
-		foreach ($newlines as $line) {
-			$parts = explode('=>', $line, 2);
-			$newparts[$parts[0]] = $parts[1];
-		}
-		$old_disp = array();
-		$new_disp = array();
-		foreach ($oldparts as $key => $val) {
-			if ($newparts[$key] != $val) {
-				$old_disp[] = '<b>' . $key . ':</b> ' . $val;
-				$new_disp[] = '<b>' . $key . ':</b> ' . $newparts[$key];
-			}
-		}
-		echo '<tr><td>' . $entry['id'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td>' . implode('<br />', $old_disp) . '</td><td>' . implode('<br />', $new_disp) . '</td></tr>';
+		diff($entry, $old_disp, $new_disp);
+		echo '<tr><td>' . $entry['id'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
 	}
 	?>
 </table>
@@ -131,7 +141,15 @@ function pagediff($page1, $page2) {
 		}
 		usort($field_edit_final_list, 'pagediff');
 		foreach ($field_edit_final_list as $entry) {
-			echo '<tr><td>' . $entry['field'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . htmlspecialchars($entry['old_value']) . '</pre></td><td><pre>' . htmlspecialchars($entry['new_value']) . '</pre></td></tr>';
+			if (in_array($entry['field'], array('mod_pages', 'admin_pages'))) {
+				diff($entry, $old_disp, $new_disp);
+				$old = implode('<br />', $old_disp);
+				$new = implode('<br />', $new_disp);
+			} else {
+				$old = htmlspecialchars($entry['old_value']);
+				$new = htmlspecialchars($entry['new_value']);
+			}
+			echo '<tr><td>' . $entry['field'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . $old . '</pre></td><td><pre>' . $new . '</pre></td></tr>';
 		}
 		?>
 	</table>
