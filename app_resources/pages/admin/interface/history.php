@@ -138,7 +138,9 @@ function diff($entry, &$old_disp, &$new_disp) {
 		}
 	}
 }
-
+?>
+<div style="max-width:100%; overflow: auto">
+<?php
 if (!empty($page_edits)) {
 	?>
 	<h2>Page editing history</h2>
@@ -229,7 +231,6 @@ if (!empty($lang_edits)) {
 if (!empty($field_edits)) {
 ?>
 <h2>Field editing history</h2>
-<div style="max-width:100%; overflow: auto">
 	<table border="0">
 		<tr>
 			<th>Field</th>
@@ -259,9 +260,10 @@ if (!empty($field_edits)) {
 		}
 		?>
 	</table>
-</div>
 <?php
 }
-
+?>
+</div>
+<?php
 $q = new DBDelete('interface_history', 'time<' . (time() - 60 * 60 * 24 * 60), 'Failed to delete old history items');
 $q->commit();

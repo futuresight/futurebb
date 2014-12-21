@@ -14,7 +14,7 @@ $lang_addl = array (
   'never' => 'Never',
   'deletebanconfirm' => 'Are you sure you want to delete this ban?',
   'jk' => 'Just kidding',
-  'censorintro' => 'You may use this page to set inappropriate words to censor.<br />This will not affect old posts unless the reparse posts function is used (available on the <a href="https://localhost/futurebb/admin/maintenance">maintenance page</a>).',
+  'censorintro' => 'You may use this page to set inappropriate words to censor.<br />This will not affect old posts unless the reparse posts function is used (available on the <a href="http://localhost/futurebb/admin/maintenance">maintenance page</a>).',
   'newword' => 'Add new word',
   'find' => 'Find',
   'replacewith' => 'Replace with',

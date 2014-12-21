@@ -9,6 +9,16 @@ if (isset($_POST['add_new'])) {
 	$q = new DBInsert('interface_history', array('action' => 'create', 'area' => 'language', 'field' => $db->insert_id(), 'user' => $futurebb_user['id'], 'time' => time(), 'old_value' => ''), 'Failed to insert history entry');
 	$q->commit();
 	
+	//clear the cache
+	$maindir = FORUM_ROOT . '/app_config/cache/language/' . $language;
+	if (file_exists($maindir) && is_dir($maindir)) {
+		$handle = opendir($maindir);
+		while ($file = readdir($handle)) {
+			if ($file != '.' && $file != '..') {
+				unlink($maindir . '/' . $file);
+			}
+		}
+	}
 	redirect($base_config['baseurl'] . '/admin/interface/language?language=' . $_POST['language'] . '&category=' . $_POST['category']);
 }
 
