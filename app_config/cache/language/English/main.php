@@ -178,7 +178,7 @@ $lang = array (
   'noguests' => 'You must log in to view this forum.',
   'nogroupview' => 'You do not have permission to view these forums.',
   'maintintro' => 'This forum is down for maintenance. The forum administrator said this:',
-  'maintintro2' => 'If you are an administrator and need to log in, you may do so <a href="https://testserver.int/futurebb/login">here</a>.',
+  'maintintro2' => 'If you are an administrator and need to log in, you may do so <a href="https://localhost/futurebb/login">here</a>.',
   'profile' => 'Profile',
   'userlist' => 'User list',
   'register' => 'Register',
@@ -303,4 +303,5 @@ $lang = array (
   'textquoting' => 'This is the text I am quoting.',
   'johnsmith' => 'John Smith',
   'linksandimages' => 'Links and images',
+  'notranslation' => 'Unfortunately, this page does not have a translation available.',
 );

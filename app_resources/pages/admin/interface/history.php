@@ -1,6 +1,7 @@
 <?php
-include FORUM_ROOT . '/app_resources/includes/parser.php';
 $page_title = 'Interface Editing History';
+
+$breadcrumbs = array(translate('administration') => 'admin', translate('interface') => 'admin/interface', 'History' => 'admin/interface/history');
 
 $page_list = array();
 $q = new DBSelect('pages', array('*'), '', 'Failed to get page list');
@@ -48,6 +49,11 @@ if (sizeof($lang_edits)) {
 			$lines[] = $db_key . '=>' . $db_val;
 		}
 		$lang_edits[$lang_entry['id']][0]['new_value'] = implode("\n", $lines);
+	}
+	foreach ($lang_edits as &$entry) {
+		if (!isset($entry[0]['new_value'])) {
+			$entry[0]['new_value'] = '';
+		}
 	}
 }
 
@@ -151,12 +157,11 @@ if (!empty($page_edits)) {
 				$page_edit_final_list[] = $subentry;
 			}
 		}
-		//print_r($page_edit_final_list); die;
 		usort($page_edit_final_list, 'pagediff');
-		foreach ($page_edit_final_list as $entry) {
-			if ($entry['action'] == 'create') {
+		foreach ($page_edit_final_list as $page_entry) {
+			if ($page_entry['action'] == 'create') {
 				$old_disp = array('<i>New page</i>');
-				$lines = explode("\n", $entry['new_value']);
+				$lines = explode("\n", $page_entry['new_value']);
 				$new_disp = array();
 				foreach ($lines as $line) {
 					$parts = explode('=>', $line);
@@ -165,12 +170,12 @@ if (!empty($page_edits)) {
 					}
 				}
 			} else {
-				diff($entry, $old_disp, $new_disp);
-				if ($entry['action'] == 'delete') {
+				diff($page_entry, $old_disp, $new_disp);
+				if ($page_entry['action'] == 'delete') {
 					$new_disp = array('<i>Deleted</i>');
 				}
 			}
-			echo '<tr><td>' . $entry['id'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
+			echo '<tr><td>' . $page_entry['id'] . '</td><td>' . htmlspecialchars($page_entry['username']) . '</td><td>' . user_date($page_entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
 		}
 		?>
 	</table>
@@ -197,8 +202,23 @@ if (!empty($lang_edits)) {
 	}
 	usort($lang_edit_final_list, 'pagediff');
 	foreach ($lang_edit_final_list as $entry) {
-		diff($entry, $old_disp, $new_disp);
-		echo '<tr><td>' . $entry['id'] . '</td><td>' . htmlspecialchars($entry['username']) . '</td><td>' . user_date($entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
+		if ($lang_entry['action'] == 'create') {
+			$old_disp = array('<i>New entry</i>');
+			$lines = explode("\n", $lang_entry['new_value']);
+			$new_disp = array();
+			foreach ($lines as $line) {
+				$parts = explode('=>', $line);
+				if (sizeof($parts) > 1) {
+					$new_disp[] = '<b>' . $parts[0] . '</b>: ' . $parts[1];
+				}
+			}
+		} else {
+			diff($lang_entry, $old_disp, $new_disp);
+			if ($lang_entry['action'] == 'delete') {
+				$new_disp = array('<i>Deleted</i>');
+			}
+		}
+		echo '<tr><td>' . $lang_entry['id'] . '</td><td>' . htmlspecialchars($lang_entry['username']) . '</td><td>' . user_date($lang_entry['time']) . '</td><td><pre>' . implode('<br />', $old_disp) . '</pre></td><td><pre>' . implode('<br />', $new_disp) . '</pre></td></tr>';
 	}
 	?>
 </table>
@@ -242,3 +262,6 @@ if (!empty($field_edits)) {
 </div>
 <?php
 }
+
+$q = new DBDelete('interface_history', 'time<' . (time() - 60 * 60 * 24 * 60), 'Failed to delete old history items');
+$q->commit();
