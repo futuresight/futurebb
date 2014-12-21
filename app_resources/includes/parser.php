@@ -255,7 +255,7 @@ abstract class BBCodeController {
 		//parsing rules
 		$no_nest_tags = array('img');
 		$block_tags = array('quote', 'code', 'list');
-		$inline_tags = array('b', 'i', 'u', 's', 'color', 'colour', 'url', 'img');
+		$inline_tags = array('b', 'i', 'u', 's', 'color', 'colour', 'url', 'img', '\*');
 		
 		$bbcode_parts = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY); //this regular expression was copied from FluxBB. However, everything used to parse it is completely original
 		//split the message into tags and check syntax
