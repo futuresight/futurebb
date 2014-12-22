@@ -293,6 +293,7 @@ if(isset($_POST['pm_sent'])) {
 					move_uploaded_file($_FILES['avatar']['tmp_name'], FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.' . $ext);
 					header('Refresh: 0'); echo '</p></div>'; return;
 				}
+				echo '<h3>' . translate('avatar') . '</h3>';
 				echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '/avatar" method="post" enctype="multipart/form-data">';
 				?>
 				<p><?php echo translate('currentavatar'); ?><br /><?php if (file_exists(FORUM_ROOT . '/static/avatars/' . $cur_user['id'] . '.' . $cur_user['avatar_extension'])) {
