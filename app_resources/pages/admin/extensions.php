@@ -294,8 +294,10 @@ if (isset($_POST['form_sent'])) {
 		if (!isset($ext_info['support'])) {
 			$ext_info['support'] = null;
 		}
-		$q = new DBInsert('extensions', array('name' => $ext_info['title'], 'website' => $ext_info['website'], 'support_url' => $ext_info['support'], 'uninstallable' => (string)$ext_info['uninstallable']), 'Failed to store extension info in DB');
-		$q->commit();
+		if (!isset($ext_info['nolog'])) {
+			$q = new DBInsert('extensions', array('name' => $ext_info['title'], 'website' => $ext_info['website'], 'support_url' => $ext_info['support'], 'uninstallable' => (string)$ext_info['uninstallable']), 'Failed to store extension info in DB');
+			$q->commit();
+		}
 		
 		$ext_id = $db->insert_id();
 		
