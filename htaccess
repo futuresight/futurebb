@@ -1,4 +1,0 @@
-RewriteEngine On
-RewriteBase /futurebb/
-RewriteRule ^static/(.*?)$ static/$1 [L]
-RewriteRule ^(.*)$ dispatcher.php

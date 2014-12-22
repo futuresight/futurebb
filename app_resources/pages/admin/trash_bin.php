@@ -19,17 +19,14 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 						httperror(404);
 					}
 					list($tid,$fid) = $db->fetch_row($result);
+					
+					//undelete, adjust counts
 					$db->query('UPDATE `#^posts` SET deleted=NULL,deleted_by=NULL WHERE id=' . intval($_POST['post_id']) . ' AND deleted IS NOT NULL') or enhanced_error('Failed to undelete post', true);
-					//update counts and stuff
-					$result = $db->query('SELECT id,posted FROM `#^posts` WHERE topic_id=' . $tid . ' AND deleted IS NULL ORDER BY posted DESC') or error('Failed to get new last post', __FILE__, __LINE__, $db->error());
-					if ($db->num_rows($result)) {
-						list ($last_post_id,$last_post_time) = $db->fetch_row($result);
-					} else {
-						$last_post_id = 0;
-						$last_post_time = 0;
-					}
-					$db->query('UPDATE `#^topics` SET num_replies=num_replies+1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $tid) or error('Failed to update post count in topic', __FILE__, __LINE__, $db->error());
-					$db->query('UPDATE `#^forums` SET num_posts=num_posts+1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $fid) or error('Failed to update post count in forum', __FILE__, __LINE__, $db->error());
+					$db->query('UPDATE `#^topics` SET num_replies=num_replies+1 WHERE id=' . $tid) or error('Failed to update post count in topic', __FILE__, __LINE__, $db->error());
+					$db->query('UPDATE `#^forums` SET num_posts=num_posts+1 WHERE id=' . $fid) or error('Failed to update post count in forum', __FILE__, __LINE__, $db->error());
+					
+					update_last_post($tid, $fid);
+					
 					redirect($base_config['baseurl'] . '/posts/' . intval($_POST['post_id']));
 				} else if (isset($_POST['topic_id'])) {
 					//undeleting a whole topic
@@ -38,18 +35,14 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 						httperror(404);
 					}
 					list($furl,$turl,$fid) = $db->fetch_row($result);
-					//update counts and stuff
+					//undelete, then update counts
 					$db->query('UPDATE `#^topics` SET deleted=NULL,deleted_by=NULL WHERE id=' . intval($_POST['topic_id'])) or enhanced_error('Failed to undelete topic', true);
 					$result = $db->query('SELECT 1 FROM `#^posts` WHERE topic_id=' . intval($_POST['topic_id']) . ' AND deleted IS NULL') or error('Failed to get number of replies', __FILE__, __LINE__, $db->error());
 					$num_replies = $db->num_rows($result);
-					$result = $db->query('SELECT p.id,p.posted FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id WHERE p.deleted IS NULL AND t.deleted IS NULL AND t.forum_id=' . $fid . ' ORDER BY p.posted DESC') or enhanced_error('Failed to find last post', true);
-					if ($db->num_rows($result)) {
-						list ($last_post_id,$last_post_time) = $db->fetch_row($result);
-					} else {
-						$last_post_id = 0;
-						$last_post_time = 0;
-					}
-					$db->query('UPDATE `#^forums` SET num_posts=num_posts+' . $num_replies . ',num_topics=num_topics+1,last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $fid) or error('Failed to update post count<br />' . $q, __FILE__, __LINE__, $db->error());
+					$db->query('UPDATE `#^forums` SET num_posts=num_posts+' . $num_replies . ',num_topics=num_topics+1 WHERE id=' . $fid) or error('Failed to update post count<br />' . $q, __FILE__, __LINE__, $db->error());
+					
+					//
+					update_last_post(-1, $fid);
 					redirect($base_config['baseurl'] . '/' . $furl . '/' . $turl);
 				} else {
 					httperror(404);
