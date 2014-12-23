@@ -85,6 +85,7 @@ if(isset($_POST['pm_sent'])) {
 						'dst'				=> 'bool',
 						'style'				=> 'string',
 						'language'			=> 'string',
+						'style'				=> 'string',
 						'block_pm'			=> 'bool',
 						'block_notif'		=> 'bool',
 					);
@@ -166,6 +167,22 @@ if(isset($_POST['pm_sent'])) {
 								$f = htmlspecialchars($f);
 								echo '<option value="' . $f . '"';
 								if ($f == $cur_user['language']) {
+									echo ' selected="selected"';
+								}
+								echo '>' . $f . '</option>';
+							}
+						}
+						?></select></td>
+					</tr>
+					<tr>
+						<td><?php echo translate('style'); ?></td>
+						<td><select name="style"><?php
+						$handle = opendir(FORUM_ROOT . '/app_resources/pages/css');
+						while ($f = readdir($handle)) {
+							if ($f != '.' && $f != '..' && $f != 'basic.css' && $f != 'embed.css') {
+								$f = htmlspecialchars(basename($f, '.css'));
+								echo '<option value="' . $f . '"';
+								if ($f == $cur_user['style']) {
 									echo ' selected="selected"';
 								}
 								echo '>' . $f . '</option>';

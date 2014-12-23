@@ -10,7 +10,7 @@ if (isset($_POST['add_new'])) {
 	$q->commit();
 	
 	//clear the cache
-	$maindir = FORUM_ROOT . '/app_config/cache/language/' . $language;
+	$maindir = FORUM_ROOT . '/app_config/cache/language';
 	if (file_exists($maindir) && is_dir($maindir)) {
 		$handle = opendir($maindir);
 		while ($file = readdir($handle)) {
@@ -43,7 +43,7 @@ if (isset($_POST['delete_id'])) {
 	$q->commit();
 	
 	//clear the cache
-	$maindir = FORUM_ROOT . '/app_config/cache/language/' . $language;
+	$maindir = FORUM_ROOT . '/app_config/cache/language';
 	if (file_exists($maindir) && is_dir($maindir)) {
 		$handle = opendir($maindir);
 		while ($file = readdir($handle)) {
@@ -89,7 +89,7 @@ if (isset($_POST['form_sent'])) {
 			}
 		}
 		//clear the cache
-		$maindir = FORUM_ROOT . '/app_config/cache/language/' . $language;
+		$maindir = FORUM_ROOT . '/app_config/cache/language';
 		if (file_exists($maindir) && is_dir($maindir)) {
 			$handle = opendir($maindir);
 			while ($file = readdir($handle)) {

@@ -303,6 +303,7 @@ $lang = array (
   'textquoting' => 'This is the text I am quoting.',
   'johnsmith' => 'John Smith',
   'linksandimages' => 'Links and images',
+  'style' => 'Style',
   'notranslation' => 'Unfortunately, this page does not have a translation available.',
   'blockininline' => 'The tag <b>[$1]</b> can not be placed inside <b>[$2]</b> because block tags can not be placed inside of inline tags.',
   'nonesting' => 'Additional BBCode tags can not go inside of a <b>[$1]</b> tag.',
