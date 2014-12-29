@@ -1054,9 +1054,9 @@ if (isset($_GET['downloadconfigxml'])) {
 						?>
 						<form action="install.php" method="post" enctype="multipart/form-data">
                         	<p><?php echo translate('selectlang'); ?> <select name="language"><?php
-							$handle = opendir(FORUM_ROOT . '/app_config/langs');
+							$handle = opendir(FORUM_ROOT . '/app_config/cache/language');
 							while ($lang = readdir($handle)) {
-								if ($lang != '.' && $lang != '..') {
+								if ($lang != '.' && $lang != '..' && file_exists(FORUM_ROOT . '/app_config/cache/language/' . $lang . '/install.php')) {
 									echo '<option value="' . $lang . '">' . $lang . '</option>';
 								}
 							}

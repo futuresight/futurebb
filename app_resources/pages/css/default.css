@@ -29,7 +29,6 @@ header('Content-type: text/css');
 #futurebb p {
 	margin-top: 2px;
 	margin-bottom: 6px;
-	padding-left: 3px;
 }
 
 #futurebb img {
@@ -51,6 +50,10 @@ header('Content-type: text/css');
 
 #futurebb .nomaxheight {
 	min-height:0px;
+}
+
+#futurebb .forum_content h2, #futurebb .forum_content h3 {
+	margin-top:3px;
 }
 
 /* header */
@@ -204,8 +207,13 @@ ul#navlist li {
 /* content */
 .forum_content {
 	border: 1px solid #000;
+	padding-left:5px;
 	margin: 5px 0px;
 	background-color: #EEE;
+}
+
+div.leftmenu {
+	padding-left:0px;
 }
 
 /* index */
@@ -227,10 +235,6 @@ ul#navlist li {
 	margin-top: 2px;
 	padding-left: 4px;
 	font-size: 18px;
-}
-
-#futurebb .forum_content {
-	padding-top: 0px;
 }
 
 #futurebb .forum_content .cat_header {

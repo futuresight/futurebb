@@ -26,6 +26,14 @@ if (isset($_POST['form_sent'])) {
 	if ($_POST['password1'] != $_POST['password2']) {
 		$errors[] = translate('passnomatch');
 	}
+	if (strlen($_POST['password1']) < 8) {
+		$errors[] = translate('shortpass');
+	}
+	//is it in the list of 10K most common passwords? (it was base64-encoded because it contains some inappropriate words)
+	$common = explode("\n", base64_decode(file_get_contents(FORUM_ROOT . '/app_config/commonpasswords.txt')));
+	if (in_array($_POST['password1'], $common)) {
+		$errors[] = translate('commonpass');
+	}
 	for ($i = 0; $i < strlen($_POST['username']); $i++) {
 		$char = $_POST['username']{$i};
 		$allowed_chars = array('-','_');

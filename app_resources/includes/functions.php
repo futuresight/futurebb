@@ -597,3 +597,28 @@ abstract class CacheEngine {
 		cache_language();
 	}
 }
+
+function update_last_post($topic_id, $forum_id = -1) {
+	global $db;
+	if ($topic_id != -1) {
+		//update topic last post data
+		$result = $db->query('SELECT id,posted FROM `#^posts` WHERE topic_id=' . $topic_id . ' AND deleted IS NULL ORDER BY posted DESC') or error('Failed to get new last post', __FILE__, __LINE__, $db->error());
+		if ($db->num_rows($result)) {
+			list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+		} else {
+			$last_post_id = 0;
+			$last_post_time = 0;
+		}
+		$db->query('UPDATE `#^topics` SET last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $topic_id) or enhanced_error('Failed to update topic last post data', true);
+	}
+	if ($forum_id != -1) {
+		$result = $db->query('SELECT p.id,p.posted FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id WHERE p.deleted IS NULL AND t.deleted IS NULL AND t.forum_id=' . $forum_id . ' ORDER BY p.posted DESC') or enhanced_error('Failed to find last post', true);
+		if ($db->num_rows($result)) {
+			list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+		} else {
+			$last_post_id = 0;
+			$last_post_time = 0;
+		}
+		$db->query('UPDATE `#^forums` SET last_post=' . $last_post_time . ',last_post_id=' . $last_post_id . ' WHERE id=' . $forum_id) or enhanced_error('Failed to update forum last post data', true);
+	}
+}

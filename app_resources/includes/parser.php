@@ -252,6 +252,11 @@ abstract class BBCodeController {
 			return;
 		}
 		
+		//parsing rules
+		$no_nest_tags = array('img');
+		$block_tags = array('quote', 'code', 'list');
+		$inline_tags = array('b', 'i', 'u', 's', 'color', 'colour', 'url', 'img', '\*');
+		
 		$bbcode_parts = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY); //this regular expression was copied from FluxBB. However, everything used to parse it is completely original
 		//split the message into tags and check syntax
 		$open_tags = array();
@@ -274,7 +279,15 @@ abstract class BBCodeController {
 				$last_key--;
 			} else if (preg_match('%^\[(' . implode('|', self::$tags) . ')(=.*?)?\]$%', $val, $matches)) {
 				$open_tags[$last_key] = $matches[1];
-				if ($open_tags[$last_key ] == 'quote') {
+				//check if there are any block tags inside inline tags
+				if ($last_key > 0 && in_array($open_tags[$last_key - 1], $inline_tags) && in_array($matches[1], $block_tags)) {
+					$errors[] = translate('blockininline', $matches[1], $open_tags[$last_key - 1]);
+				}
+				//check if there is any bbcode inside a tag which can't nest
+				if ($last_key > 0 && in_array($open_tags[$last_key - 1], $no_nest_tags)) {
+					$errors[] = translate('nonesting', $open_tags[$last_key - 1]);
+				}
+				if ($open_tags[$last_key] == 'quote') {
 					$quotes++;
 					if ($quotes > $futurebb_config['max_quote_depth']) {
 						$errors[] = translate('toomanynestedquotes', $futurebb_config['max_quote_depth']);
