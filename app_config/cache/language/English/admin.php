@@ -191,4 +191,5 @@ $lang_addl = array (
   'undeletepostheader' => 'Are you sure you want to undelete the post? You can view it below.',
   'undeletetopicheader' => 'Are you sure you wish to undelete this topic?',
   'interface' => 'Interface',
+  'addforum' => 'Add forum',
 );

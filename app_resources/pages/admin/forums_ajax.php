@@ -1,4 +1,9 @@
 <?php
+//A note for whomever is looking at the code:
+//I know this file is called forums_ajax.php, even though it does not use AJAX
+//There is a reason for this. When this page was originally conceptualized, it was going to use AJAX to allow saving in real-time without submitting the form.
+//This is still planned for version 1.3, but for now it is a JS-powered page that submits like a normal form.
+//-Jacob G.
 if (isset($_POST['form_sent'])) {
 	//process form input
 	//update old forums
@@ -321,6 +326,65 @@ if (isset($_POST['form_sent'])) {
 		temp.parentNode.removeChild(temp);
 	}
 	
+	function cancelCat(cat_id) {
+		var mainCatDiv = document.getElementById('cat_' + cat_id);
+		mainCatDiv.parentNode.removeChild(mainCatDiv);
+	}
+	
+	<?php
+	$result = $db->query('SELECT MAX(id),MAX(sort_position) FROM `#^categories`') or enhanced_error('Failed to get highest id', true);
+	list($maxid,$maxpos) = $db->fetch_row($result);
+	echo 'var maxCatId = ' . $maxid . ';' . "\n\t";
+	echo 'var maxCatSortOrder = ' . $maxpos . ';';
+	?>
+	
+	function addCat() {
+		maxCatId++;
+		maxCatSortOrder++;
+		var catDiv = document.createElement('div');
+		catDiv.id = 'cat_' + maxCatId;
+		
+		var h4 = document.createElement('h4');
+		var catSortOrderInput = document.createElement('input');
+		catSortOrderInput.type = 'hidden';
+		catSortOrderInput.name = 'cat_sort_order[' + maxCatId + ']';
+		catSortOrderInput.value = maxCatSortOrder;
+		h4.appendChild(catSortOrderInput);
+		
+		var catNameInput = document.createElement('input');
+		catNameInput.name = 'cat_title[' + maxCatId + ']';
+		h4.appendChild(catNameInput);
+		
+		var moveSpan = document.createElement('span');
+		moveSpan.innerHTML = ' <a onclick="moveCat(' + maxCatId + ', \'up\');" style="cursor:pointer">&uarr;</a> <a onclick="moveCat(' + maxCatId + ', \'down\');" style="cursor:pointer">&darr;</a> (<a onclick="addForum(' + maxCatId + ');" style="cursor:pointer">&#10010 <?php echo translate('addforum'); ?></a>) (<a onclick="cancelCat(' + maxCatId + ');" style="cursor:pointer"><?php echo translate('cancel'); ?></a>)';
+		h4.appendChild(moveSpan);
+		
+		catDiv.appendChild(h4);
+		
+		var catTable = document.createElement('table');
+		catTable.id = 'table_cat_' + maxCatId;
+		var topRow = document.createElement('tr');
+		var th1 = document.createElement('th');
+		th1.innerHTML = '<?php echo translate('forumname'); ?>';
+		topRow.appendChild(th1);
+		var th2 = document.createElement('th');
+		th2.innerHTML = '<?php echo translate('move'); ?>';
+		topRow.appendChild(th2);
+		/*var th3 = document.createElement('th');
+		th3.innerHTML = '&nbsp;';
+		topRow.appendChild(th3);*/
+		var th4 = document.createElement('th');
+		th4.innerHTML = '<?php echo translate('cancel'); ?>';
+		topRow.appendChild(th4);
+		
+		catTable.appendChild(topRow);
+		catDiv.appendChild(document.createElement('hr'));
+		catDiv.appendChild(catTable);
+		
+		document.getElementById('cat_container').appendChild(catDiv);
+		unlockSubmit();
+	}
+	
 	var newWin = null;
 	function editForum(forum_id) {
 		if (newWin == null && document.getElementById('submitBox').style.display == 'none') {
@@ -335,38 +399,38 @@ if (isset($_POST['form_sent'])) {
 	//]]>
 	</script>
 	<div class="forum_content rightbox admin">
-    	<form action="<?php echo $base_config['baseurl']; ?>/admin/forums" method="post" enctype="multipart/form-data">
-        	<p><input type="submit" name="add_new_category" value="<?php echo translate('addcat'); ?>" /></p>
-        </form>
     	<form action="<?php echo $base_config['baseurl']; ?>/admin/forums/enhanced" method="post" enctype="multipart/form-data" id="theform">
             <h3><?php echo translate('editforums'); ?></h3>
-            <?php
-            $q = new DBSelect('forums', array('c.name AS cat_name','c.sort_position AS cat_sort_position','f.id','c.id AS cat_id','f.sort_position','f.name AS forum_name'), 'c.id IS NOT NULL', 'Failed to get forum list');
-            $q->table_as('f');
-            $q->set_order('c.sort_position,f.sort_position');
-            $q->add_join(new DBJoin('categories', 'c', 'c.id=f.cat_id', 'right'));
-            $result = $q->commit();
-            $last_cat_id = -1;
-			$highest_sort_orders = array();
-            while ($forum = $db->fetch_assoc($result)) {
-                if ($forum['cat_id'] != $last_cat_id) {
-                    if ($last_cat_id != -1) {
-                        echo '</table></div>';
-                    }
-                    $last_cat_id = $forum['cat_id'];
-                    echo '<div id="cat_' . $forum['cat_id'] . '"><h4><input type="hidden" name="cat_sort_order[' . $forum['cat_id'] . ']" value="' . $forum['cat_sort_position'] . '" /><input type="text" name="cat_title[' . $forum['cat_id'] . ']" value="' . htmlspecialchars($forum['cat_name']) . '" oninput="unlockSubmit();" /> <a onclick="moveCat(' . $forum['cat_id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="moveCat(' . $forum['cat_id'] . ',\'down\');" style="cursor:pointer">&darr;</a> (<a onClick="addForum(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10010 Add forum</a>) (<a onclick="prepareDeleteCat(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10060;</a>)</h4><hr /><table border="0" id="table_cat_' . $forum['cat_id'] . '"><tr><th>' . translate('forumname') . '</th><th>Move</th><th>' . translate('delete') . '</th><th>' . translate('edit') . '</th><th>' . translate('cancel') . '</th></tr>' . "\n";
-                }
-				if ($forum['id'] != '') {
-					echo '<tr id="tr_' . $forum['id'] . '"><td><input type="hidden" name="sort_order[' . $forum['id'] . ']" id="sort_order_' . $forum['id'] . '" value="' . $forum['sort_position'] . '" /><input type="text" name="title[' . $forum['id'] . ']" value="' . htmlspecialchars($forum['forum_name']) . '" oninput="unlockSubmit();" /></td><td><a onclick="move(' . $forum['id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="move(' . $forum['id'] . ',\'down\');" style="cursor:pointer">&darr;</a></td><td><a onclick="prepareDelete(' . $forum['id'] . ');" style="cursor:pointer">&#10060;</a></td><td><a href="' . $base_config['baseurl'] . '/admin/forums/edit/' . $forum['id'] . '?popup=true" onclick="editForum(' . $forum['id'] . '); return false;" style="text-decoration:none" target="_BLANK">&#9998;</a></td><td></td></tr>' . "\n";
-					if (!isset($highest_sort_orders[$forum['cat_id']]) || $forum['sort_position'] > $highest_sort_orders[$forum['cat_id']]) {
-						$highest_sort_orders[$forum['cat_id']] = $forum['sort_position'];
+			<p><a style="text-decoration: underline;cursor:pointer" onclick="addCat();"><?php echo translate('addcat'); ?></a></p>
+			<div id="cat_container">
+				<?php
+				$q = new DBSelect('forums', array('c.name AS cat_name','c.sort_position AS cat_sort_position','f.id','c.id AS cat_id','f.sort_position','f.name AS forum_name'), 'c.id IS NOT NULL', 'Failed to get forum list');
+				$q->table_as('f');
+				$q->set_order('c.sort_position,f.sort_position');
+				$q->add_join(new DBJoin('categories', 'c', 'c.id=f.cat_id', 'right'));
+				$result = $q->commit();
+				$last_cat_id = -1;
+				$highest_sort_orders = array();
+				while ($forum = $db->fetch_assoc($result)) {
+					if ($forum['cat_id'] != $last_cat_id) {
+						if ($last_cat_id != -1) {
+							echo '</table></div>';
+						}
+						$last_cat_id = $forum['cat_id'];
+						echo '<div id="cat_' . $forum['cat_id'] . '"><h4><input type="hidden" name="cat_sort_order[' . $forum['cat_id'] . ']" value="' . $forum['cat_sort_position'] . '" /><input type="text" name="cat_title[' . $forum['cat_id'] . ']" value="' . htmlspecialchars($forum['cat_name']) . '" oninput="unlockSubmit();" /> <a onclick="moveCat(' . $forum['cat_id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="moveCat(' . $forum['cat_id'] . ',\'down\');" style="cursor:pointer">&darr;</a> (<a onClick="addForum(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10010 ' . translate('addforum') . '</a>) (<a onclick="prepareDeleteCat(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10060;</a>)</h4><hr /><table border="0" id="table_cat_' . $forum['cat_id'] . '"><tr><th>' . translate('forumname') . '</th><th>Move</th><th>' . translate('delete') . '</th><th>' . translate('edit') . '</th><th>' . translate('cancel') . '</th></tr>' . "\n";
+					}
+					if ($forum['id'] != '') {
+						echo '<tr id="tr_' . $forum['id'] . '"><td><input type="hidden" name="sort_order[' . $forum['id'] . ']" id="sort_order_' . $forum['id'] . '" value="' . $forum['sort_position'] . '" /><input type="text" name="title[' . $forum['id'] . ']" value="' . htmlspecialchars($forum['forum_name']) . '" oninput="unlockSubmit();" /></td><td><a onclick="move(' . $forum['id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="move(' . $forum['id'] . ',\'down\');" style="cursor:pointer">&darr;</a></td><td><a onclick="prepareDelete(' . $forum['id'] . ');" style="cursor:pointer">&#10060;</a></td><td><a href="' . $base_config['baseurl'] . '/admin/forums/edit/' . $forum['id'] . '?popup=true" onclick="editForum(' . $forum['id'] . '); return false;" style="text-decoration:none" target="_BLANK">&#9998;</a></td><td></td></tr>' . "\n";
+						if (!isset($highest_sort_orders[$forum['cat_id']]) || $forum['sort_position'] > $highest_sort_orders[$forum['cat_id']]) {
+							$highest_sort_orders[$forum['cat_id']] = $forum['sort_position'];
+						}
 					}
 				}
-            }
-			if ($last_cat_id != -1) {
-            	echo '</table></div>';
-			}
-            ?>
+				if ($last_cat_id != -1) {
+					echo '</table></div>';
+				}
+				?>
+			</div>
             <p id="submitBox" style="display:none"><input type="submit" value="Save" name="form_sent" onclick="return prepareSubmit();" /></p>
     	</form>
     </div>
