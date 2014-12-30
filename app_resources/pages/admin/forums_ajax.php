@@ -108,10 +108,21 @@ if (isset($_POST['form_sent'])) {
 	
 	$q = new DBSelect('categories', array('id', 'name', 'sort_position'), '', 'Failed to get category list');
 	$result = $q->commit();
+	$cats = array();
 	while ($cat = $db->fetch_assoc($result)) {
 		$id = $cat['id'];
+		$cats[] = $id;
 		if ($cat['name'] != $_POST['cat_title'][$id] || $cat['sort_position'] != $_POST['cat_sort_order'][$id]) {
 			$q = new DBUpdate('categories', array('name' => $_POST['cat_title'][$id],'sort_position' => $_POST['cat_sort_order'][$id]), 'id=' . $id, 'Failed to update category_title');
+			$q->commit();
+		}
+	}
+	
+	//any new categories?
+	foreach ($_POST['cat_title'] as $id => $name) {
+		if (!in_array($id, $cats)) {
+			//the category is not present! create it!
+			$q = new DBInsert('categories', array('id' => $id, 'name' => $name, 'sort_position' => $_POST['cat_sort_order'][$id]), 'Failed to insert new category');
 			$q->commit();
 		}
 	}
