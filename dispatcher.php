@@ -86,7 +86,7 @@ if (!$page_info) {
 				list($url) = $db->fetch_row($result);
 				redirect($base_config['baseurl'] . '/' . $url . '/' . $dirs[2]);
 			}
-			$page_info = array('file' => 'viewforum.php', 'template' => true);
+			$page_info = array('file' => 'viewforum.php', 'template' => true, 'nocontentbox' => true);
 		}
 		if (isset($dirs[2]) && $dirs[2] != '') {
 			$page_info = array('file' => 'viewtopic.php', 'template' => true, 'nocontentbox' => true);

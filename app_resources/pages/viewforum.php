@@ -27,111 +27,118 @@ list($num_topics) = $db->fetch_row($result);
 //get the topics (if any)
 $result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.closed,t.sticky,t.redirect_id,t.num_replies,t.deleted,lpa.username AS last_post_author,rt.id AS tracker_id,fpa.username AS author,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^posts` AS lp ON lp.id=t.last_post_id LEFT JOIN `#^users` AS lpa ON lpa.id=lp.poster LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^posts` AS fp ON fp.id=t.first_post_id LEFT JOIN `#^users` AS fpa ON fpa.id=fp.poster LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE t.forum_id=' . $cur_forum['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND t.deleted IS NULL') . ' AND (t.redirect_id IS NULL OR t.show_redirect=1) ORDER BY t.sticky DESC,t.last_post DESC LIMIT ' . (($page - 1) * intval($futurebb_config['topics_per_page'])) . ',' . intval($futurebb_config['topics_per_page'])) or error('Failed to get topics', __FILE__, __LINE__, $db->error());
 ?>
-<h2 class="cat_header"><?php echo htmlspecialchars($cur_forum['name']); ?></h2>
-<?php if ($futurebb_user['id'] != 0 && strstr($cur_forum['topic_groups'], '-' . $futurebb_user['group_id'] . '-')) { ?><p><a href="<?php echo $base_config['baseurl']; ?>/post/forum/<?php echo $cur_forum['id']; ?>">Post new topic</a></p><?php } 
-if ($num_topics) {
-	?>
-	<p><?php echo translate('pages');
-	echo paginate('<a href="' . $base_config['baseurl'] . '/' .  htmlspecialchars($dirs[1]) . '?page=$page$"$bold$>$page$</a>', $page, ceil($num_topics / $futurebb_config['topics_per_page']));
-?></p>
-<?php
-}
-$all_read = true;
-if ($db->num_rows($result)) { 
-	$topic_list = array();
-	?>
-<table border="0" class="forumtable">
-	<tr>
-		<th style="width: 20px;">&nbsp;</th>
-		<th><?php echo translate('subject'); ?></th>
-		<th><?php echo translate('author'); ?></th>
-		<th><?php echo translate('replies'); ?></th>
-		<th><?php echo translate('lastpost'); ?></th>
-	</tr>
-	<?php while ($cur_topic = $db->fetch_assoc($result)) {
-			if (!in_array($cur_topic['id'], $topic_list)) {
-			$topic_list[] = $cur_topic['id'];
-			// prepare a handy boolean
-			$cur_topic['unread'] = ($futurebb_user['id'] != 0 && $cur_topic['tracker_id'] == null);
-			if ($futurebb_user['last_visit'] > $cur_topic['last_post'] && $cur_topic['unread']) {
-				$db->query('INSERT INTO `#^read_tracker`(user_id,topic_id) VALUES(' . $futurebb_user['id'] . ',' . $cur_topic['id'] . ')') or error('Failed to mark topic as read', __FILE__, __LINE__, $db->error());
-				$cur_topic['unread'] = false;
-			}
-	?>
-	<tr>
-		<td style="text-align:center">
-		<?php // add status icon before topic title
-		if ($cur_topic['deleted']) {
-				echo '&#10060;';
-		} else if ($cur_topic['sticky']) {
-			if ($cur_topic['unread']) {
-				//echo '<object data="' . $base_config['baseurl'] . '/static/img/posticon/U_sticky.png" type="image/svg+xml" width="10px" height="14px"></object> ';
-				echo '<img class="svgimg" src="' . $base_config['baseurl'] . '/static/img/posticon/U_sticky.png" width="10px" alt="sticky" />';
-			} else {
-				//echo '<object data="' . $base_config['baseurl'] . '/static/img/posticon/R_sticky.png" type="image/svg+xml" width="10px" height="14px"></object> ';
-				echo '<img class="svgimg" src="' . $base_config['baseurl'] . '/static/img/posticon/R_sticky.png" width="10px" alt="sticky" />';
-			}
-		} elseif ($cur_topic['closed']) {
-			if ($cur_topic['unread']) {
-				echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/U_closed.png" width="10px" alt="closed" />';
-			} else {
-				echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/R_closed.png" width="10px" alt="closed" />';
-			}
-		} elseif ($cur_topic['redirect_id'] != null) {
-			echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/moved.png" width="10px" alt="redirect" />';
-		} else {
-			if ($cur_topic['unread']) {
-				echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/U.png" width="10px" alt="unread" />';
-			} else {
-				echo '&nbsp;';
-			}
+<div class="forum_content noleftmargin">
+	<h2 class="cat_header"><?php echo htmlspecialchars($cur_forum['name']); ?></h2>
+	<div class="indentleft">
+		<?php if ($futurebb_user['id'] != 0 && strstr($cur_forum['topic_groups'], '-' . $futurebb_user['group_id'] . '-')) { ?><p><a href="<?php echo $base_config['baseurl']; ?>/post/forum/<?php echo $cur_forum['id']; ?>">Post new topic</a></p><?php } 
+		if ($num_topics) {
+			?>
+			<p><?php echo translate('pages');
+			echo paginate('<a href="' . $base_config['baseurl'] . '/' .  htmlspecialchars($dirs[1]) . '?page=$page$"$bold$>$page$</a>', $page, ceil($num_topics / $futurebb_config['topics_per_page']));
+		?></p>
+		<?php
 		}
 		?>
-		
-		</td><td>
-		<?php echo '<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($cur_topic['url']) . '"';
-		//if ($futurebb_user['id'] != 0 && $cur_topic['last_post'] > $futurebb_user['last_visit']) { #old tracker
-		$class = array();
-		if ($futurebb_user['id'] != 0 && $cur_topic['unread'] && $cur_topic['redirect_id'] == null) {
-			$class[] = 'unread';
-			$all_read = false;
-		}
-		if ($cur_topic['closed']) {
-			$class[] = 'closed';
-		}
-		if (!empty($class)) {
-			echo ' class="' . implode(' ', $class) . '"';
-		}
-		echo '>' . htmlspecialchars($cur_topic['subject']) . '</a>';
-		if ($cur_topic['deleted']) {
-			echo '<br />' . translate('deletedbyon', translate('topic'), htmlspecialchars($cur_topic['deleted_by']), user_date($cur_topic['deleted']));
-		}
-		?></td>
-		<td><?php echo $cur_topic['author']; ?></td>
-		<td><?php echo $cur_topic['num_replies']; ?></td>
-		<td><?php if ($cur_topic['last_post'] != 0) { ?><a href="<?php echo $base_config['baseurl']; ?>/posts/<?php echo $cur_topic['last_post_id']; ?>"><?php echo user_date($cur_topic['last_post']) . ' ' . translate('by') .' ' . htmlspecialchars($cur_topic['last_post_author']); ?></a><?php } else { ?><?php echo translate('topicmoved'); ?><?php } ?></td>
-	</tr>
+	</div>
 	<?php
-		}
-	} ?>
-</table>
-<?php 
-} else {
-	if ($num_topics == 0) {
-		echo '<p>' . translate('notopics') . '</p>';
+	$all_read = true;
+	if ($db->num_rows($result)) { 
+		$topic_list = array();
+		?>
+	<table border="0" class="forumtable">
+		<tr>
+			<th style="width: 20px;">&nbsp;</th>
+			<th><?php echo translate('subject'); ?></th>
+			<th><?php echo translate('author'); ?></th>
+			<th><?php echo translate('replies'); ?></th>
+			<th><?php echo translate('lastpost'); ?></th>
+		</tr>
+		<?php while ($cur_topic = $db->fetch_assoc($result)) {
+				if (!in_array($cur_topic['id'], $topic_list)) {
+				$topic_list[] = $cur_topic['id'];
+				// prepare a handy boolean
+				$cur_topic['unread'] = ($futurebb_user['id'] != 0 && $cur_topic['tracker_id'] == null);
+				if ($futurebb_user['last_visit'] > $cur_topic['last_post'] && $cur_topic['unread']) {
+					$db->query('INSERT INTO `#^read_tracker`(user_id,topic_id) VALUES(' . $futurebb_user['id'] . ',' . $cur_topic['id'] . ')') or error('Failed to mark topic as read', __FILE__, __LINE__, $db->error());
+					$cur_topic['unread'] = false;
+				}
+		?>
+		<tr>
+			<td style="text-align:center">
+			<?php // add status icon before topic title
+			if ($cur_topic['deleted']) {
+					echo '&#10060;';
+			} else if ($cur_topic['sticky']) {
+				if ($cur_topic['unread']) {
+					//echo '<object data="' . $base_config['baseurl'] . '/static/img/posticon/U_sticky.png" type="image/svg+xml" width="10px" height="14px"></object> ';
+					echo '<img class="svgimg" src="' . $base_config['baseurl'] . '/static/img/posticon/U_sticky.png" width="10px" alt="sticky" />';
+				} else {
+					//echo '<object data="' . $base_config['baseurl'] . '/static/img/posticon/R_sticky.png" type="image/svg+xml" width="10px" height="14px"></object> ';
+					echo '<img class="svgimg" src="' . $base_config['baseurl'] . '/static/img/posticon/R_sticky.png" width="10px" alt="sticky" />';
+				}
+			} elseif ($cur_topic['closed']) {
+				if ($cur_topic['unread']) {
+					echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/U_closed.png" width="10px" alt="closed" />';
+				} else {
+					echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/R_closed.png" width="10px" alt="closed" />';
+				}
+			} elseif ($cur_topic['redirect_id'] != null) {
+				echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/moved.png" width="10px" alt="redirect" />';
+			} else {
+				if ($cur_topic['unread']) {
+					echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/U.png" width="10px" alt="unread" />';
+				} else {
+					echo '&nbsp;';
+				}
+			}
+			?>
+			
+			</td><td>
+			<?php echo '<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($cur_topic['url']) . '"';
+			//if ($futurebb_user['id'] != 0 && $cur_topic['last_post'] > $futurebb_user['last_visit']) { #old tracker
+			$class = array();
+			if ($futurebb_user['id'] != 0 && $cur_topic['unread'] && $cur_topic['redirect_id'] == null) {
+				$class[] = 'unread';
+				$all_read = false;
+			}
+			if ($cur_topic['closed']) {
+				$class[] = 'closed';
+			}
+			if (!empty($class)) {
+				echo ' class="' . implode(' ', $class) . '"';
+			}
+			echo '>' . htmlspecialchars($cur_topic['subject']) . '</a>';
+			if ($cur_topic['deleted']) {
+				echo '<br />' . translate('deletedbyon', translate('topic'), htmlspecialchars($cur_topic['deleted_by']), user_date($cur_topic['deleted']));
+			}
+			?></td>
+			<td><?php echo $cur_topic['author']; ?></td>
+			<td><?php echo $cur_topic['num_replies']; ?></td>
+			<td><?php if ($cur_topic['last_post'] != 0) { ?><a href="<?php echo $base_config['baseurl']; ?>/posts/<?php echo $cur_topic['last_post_id']; ?>"><?php echo user_date($cur_topic['last_post']) . ' ' . translate('by') .' ' . htmlspecialchars($cur_topic['last_post_author']); ?></a><?php } else { ?><?php echo translate('topicmoved'); ?><?php } ?></td>
+		</tr>
+		<?php
+			}
+		} ?>
+	</table>
+	<?php 
 	} else {
-		httperror(404);
+		if ($num_topics == 0) {
+			echo '<p>' . translate('notopics') . '</p>';
+		} else {
+			httperror(404);
+		}
 	}
-}
-if ($futurebb_user['id'] != 0 && $cur_forum['tracker_id'] == null && $all_read) {
-	$db->query('INSERT INTO `#^read_tracker`(user_id,forum_id) VALUES(\'' . $futurebb_user['id'] . '\',\'' . $cur_forum['id'] . '\')') or error('Failed to mark forum as read', __FILE__, __LINE__, $db->error());
-}
-if ($num_topics) {
+	if ($futurebb_user['id'] != 0 && $cur_forum['tracker_id'] == null && $all_read) {
+		$db->query('INSERT INTO `#^read_tracker`(user_id,forum_id) VALUES(\'' . $futurebb_user['id'] . '\',\'' . $cur_forum['id'] . '\')') or error('Failed to mark forum as read', __FILE__, __LINE__, $db->error());
+	}
+	if ($num_topics) {
+		?>
+		<div class="indentleft"><p><?php echo translate('pages');
+		echo paginate('<a href="' . $base_config['baseurl'] . '/' .  htmlspecialchars($dirs[1]) . '?page=$page$"$bold$>$page$</a>', $page, ceil($num_topics / $futurebb_config['topics_per_page']));
+		?></p></div>
+	<?php
+	}
+	//send RSS URL back to dispatcher
+	$rss_url = 'rss/' . htmlspecialchars($dirs[1]);
 	?>
-	<p><?php echo translate('pages');
-	echo paginate('<a href="' . $base_config['baseurl'] . '/' .  htmlspecialchars($dirs[1]) . '?page=$page$"$bold$>$page$</a>', $page, ceil($num_topics / $futurebb_config['topics_per_page']));
-	?></p>
-<?php
-}
-//send RSS URL back to dispatcher
-$rss_url = 'rss/' . htmlspecialchars($dirs[1]);
+</div>
