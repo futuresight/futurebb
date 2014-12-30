@@ -1,4 +1,5 @@
 <?php
+load_db_config(true);
 function cache_header() {
 	global $futurebb_config;
 	$xml = new SimpleXMLElement($futurebb_config['header_links']);

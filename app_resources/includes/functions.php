@@ -147,9 +147,9 @@ function futurebb_hash($text) {
 }
 
 // Load volatile configuration from the database
-function load_db_config() {
+function load_db_config($extra = false) {
 	global $futurebb_config, $db;
-	$result = $db->query('SELECT c_name,c_value FROM `#^config`') or error('Failed to load config', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT c_name,c_value FROM `#^config` WHERE load_extra=' . ($extra ? '1' : '0')) or error('Failed to load config', __FILE__, __LINE__, $db->error());
 	while (list($key, $val) = $db->fetch_row($result)) {
 		$futurebb_config[$key] = $val;
 	}

@@ -4,6 +4,7 @@ if (!$futurebb_user['g_admin_privs']) {
 }
 $page_title = 'Interface editing';
 translate('<addfile>', 'admin');
+load_db_config(true);
 include FORUM_ROOT . '/app_resources/includes/admin.php';
 ?>
 <div class="container">

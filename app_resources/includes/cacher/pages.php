@@ -1,4 +1,5 @@
 <?php
+load_db_config(true);
 function cache_pages() {
 	global $db;
 	$q = new DBSelect('pages', array('*'), '', 'Failed to get pages');
