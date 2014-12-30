@@ -113,11 +113,19 @@ if ($page_info) {
 	// If we have valid page info, include the page
 	ob_start();
 	if ($page_info['template']) {
-		include FORUM_ROOT . '/app_resources/includes/header.php';
+		if (file_exists(FORUM_ROOT . '/app_config/templates/' . $futurebb_user['style'] . '/header.php')) {
+			include FORUM_ROOT . '/app_config/templates/' . basename(realpath($futurebb_user['style'])) . '/header.php';
+		} else {
+			include FORUM_ROOT . '/app_resources/includes/header.php';
+		}
 	}
 	include FORUM_ROOT . '/app_resources/pages/' . $page_info['file'];
 	if ($page_info['template']) {
-		include FORUM_ROOT . '/app_resources/includes/footer.php';
+		if (file_exists(FORUM_ROOT . '/app_config/templates/' . $futurebb_user['style'] . '/footer.php')) {
+			include FORUM_ROOT . '/app_config/templates/' . basename(realpath($futurebb_user['style'])) . '/footer.php';
+		} else {
+			include FORUM_ROOT . '/app_resources/includes/footer.php';
+		}
 	}
 	$page_contents = ob_get_contents();
 	$page_contents = str_replace('<$page_title/>', htmlspecialchars($page_title), $page_contents);
