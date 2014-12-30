@@ -6,13 +6,14 @@ if (!isset($dirs[2]) || $dirs[2] == '') {
 if (!isset($dirs[3])) {
 	$dirs[3] = '';
 }
-function PMBox() {
+translate('<addfile>', 'profile');
+function PMBox($preload = '') {
 	global $futurebb_config, $futurebb_user, $cur_user, $base_config, $dirs;
 	// Private messaging
 	if(($futurebb_config['allow_privatemsg'] == 1 && $futurebb_user['id'] != 0 && $futurebb_user['id'] != $cur_user['id'] && $cur_user['block_pm'] == 0) || $futurebb_user['g_mod_privs']) {
 		echo '<h3>' . translate('sendPM') . '</h3>';
 		echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '" method="post" enctype="multipart/form-data" name="sendpm">
-		<textarea name="pm_text" style="width: 290; height: 50;"></textarea><br />
+		<textarea name="pm_text" rows="5" cols="50">' . htmlspecialchars($preload) . '</textarea><br />
 		<input name="pm_sent" type="submit" value="' . translate('send') . '" />';
 		if($futurebb_user['g_mod_privs']) echo '<input type="checkbox" name="send_warning" id="send_warning" /> <label for="send_warning">' . translate('sendas_admin') . '</label>';
 		echo '</form>';
@@ -573,6 +574,18 @@ if(isset($_POST['pm_sent'])) {
 					}
 					echo '</table>';
 				}
+				break;
+			case 'pm_reply':
+				$result = $db->query('SELECT contents,send_time FROM `#^notifications` WHERE id=' . intval($_GET['id']) . ' AND user=' . $futurebb_user['id']) or enhanced_error('Failed to find notification', true);
+				if (!$db->num_rows($result)) {
+					httperror(404);
+				}
+				list($msg,$time) = $db->fetch_row($result);
+				$lines = explode("\n", $msg);
+				foreach ($lines as &$line) {
+					$line = '> ' . $line;
+				}
+				pmbox(translate('pm_reply_header', user_date($time)) . "\n" . implode("\n", $lines));
 				break;
 			default:
 				httperror(404);

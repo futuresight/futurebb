@@ -133,6 +133,7 @@ if (!isset($_GET['language']) || !isset($_GET['category'])) {
 	?>
 	<form action="<?php echo $base_config['baseurl']; ?>/admin/interface/language" method="get" enctype="application/x-www-form-urlencoded">
 		<h3>Edit translator</h3>
+		<p>Please note that after making any changes, if they do not show up immediately, go into your forum root directory and delete everything in the directory <code>app_config/cache</code></p>
 		<p>Select a language and category to edit: <select name="language"><?php
 		$q = new DBSelect('language', array('DISTINCT(language)'), '', 'Failed to get language list');
 		$result = $q->commit();

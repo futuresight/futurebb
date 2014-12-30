@@ -47,6 +47,9 @@ foreach($futurebb_user['notifications'] as $entry) {
 	} else {
 		echo translate('report_abuse');
 	}
+	if ($entry['type'] == 'msg') {
+		echo '<br /><a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($entry['sender']) . '/pm_reply?id=' . $entry['id'] . '">' . translate('reply') . '</a>';
+	}
 	echo '</a></td>';
 	echo '</tr>';
 }

@@ -309,4 +309,5 @@ $lang = array (
   'nonesting' => 'Additional BBCode tags can not go inside of a <b>[$1]</b> tag.',
   'shortpass' => 'Your password is shorter than 8 characters',
   'commonpass' => 'Your password is in the list of the most commonly used passwords',
+  'reply' => 'Reply',
 );

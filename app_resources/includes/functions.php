@@ -284,10 +284,13 @@ abstract class LoginController {
 		
 		// Load out into array and translate where needed
 		while ($notifs_raw = $db->fetch_assoc($result)) {
+			$sender = '';
 			if($notifs_raw['type'] == 'warning') {
 				$contents_raw = translate('user_sent_warning', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($notifs_raw['arguments']) . '">' . htmlspecialchars($notifs_raw['arguments']) . '</a>') . '<br />' . $notifs_raw['contents'];
+				$sender = $notifs_raw['arguments'];
 			} elseif($notifs_raw['type'] == 'msg') {
 				$contents_raw = translate('user_sent_msg', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($notifs_raw['arguments']) . '">' . htmlspecialchars($notifs_raw['arguments']) . '</a>') . '<br />' . $notifs_raw['contents'];
+				$sender = $notifs_raw['arguments'];
 			} elseif($notifs_raw['type'] == 'notification') {
 				$parts = explode(',', $notifs_raw['arguments'], 2);
 				$contents_raw = translate('user_mentioned_you', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($parts[0]) . '">' . htmlspecialchars($parts[0]) . '</a>') .
@@ -299,6 +302,7 @@ abstract class LoginController {
 				'id' => $notifs_raw['id'],
 				'send_time' => $notifs_raw['send_time'],
 				'read_time' => $notifs_raw['read_time'],
+				'sender' => $sender,
 				'contents' => $contents_raw);
 		}
 		
