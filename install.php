@@ -77,6 +77,15 @@ function test_db() {
 	}
 }
 
+function check_input($inputstr, array $validchars) {
+	for ($i = 0; $i < strlen($inputstr); $i++) {
+		if (!ctype_alnum($inputstr{$i}) && !in_array($inputstr{$i}, $validchars)) {
+			return false;
+		}
+	}
+	return true;
+}
+
 function db_fail() {
 	global $db_fail, $install_pages, $page;
 	$db_fail = true;
@@ -1004,52 +1013,111 @@ if (isset($_GET['downloadconfigxml'])) {
 		foreach ($_POST['config'] as $key => $val) {
 			add_cookie_data($key, $val);
 		}
+		if (strlen($_POST['config']['board_title']) < 4) {
+			$install_pages['brdtitle'] = true;
+			$page = 'brdsettings';
+			$error = 'titletooshort';
+			$install_pages['confirmation'] = false;
+		}
 	}
 	if (isset($_POST['back'])) {
 		$install_pages['adminacct'] = true;
 		$pwd_mismatch = false;
 		$page = 'adminacc';
-		$install_pages['confirmation'] = false;
+		$install_pages['brdtitle'] = false;
+		if (isset($error)) {
+			unset($error);
+		}
 	}
 } else if (isset($_POST['adminacc'])) {
 	add_cookie_data('adminusername', $_POST['adminusername']);
 	add_cookie_data('adminemail', $_POST['adminemail']);
 	add_cookie_data('adminpass', $_POST['adminpass']);
+	$common = explode("\n", base64_decode(file_get_contents(FORUM_ROOT . '/app_config/commonpasswords.txt')));
 	if ($_POST['adminpass'] != $_POST['confirmadminpass']) {
 		$install_pages['adminacct'] = true;
 		$page = 'adminacc';
-		$pwd_mismatch = true;
+		$install_pages['brdtitle'] = false;
+		$error = 'pwdmismatch';
+	} else if (strlen($_POST['adminusername']) < 4 || !check_input($_POST['adminusername'], array('_', '-'))) {
+		$install_pages['adminacct'] = true;
+		$page = 'adminacc';
+		$install_pages['brdtitle'] = false;
+		$error = 'usernameinvalid';
+	} else if (!preg_match('%.*?\@.*?\.%', $_POST['adminemail'])) {
+		$install_pages['adminacct'] = true;
+		$page = 'adminacc';
+		$install_pages['brdtitle'] = false;
+		$error = 'bademail';
+	} else if (strlen($_POST['adminpass']) < 8) {
+		$install_pages['adminacct'] = true;
+		$page = 'adminacc';
+		$install_pages['brdtitle'] = false;
+		$error = 'passtooshort';
+	} else if (in_array($_POST['adminpass'], $common)) {
+		$install_pages['adminacct'] = true;
+		$page = 'adminacc';
+		$install_pages['brdtitle'] = false;
+		$error = 'commonpass';
 	} else {
 		$install_pages['brdtitle'] = true;
 		$page = 'brdsettings';
+		$install_pages['brdtitle'] = false;
 	}
+	unset($common);
 	if (isset($_POST['back'])) {
 		$install_pages['syscfg'] = true;
 		$page = 'syscfg';
-		$pwd_mismatch = false;
 		$install_pages['adminacct'] = false;
 		$install_pages['brdtitle'] = false;
+		if (isset($error)) {
+			unset($error);
+		}
 	}
 } else if (isset($_POST['syscfg'])) {
 	add_cookie_data('baseurl', $_POST['baseurl']);
 	add_cookie_data('basepath', $_POST['basepath']);
 	$install_pages['adminacct'] = true;
 	$page = 'adminacc';
-	$pwd_mismatch = false;
 	
+	if (!preg_match('%https?://(.*?)' . preg_quote($_POST['basepath']) . '$%', $_POST['baseurl'])) {
+		$error = 'invalidbaseurl';
+		$install_pages['syscfg'] = true;
+		$page = 'syscfg';
+		$install_pages['adminacct'] = false;
+		$install_pages['brdtitle'] = false;
+	} else if ($_POST['basepath']{0} != '/' || !check_input($_POST['basepath'], array('/', '.'))) {
+		$error = 'invalidbasepath';
+		$install_pages['syscfg'] = true;
+		$page = 'syscfg';
+		$install_pages['adminacct'] = false;
+		$install_pages['brdtitle'] = false;
+	}
 	if (isset($_POST['back'])) {
 		$install_pages['dbsetup'] = true;
 		$page = 'dbsetup';
 		$install_pages['adminacct'] = false;
 		$db_fail = false;
+		if (isset($error)) {
+			unset($error);
+		}
 	}
 } else if (isset($_POST['dbsetup'])) {
 	if (get_cookie_data('dbtype') != 'sqlite3') {
+		if (!check_input($_POST['dbhost'], array('.', '_', '-')) || !check_input($_POST['dbuser'], array('.', '_', '-'))) {
+			db_fail();
+		}
 		add_cookie_data('dbhost', $_POST['dbhost']);
 		add_cookie_data('dbuser', $_POST['dbuser']);
 		add_cookie_data('dbpass', $_POST['dbpass']);
 	}
+	if (!check_input($_POST['dbname'], array('.', '_', '-', '/'))) {
+		db_fail();
+	}
 	add_cookie_data('dbname', $_POST['dbname']);
+	if (!check_input($_POST['dbprefix'], array('.', '_', '-'))) {
+		db_fail();
+	}
 	add_cookie_data('dbprefix', $_POST['dbprefix']);
 	
 	if (isset($_POST['back'])) {
@@ -1059,7 +1127,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$install_pages['dbsetup'] = false;
 	} else {
 		//test database
-		if (test_db()) {
+		if ((!isset($db_fail) || !$db_fail) && test_db()) {
 			$install_pages['syscfg'] = true;
 			$page = 'syscfg';
 		} else {
@@ -1087,8 +1155,15 @@ if (isset($_GET['downloadconfigxml'])) {
 } else if (isset($_POST['start'])) {
 	$install_pages['dbtype'] = true;
 	$page = 'dbtype';
-} else if (isset($_POST['language'])) {
-	add_cookie_data('language', $_POST['language']);
+	if (!check_input($_POST['language'], array()) || !file_exists(FORUM_ROOT . '/app_config/cache/language/' . basename($_POST['language']) . '/install.php')) {
+		$install_pages['dbtype'] = false;
+		$page = 'welcome';
+		$install_pages['welcome'] = true;
+		$error = 'Invalid language';
+		add_cookie_data('language', 'English');
+	} else {
+		add_cookie_data('language', $_POST['language']);
+	}
 } else {
 	setcookie('install_cookie', '');
 	$install_pages['welcome'] = true;
@@ -1134,6 +1209,9 @@ if (isset($_GET['downloadconfigxml'])) {
 						<p><?php echo translate('intro'); ?></p>
 						<?php
 						$ok = true;
+						if (isset($error)) {
+							echo '<p style="color:#F00; font-weight:bold">' . $error . '</p>';
+						}
 						//check if necessary directories are writable
 						if (!file_exists(FORUM_ROOT . '/temp') || !is_dir(FORUM_ROOT . '/temp')) {
 							$ok = false;
@@ -1216,12 +1294,12 @@ if (isset($_GET['downloadconfigxml'])) {
 						<h2><?php echo translate('dbsetup'); ?></h2>
 						<?php
 						if ($db_fail) {
-							if ($db->connect_error()) {
+							if (isset($db) && $db->connect_error()) {
 								$error = $db->connect_error();
 							} else if (get_cookie_data('dbname') == '') {
 								$error = 'No database specified';
 							} else {
-								$error = 'Unknown error';
+								$error = 'Invalid input - make sure you only use alphanumeric inputs, periods, underscores, and hyphens';
 							}
 							echo '<p style="color:#F00; font-weight:bold">' . translate('baddb') . $error . '</p>';
 						}
@@ -1270,14 +1348,29 @@ if (isset($_GET['downloadconfigxml'])) {
 						<p><?php echo translate('dbgood'); ?></p>
                         <p><?php echo translate('seturlstuff'); ?></p>
 						<form action="install.php" method="post" enctype="multipart/form-data">
+							<?php
+							if (isset($error)) {
+								echo '<p style="color:#F00; font-weight:bold">' . translate($error) . '</p>';
+							}
+							?>
 							<table border="0">
 								<tr>
 									<td><?php echo translate('baseurl'); ?></td>
-									<td><input type="text" name="baseurl" value="<?php if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') echo 'https://'; else echo 'http://'; echo $_SERVER['HTTP_HOST']; echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
+									<td><input type="text" name="baseurl" value="<?php if (get_cookie_data('baseurl')) {
+										echo get_cookie_data('baseurl');
+									} else {
+										if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') { 
+											echo 'https://'; 
+										} else {
+											echo 'http://';
+										}
+										echo $_SERVER['HTTP_HOST']; echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']);
+									}
+									?>" size="50" /></td>
 								</tr>
 								<tr>
 									<td><?php echo translate('baseurlpath'); ?></td>
-									<td><input type="text" name="basepath" value="<?php echo str_replace('/install.php', '', $_SERVER['REQUEST_URI']); ?>" size="50" /></td>
+									<td><input type="text" name="basepath" value="<?php echo (get_cookie_data('basepath') ? get_cookie_data('basepath') : str_replace('/install.php', '', $_SERVER['REQUEST_URI'])); ?>" size="50" /></td>
 								</tr>
 							</table>
 							<p><input type="hidden" name="syscfg" value="1" /><input type="submit" value="<?php echo translate('continue'); ?> &rarr;" /><input type="submit" name="back" value="&larr; <?php echo translate('back'); ?>" /></p>
@@ -1288,8 +1381,8 @@ if (isset($_GET['downloadconfigxml'])) {
 						?>
 						<h2><?php echo translate('adminacct'); ?></h2>
 						<?php
-						if ($pwd_mismatch) {
-							echo '<p>' . translate('pwdmismatch') . '</p>';
+						if (isset($error)) {
+							echo '<p>' . translate($error) . '</p>';
 						}
 						?>
 						<form action="install.php" method="post" enctype="multipart/form-data">
@@ -1300,11 +1393,11 @@ if (isset($_GET['downloadconfigxml'])) {
 								</tr>
 								<tr>
 									<td><?php echo translate('pwd'); ?></td>
-									<td><input type="password" name="adminpass" value="<?php echo (get_cookie_data('adminpass') && !$pwd_mismatch) ? get_cookie_data('adminpass') : ''; ?>" /></td>
+									<td><input type="password" name="adminpass" value="<?php echo (get_cookie_data('adminpass')) ? get_cookie_data('adminpass') : ''; ?>" /></td>
 								</tr>
 								<tr>
 									<td><?php echo translate('confirmpwd'); ?></td>
-									<td><input type="password" name="confirmadminpass" value="<?php echo (get_cookie_data('adminpass') && !$pwd_mismatch) ? get_cookie_data('adminpass') : ''; ?>" /></td>
+									<td><input type="password" name="confirmadminpass" value="<?php echo (get_cookie_data('adminpass')) ? get_cookie_data('adminpass') : ''; ?>" /></td>
 								</tr>
 								<tr>
 									<td><?php echo translate('email'); ?></td>
@@ -1318,6 +1411,11 @@ if (isset($_GET['downloadconfigxml'])) {
 					case 'brdsettings':
 						?>
 						<h2><?php echo translate('brdtitle'); ?></h2>
+						<?php
+						if (isset($error)) {
+							echo '<p style="color:#F00; font-weight:bold">' . translate($error) . '</p>';
+						}
+						?>
 						<form action="install.php" method="post" enctype="multipart/form-data">
 							<table border="0">
 								<tr>

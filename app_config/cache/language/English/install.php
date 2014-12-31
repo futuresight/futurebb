@@ -57,4 +57,11 @@ $lang_addl = array (
   'dbfile' => 'File to store SQLite',
   'installcomplete' => 'Installation complete!',
   'addtonginx' => 'The code below is a sample of what you probably need to add to your nginx configuration file (item #2 above). Please note that it needs to be put in the proper location and may not work in all configurations. See <a href="http://nginx.org/en/docs/http/ngx_http_rewrite_module.html" target="_BLANK">the nginx website</a> for more information.',
+  'titletooshort' => 'The title you entered must be at least 4 characters.',
+  'pwdmismatch' => 'The passwords did not match. Please try again.',
+  'usernameinvalid' => 'The username you entered had an illegal character (only alphanumerics, hyphens, underscores, and periods, please) or was too short (< 4 characters)',
+  'bademail' => 'The email you entered was invalid.',
+  'passtooshort' => 'Your password was too short (< 8 characters)',
+  'invalidbaseurl' => 'Your base URL was invalid. It needs to be consistent with the base path and have the format of a valid URL.',
+  'invalidbasepath' => 'Your base path was invalid - it must start with a slash and can not end with a slash',
 );
