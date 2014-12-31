@@ -237,10 +237,24 @@ abstract class BBCodeController {
 				}
 				$parse = parse_url($url);
 				$host = $parse['host'];
-				if ($filter_data[0] == 'blacklist' && in_array($host, $filter_domains)) {
-					$errors[] = translate('imgblacklisterror', $url, implode(', ', $filter_domains));
-				} else if ($filter_data[0] == 'whitelist' && !in_array($host, $filter_domains)) {
-					$errors[] = translate('imgwhitelisterror', $url, implode(', ', $filter_domains));
+				if ($filter_data[0] == 'blacklist') {
+					foreach ($filter_domains as $domain) {
+						if (preg_match('%' . preg_quote($domain) . '$%', $host)) {
+							$errors[] = translate('imgblacklisterror', $url, implode(', ', $filter_domains));
+							break;
+						}
+					}
+				} else if ($filter_data[0] == 'whitelist') {
+					$ok = false;
+					foreach ($filter_domains as $domain) {
+						if (preg_match('%' . preg_quote($domain) . '$%', $host)) {
+							$ok = true;
+						}
+						
+					}
+					if (!$ok) {
+						$errors[] = translate('imgwhitelisterror', $url, implode(', ', $filter_domains));
+					}
 				}
 			}
 		}

@@ -79,6 +79,7 @@ $new_fld->add_extra('NOT NULL');
 $new_fld->set_default(0);
 $tables['extensions']->add_field($new_fld);
 $tables['extensions']->commit();
+echo '<li>RV1: Adding extensions log... success</li>';
 
 //RSS tokens
 $db->query('UPDATE `#^users` SET rss_token=md5(id+RAND())') or error('Failed to update rss tokens', __FILE__, __LINE__, $db->error());
