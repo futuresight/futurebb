@@ -1,5 +1,5 @@
 <?php
-$pages = array(
+$install_pages = array(
 	'welcome'		=>	false,
 	'dbtype'		=>	false,
 	'dbsetup'		=>	false,
@@ -78,9 +78,9 @@ function test_db() {
 }
 
 function db_fail() {
-	global $db_fail, $pages, $page;
+	global $db_fail, $install_pages, $page;
 	$db_fail = true;
-	$pages['dbsetup'] = true;
+	$install_pages['dbsetup'] = true;
 	$page = 'dbsetup';
 }
 
@@ -162,6 +162,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('AUTO_INCREMENT');
 		$tables['bans']->add_field($new_fld);
 		$new_fld = new DBField('username','VARCHAR(50)');
+		$new_fld->add_key('UNIQUE');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
 		$new_fld->set_default('\'\'');
@@ -177,7 +178,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['bans']->add_field($new_fld);
 		$new_fld = new DBField('expires','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['bans']->add_field($new_fld);
 		$tables['bans']->commit();
@@ -195,21 +195,23 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['categories']->add_field($new_fld);
 		$new_fld = new DBField('sort_position','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['categories']->add_field($new_fld);
 		$tables['categories']->commit();
 		
 		$tables['config'] = new DBTable('config');
-		$new_fld = new DBField('c_name','VARCHAR(100)');
+		$new_fld = new DBField('c_name','VARCHAR(50)');
 		$new_fld->add_key('PRIMARY');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('\'\'');
 		$new_fld->set_default('\'\'');
 		$tables['config']->add_field($new_fld);
 		$new_fld = new DBField('c_value','TEXT');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
 		$new_fld->set_default('\'\'');
+		$tables['config']->add_field($new_fld);
+		$new_fld = new DBField('load_extra','TINYINT(1)');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('0');
 		$tables['config']->add_field($new_fld);
 		$tables['config']->commit();
 		
@@ -234,7 +236,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['extensions']->add_field($new_fld);
 		$new_fld = new DBField('uninstallable','TINYINT(1)');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['extensions']->add_field($new_fld);
 		$tables['extensions']->commit();
 		
@@ -250,13 +251,13 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['forums']->add_field($new_fld);
 		$new_fld = new DBField('name','VARCHAR(200)');
-		$new_fld->set_default('\'\'');
+		$new_fld->set_default('NULL');
 		$tables['forums']->add_field($new_fld);
 		$new_fld = new DBField('cat_id','INT');
-		$new_fld->set_default('0');
+		$new_fld->set_default('NULL');
 		$tables['forums']->add_field($new_fld);
 		$new_fld = new DBField('sort_position','INT');
-		$new_fld->set_default('0');
+		$new_fld->set_default('NULL');
 		$tables['forums']->add_field($new_fld);
 		$new_fld = new DBField('description','TEXT');
 		$new_fld->add_extra('NOT NULL');
@@ -264,7 +265,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['forums']->add_field($new_fld);
 		$new_fld = new DBField('redirect_id','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['forums']->add_field($new_fld);
 		$new_fld = new DBField('last_post','INT');
@@ -300,6 +300,63 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['forums']->add_field($new_fld);
 		$tables['forums']->commit();
 		
+		$tables['interface_history'] = new DBTable('interface_history');
+		$new_fld = new DBField('id','INT');
+		$new_fld->add_key('PRIMARY');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->add_extra('AUTO_INCREMENT');
+		$tables['interface_history']->add_field($new_fld);
+		$new_fld = new DBField('action','enum(\'edit\',\'create\',\'delete\')');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'edit\'');
+		$tables['interface_history']->add_field($new_fld);
+		$new_fld = new DBField('area','enum(\'language\',\'interface\',\'pages\')');
+		$new_fld->add_extra('NOT NULL');
+		$tables['interface_history']->add_field($new_fld);
+		$new_fld = new DBField('field','VARCHAR(50)');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'\'');
+		$new_fld->set_default('\'\'');
+		$tables['interface_history']->add_field($new_fld);
+		$new_fld = new DBField('user','INT');
+		$new_fld->add_extra('NOT NULL');
+		$tables['interface_history']->add_field($new_fld);
+		$new_fld = new DBField('time','INT');
+		$new_fld->add_extra('NOT NULL');
+		$tables['interface_history']->add_field($new_fld);
+		$new_fld = new DBField('old_value','TEXT');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'\'');
+		$new_fld->set_default('\'\'');
+		$tables['interface_history']->add_field($new_fld);
+		$tables['interface_history']->commit();
+		
+		$tables['language'] = new DBTable('language');
+		$new_fld = new DBField('id','INT');
+		$new_fld->add_key('PRIMARY');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->add_extra('AUTO_INCREMENT');
+		$tables['language']->add_field($new_fld);
+		$new_fld = new DBField('language','VARCHAR(20)');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'English\'');
+		$tables['language']->add_field($new_fld);
+		$new_fld = new DBField('langkey','VARCHAR(50)');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'\'');
+		$new_fld->set_default('\'\'');
+		$tables['language']->add_field($new_fld);
+		$new_fld = new DBField('value','TEXT');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'\'');
+		$new_fld->set_default('\'\'');
+		$tables['language']->add_field($new_fld);
+		$new_fld = new DBField('category','VARCHAR(15)');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'main\'');
+		$tables['language']->add_field($new_fld);
+		$tables['language']->commit();
+		
 		$tables['notifications'] = new DBTable('notifications');
 		$new_fld = new DBField('id','INT');
 		$new_fld->add_key('PRIMARY');
@@ -312,12 +369,10 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('user','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('send_time','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('contents','MEDIUMTEXT');
 		$new_fld->add_extra('NOT NULL');
@@ -330,7 +385,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('read_time','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('read_ip','VARCHAR(50)');
@@ -339,6 +393,39 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['notifications']->add_field($new_fld);
 		$tables['notifications']->commit();
 		
+		$tables['pages'] = new DBTable('pages');
+		$new_fld = new DBField('id','INT');
+		$new_fld->add_key('PRIMARY');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->add_extra('AUTO_INCREMENT');
+		$tables['pages']->add_field($new_fld);
+		$new_fld = new DBField('url','TEXT');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'\'');
+		$new_fld->set_default('\'\'');
+		$tables['pages']->add_field($new_fld);
+		$new_fld = new DBField('file','TEXT');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'\'');
+		$new_fld->set_default('\'\'');
+		$tables['pages']->add_field($new_fld);
+		$new_fld = new DBField('template','TINYINT(1)');
+		$new_fld->add_extra('NOT NULL');
+		$tables['pages']->add_field($new_fld);
+		$new_fld = new DBField('nocontentbox','TINYINT(1)');
+		$new_fld->add_extra('NOT NULL');
+		$tables['pages']->add_field($new_fld);
+		$new_fld = new DBField('admin','TINYINT(1)');
+		$new_fld->add_extra('NOT NULL');
+		$tables['pages']->add_field($new_fld);
+		$new_fld = new DBField('moderator','TINYINT(1)');
+		$new_fld->add_extra('NOT NULL');
+		$tables['pages']->add_field($new_fld);
+		$new_fld = new DBField('subdirs','TINYINT(1)');
+		$new_fld->add_extra('NOT NULL');
+		$tables['pages']->add_field($new_fld);
+		$tables['pages']->commit();
+		
 		$tables['posts'] = new DBTable('posts');
 		$new_fld = new DBField('id','INT');
 		$new_fld->add_key('PRIMARY');
@@ -346,7 +433,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('AUTO_INCREMENT');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('poster','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('poster_ip','VARCHAR(50)');
@@ -368,23 +454,18 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('NOT NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('topic_id','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('deleted','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('deleted_by','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('last_edited','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('last_edited_by','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['posts']->add_field($new_fld);
 		$new_fld = new DBField('disable_smilies','TINYINT(1)');
@@ -401,14 +482,11 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['read_tracker']->add_field($new_fld);
 		$new_fld = new DBField('user_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['read_tracker']->add_field($new_fld);
 		$new_fld = new DBField('topic_id','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['read_tracker']->add_field($new_fld);
 		$new_fld = new DBField('forum_id','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['read_tracker']->add_field($new_fld);
 		$tables['read_tracker']->commit();
@@ -420,7 +498,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('AUTO_INCREMENT');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('post_id','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('post_type','enum(\'post\',\'msg\',\'special\')');
@@ -433,19 +510,15 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('reported_by','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('time_reported','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('zapped','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('zapped_by','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['reports']->add_field($new_fld);
 		$new_fld = new DBField('status','enum(\'unread\',\'review\',\'reject\',\'accept\',\'noresp\',\'withdrawn\')');
@@ -461,7 +534,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('AUTO_INCREMENT');
 		$tables['search_index']->add_field($new_fld);
 		$new_fld = new DBField('post_id','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['search_index']->add_field($new_fld);
 		$new_fld = new DBField('word','VARCHAR(255)');
@@ -470,7 +542,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['search_index']->add_field($new_fld);
 		$new_fld = new DBField('num_matches','INT');
-		$new_fld->set_default('0');
 		$new_fld->add_extra('NOT NULL');
 		$tables['search_index']->add_field($new_fld);
 		$tables['search_index']->commit();
@@ -493,27 +564,21 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('forum_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('deleted','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('deleted_by','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('last_post','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('last_post_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('first_post_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('closed','TINYINT(1)');
 		$new_fld->add_extra('NOT NULL');
@@ -524,7 +589,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('redirect_id','INT');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('show_redirect','TINYINT(1)');
@@ -564,16 +628,13 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('activate_key','VARCHAR(50)');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('recover_key','VARCHAR(50)');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('registered','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('registration_ip','VARCHAR(50)');
 		$new_fld->add_extra('NOT NULL');
@@ -590,7 +651,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('group_id','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('signature','TEXT');
 		$new_fld->add_extra('NOT NULL');
@@ -604,13 +664,12 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('last_visit','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('timezone','TINYINT(3)');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
-		$new_fld = new DBField('dst', 'TINYINT(1)');
+		$new_fld = new DBField('dst','TINYINT(1)');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
@@ -640,7 +699,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('avatar_extension','VARCHAR(4)');
-		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('rss_token','VARCHAR(50)');
@@ -704,19 +762,15 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_promote_group','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_promote_posts','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_promote_operator','TINYINT(1)');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_promote_days','INT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
 		$tables['user_groups']->add_field($new_fld);
 		$new_fld = new DBField('g_post_flood','INT');
 		$new_fld->add_extra('NOT NULL');
@@ -751,6 +805,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('1');
 		$tables['user_groups']->add_field($new_fld);
 		$tables['user_groups']->commit();
+		unset($tables);
 		
 		//add database data
 		set_config('board_title', get_cookie_data('board_title'));
@@ -783,12 +838,25 @@ if (isset($_GET['downloadconfigxml'])) {
 		set_config('new_version', 0);
 		set_config('max_quote_depth', 4);
 		set_config('disable_registrations', 0);
-		set_config('db_version', 1);
+		set_config('db_version', 2);
 		set_config('enable_bbcode', 1);
 		set_config('enable_smilies', 1);
 		set_config('avatar_max_filesize', 1024);
 		set_config('avatar_max_width', 64);
 		set_config('avatar_max_height', 64);
+		set_config('header_links', '<?xml version="1.0" ?>
+<linkset>
+    <link path="">index</link>
+    <link path="users/$username$" perm="valid">profile</link>
+    <link path="users" perm="g_user_list">userlist</link>
+    <link path="search">search</link>
+    <link path="admin" perm="g_admin_privs">administration</link>
+    <link path="admin/bans" perm="g_mod_privs ~g_admin_privs">administration</link>
+    <link path="register/$reghash$" perm="~valid">register</link>
+    <link path="logout" perm="valid">logout</link>
+</linkset>');
+		set_config('admin_pages', 'PT5pbmRleApiYW5zPT5iYW5zCnJlcG9ydHM9PnJlcG9ydHMKY2Vuc29yaW5nPT5jZW5zb3JpbmcKZm9ydW1zPT5mb3J1bXMKaXBfdHJhY2tlcj0+aXB0cmFja2VyCnVzZXJfZ3JvdXBzPT51c2VyZ3JvdXBzCnRyYXNoX2Jpbj0+dHJhc2hiaW4KbWFpbnRlbmFuY2U9Pm1haW50ZW5hbmNlCnN0eWxlPT5zdHlsZQpleHRlbnNpb25zPT5leHRlbnNpb25zCmludGVyZmFjZT0+aW50ZXJmYWNl');
+		set_config('mod_pages', 'YmFucz0+YmFucwpyZXBvcnRzPT5yZXBvcnRzCnRyYXNoX2Jpbj0+dHJhc2hiaW4KaXBfdHJhY2tlcj0+aXB0cmFja2Vy');
 		
 		//create guest user
 		$insert = new DBInsert('users', array(
@@ -886,54 +954,93 @@ if (isset($_GET['downloadconfigxml'])) {
 		), 'Failed to create member user group');
 		$insert->commit();
 		
+		//run through stock cache to insert pages and language keys
+		include FORUM_ROOT . '/app_config/cache/pages.php';
+		$q = 'INSERT INTO `#^pages`(url,file,template,nocontentbox,admin,moderator,subdirs) VALUES';
+		$page_insert_data = array();
+		foreach ($pages as $url => $info) {
+			$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . ($info['admin'] ? '1' : '0') . ',' . ($info['mod'] ? '1' : '0') . ',0)';
+		}
+		foreach ($pagessubdirs as $url => $info) {
+			$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . ($info['admin'] ? '1' : '0') . ',' . ($info['mod'] ? '1' : '0') . ',1)';
+		}
+		$db->query($q . implode(',', $page_insert_data)) or enhanced_error('Failed to insert page data', true);
+		unset($page_insert_data);
+		unset($pages);
+		unset($pagessubdirs);
+		
+		//insert the language keys
+		$handle = opendir(FORUM_ROOT . '/app_config/cache/language');
+		while ($language = readdir($handle)) {
+			if ($language != '.' && $language != '..') {
+				$subhandle = opendir(FORUM_ROOT . '/app_config/cache/language/' . $language);
+				while ($langfile = readdir($subhandle)) {
+					if ($langfile != '.' && $langfile != '..') {
+						include FORUM_ROOT . '/app_config/cache/language/' . $language . '/' . $langfile;
+						if ($langfile != 'main.php') {
+							$lang = $lang_addl;
+							unset($lang_addl);
+						}
+						$q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
+						$lang_insert_data = array();
+						foreach ($lang as $key => $val) {
+							$lang_insert_data[] = '(\'' . $db->escape($language) . '\',\'' . $db->escape($key) . '\',\'' . $db->escape($val) . '\',\'' . $db->escape(basename($langfile, '.php')) . '\')';
+						}
+						$db->query($q . implode(',', $lang_insert_data)) or enhanced_error('Failed to insert language stuff', true);
+					}
+				}
+			}
+		}
+		unset($lang);
+		
 		$page = 'complete';
 	} else {
 		db_fail();
 	}
 } else if (isset($_POST['brdsettings'])) {
 	foreach ($_POST['config'] as $key => $val) {
-		$pages['confirmation'] = true;
+		$install_pages['confirmation'] = true;
 		$page = 'confirm';
 		foreach ($_POST['config'] as $key => $val) {
 			add_cookie_data($key, $val);
 		}
 	}
 	if (isset($_POST['back'])) {
-		$pages['adminacct'] = true;
+		$install_pages['adminacct'] = true;
 		$pwd_mismatch = false;
 		$page = 'adminacc';
-		$pages['confirmation'] = false;
+		$install_pages['confirmation'] = false;
 	}
 } else if (isset($_POST['adminacc'])) {
 	add_cookie_data('adminusername', $_POST['adminusername']);
 	add_cookie_data('adminemail', $_POST['adminemail']);
 	add_cookie_data('adminpass', $_POST['adminpass']);
 	if ($_POST['adminpass'] != $_POST['confirmadminpass']) {
-		$pages['adminacct'] = true;
+		$install_pages['adminacct'] = true;
 		$page = 'adminacc';
 		$pwd_mismatch = true;
 	} else {
-		$pages['brdtitle'] = true;
+		$install_pages['brdtitle'] = true;
 		$page = 'brdsettings';
 	}
 	if (isset($_POST['back'])) {
-		$pages['syscfg'] = true;
+		$install_pages['syscfg'] = true;
 		$page = 'syscfg';
 		$pwd_mismatch = false;
-		$pages['adminacct'] = false;
-		$pages['brdtitle'] = false;
+		$install_pages['adminacct'] = false;
+		$install_pages['brdtitle'] = false;
 	}
 } else if (isset($_POST['syscfg'])) {
 	add_cookie_data('baseurl', $_POST['baseurl']);
 	add_cookie_data('basepath', $_POST['basepath']);
-	$pages['adminacct'] = true;
+	$install_pages['adminacct'] = true;
 	$page = 'adminacc';
 	$pwd_mismatch = false;
 	
 	if (isset($_POST['back'])) {
-		$pages['dbsetup'] = true;
+		$install_pages['dbsetup'] = true;
 		$page = 'dbsetup';
-		$pages['adminacct'] = false;
+		$install_pages['adminacct'] = false;
 		$db_fail = false;
 	}
 } else if (isset($_POST['dbsetup'])) {
@@ -946,14 +1053,14 @@ if (isset($_GET['downloadconfigxml'])) {
 	add_cookie_data('dbprefix', $_POST['dbprefix']);
 	
 	if (isset($_POST['back'])) {
-		$pages['dbtype'] = true;
+		$install_pages['dbtype'] = true;
 		$page = 'dbtype';
-		$pages['syscfg'] = false;
-		$pages['dbsetup'] = false;
+		$install_pages['syscfg'] = false;
+		$install_pages['dbsetup'] = false;
 	} else {
 		//test database
 		if (test_db()) {
-			$pages['syscfg'] = true;
+			$install_pages['syscfg'] = true;
 			$page = 'syscfg';
 		} else {
 			db_fail();
@@ -965,26 +1072,26 @@ if (isset($_GET['downloadconfigxml'])) {
 	if (get_db_info($_POST['dbtype'])) {
 		add_cookie_data('dbtype', $_POST['dbtype']);
 		$db_fail = false;
-		$pages['dbsetup'] = true;
+		$install_pages['dbsetup'] = true;
 		$page = 'dbsetup';
 	} else {
-		$pages['dbtype'] = true;
+		$install_pages['dbtype'] = true;
 		$page = 'dbtype';
 		$error = translate('baddbtype');
 	}
 	if (isset($_POST['back'])) {
-		$pages['welcome'] = true;
+		$install_pages['welcome'] = true;
 		$page = 'welcome';
-		$pages['dbsetup'] = false;
+		$install_pages['dbsetup'] = false;
 	}
 } else if (isset($_POST['start'])) {
-	$pages['dbtype'] = true;
+	$install_pages['dbtype'] = true;
 	$page = 'dbtype';
 } else if (isset($_POST['language'])) {
 	add_cookie_data('language', $_POST['language']);
 } else {
 	setcookie('install_cookie', '');
-	$pages['welcome'] = true;
+	$install_pages['welcome'] = true;
 	$page = 'welcome';
 }
 ?>
@@ -1007,7 +1114,7 @@ if (isset($_GET['downloadconfigxml'])) {
 				<div id="navlistwrap">
 					<?php
 					$pages_echo = array();
-					foreach ($pages as $key => $current) {
+					foreach ($install_pages as $key => $current) {
 						if ($current) {
 							$pages_echo[] = '<b>' . translate($key) . '</b>';
 						} else {
