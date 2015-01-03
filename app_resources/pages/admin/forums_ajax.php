@@ -207,7 +207,7 @@ if (isset($_POST['form_sent'])) {
 		//swap the two necessary elements
 		for (var i = 1; i < allRows.length; i++) { //starting at 1 to ignore the header
 			if (allRows[i] == origRow) {
-				if ((i == 1 && dir == 'up') || (i == allRows.length && dir == 'down')) {
+				if ((i == 1 && dir == 'up') || (i == allRows.length - 1 && dir == 'down')) {
 					break;
 				}
 				//perform swap
