@@ -25,7 +25,7 @@ error_reporting(E_ALL);
 define('FORUM_ROOT', dirname(__FILE__));
 include FORUM_ROOT . '/app_resources/includes/startup.php';
 
-if (!isset($futurebb_config['db_version'])) {
+if (!isset($futurebb_config['db_version']) || $futurebb_config['db_version'] < DB_VERSION) {
 	//outdated database, upgrade is needed
 	include FORUM_ROOT . '/app_resources/database/upgrades/db_upgrade.php';
 	$db->close();

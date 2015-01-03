@@ -1,6 +1,12 @@
 <?php
 //upgrade from v1.1 to v1.2 (DB 0 -> 1)
 //add new config values
+
+$new_fld = new DBField('load_extra','TINYINT(1)');
+$new_fld->add_extra('NOT NULL');
+$new_fld->set_default('0');
+$db->add_field('config', $new_fld, 'c_value');
+
 set_config('header_links', '<?xml version="1.0" ?>
 <linkset>
     <link path="">index</link>
@@ -116,10 +122,10 @@ include FORUM_ROOT . '/app_config/pages.php';
 $q = 'INSERT INTO `#^pages`(url,file,template,nocontentbox,admin,moderator,subdirs) VALUES';
 $page_insert_data = array();
 foreach ($pages as $url => $info) {
-	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . ($info['admin'] ? '1' : '0') . ',' . ($info['mod'] ? '1' : '0') . ',0)';
+	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . (isset($info['admin']) && $info['admin'] ? '1' : '0') . ',' . (isset($info['mod']) && $info['mod'] ? '1' : '0') . ',0)';
 }
 foreach ($pagessubdirs as $url => $info) {
-	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . ($info['admin'] ? '1' : '0') . ',' . ($info['mod'] ? '1' : '0') . ',1)';
+	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . (isset($info['admin']) && $info['admin'] ? '1' : '0') . ',' . (isset($info['mod']) && $info['mod'] ? '1' : '0') . ',1)';
 }
 $db->query($q . implode(',', $page_insert_data)) or enhanced_error('Failed to insert page data', true);
 unset($page_insert_data);
@@ -127,13 +133,13 @@ unset($pages);
 unset($pagessubdirs);
 
 //insert the language keys
-$handle = opendir(FORUM_ROOT . '/app_config/language');
+$handle = opendir(FORUM_ROOT . '/app_config/langs');
 while ($language = readdir($handle)) {
 	if ($language != '.' && $language != '..') {
-		$subhandle = opendir(FORUM_ROOT . '/app_config/language/' . $language);
+		$subhandle = opendir(FORUM_ROOT . '/app_config/langs/' . $language);
 		while ($langfile = readdir($subhandle)) {
 			if ($langfile != '.' && $langfile != '..') {
-				include FORUM_ROOT . '/app_config/language/' . $language . '/' . $langfile;
+				include FORUM_ROOT . '/app_config/langs/' . $language . '/' . $langfile;
 				if ($langfile != 'main.php') {
 					$lang = $lang_addl;
 					unset($lang_addl);

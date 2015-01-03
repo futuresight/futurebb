@@ -25,7 +25,9 @@ body {
                 <ul>
                 <?php
 				//include all files between old revision and new revision
-				include FORUM_ROOT . '/app_resources/database/upgrades/1.php';
+				for ($i = (isset($futurebb_config['db_version']) ? $futurebb_config['db_version'] : 0) + 1; $i <= DB_VERSION; $i++) {
+					include FORUM_ROOT . '/app_resources/database/upgrades/' . $i . '.php';
+				}
 				?>
                 </ul>
                 <p>Database upgrade success! You may now <a href="<?php echo $base_config['baseurl']; ?>">visit your forum</a>.</p>
