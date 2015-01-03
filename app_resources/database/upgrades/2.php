@@ -110,3 +110,42 @@ $new_fld->set_default('\'\'');
 $tables['interface_history']->add_field($new_fld);
 $tables['interface_history']->commit();
 echo '<li>RV2: Adding interface history table... success</li>';
+
+//run through stock cache to insert pages and language keys
+include FORUM_ROOT . '/app_config/pages.php';
+$q = 'INSERT INTO `#^pages`(url,file,template,nocontentbox,admin,moderator,subdirs) VALUES';
+$page_insert_data = array();
+foreach ($pages as $url => $info) {
+	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . ($info['admin'] ? '1' : '0') . ',' . ($info['mod'] ? '1' : '0') . ',0)';
+}
+foreach ($pagessubdirs as $url => $info) {
+	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . ($info['admin'] ? '1' : '0') . ',' . ($info['mod'] ? '1' : '0') . ',1)';
+}
+$db->query($q . implode(',', $page_insert_data)) or enhanced_error('Failed to insert page data', true);
+unset($page_insert_data);
+unset($pages);
+unset($pagessubdirs);
+
+//insert the language keys
+$handle = opendir(FORUM_ROOT . '/app_config/language');
+while ($language = readdir($handle)) {
+	if ($language != '.' && $language != '..') {
+		$subhandle = opendir(FORUM_ROOT . '/app_config/language/' . $language);
+		while ($langfile = readdir($subhandle)) {
+			if ($langfile != '.' && $langfile != '..') {
+				include FORUM_ROOT . '/app_config/language/' . $language . '/' . $langfile;
+				if ($langfile != 'main.php') {
+					$lang = $lang_addl;
+					unset($lang_addl);
+				}
+				$q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
+				$lang_insert_data = array();
+				foreach ($lang as $key => $val) {
+					$lang_insert_data[] = '(\'' . $db->escape($language) . '\',\'' . $db->escape($key) . '\',\'' . $db->escape($val) . '\',\'' . $db->escape(basename($langfile, '.php')) . '\')';
+				}
+				$db->query($q . implode(',', $lang_insert_data)) or enhanced_error('Failed to insert language stuff', true);
+			}
+		}
+	}
+}
+unset($lang);
