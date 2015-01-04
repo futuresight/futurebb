@@ -6,7 +6,7 @@ translate('<addfile>', 'admin');
 $page_title = translate('style');
 include FORUM_ROOT . '/app_resources/includes/admin.php';
 
-if (isset($_POST['form_sent']) && isset($POST['extension_file'])) {
+if (isset($_POST['form_sent']) && isset($_FILES['extension_file'])) {
 	switch (pathinfo($_FILES['extension_file']['name'], PATHINFO_EXTENSION)) {
 		case 'css':
 			$fname = basename($_FILES['extension_file']['name']);
@@ -14,6 +14,9 @@ if (isset($_POST['form_sent']) && isset($POST['extension_file'])) {
 				echo '<div class="forum_content"><p>' . translate('styleconflict') . '</p></div>'; return;
 			}
 			move_uploaded_file($_FILES['extension_file']['tmp_name'], FORUM_ROOT . '/app_resources/pages/css/' . $fname);
+			if (!file_exists(FORUM_ROOT . '/app_resources/pages/css/' . $fname)) {
+				echo '<div class="forum_content"><p>' . translate('uploadfailed') . '</p></div>'; return;
+			}
 			ExtensionConfig::add_page('/styles/' . $fname, array('file' => 'css/' . $fname, 'template' => false));
 			break;
 		case 'png':

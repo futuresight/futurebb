@@ -388,11 +388,13 @@ function array_move($array, $start, $count) {
 
 abstract class ExtensionConfig {
 	static function add_page($url, array $details) {
+		global $db;
 		$db->query('INSERT INTO `#^pages`(url,file,template,nocontentbox,admin,moderator,subdirs) VALUES(\'' . $db->escape($url) . '\',\'' . $db->escape($details['file']) . '\',' . (isset($details['template']) && $details['template'] ? '1' : '0') . ',' . (isset($details['nocontentbox']) && $details['nocontentbox'] ? '1' : '0') . ',' . (isset($details['admin']) && $details['admin'] ? '1' : '0') . ',' . (isset($details['mod']) && $details['mod'] ? '1' : '0') . ',' . (isset($details['subdirs']) && $details['subdirs'] ? '1' : '0') . ')') or enhanced_error('Failed to add page to database', true);
 		
 		CacheEngine::CachePages();
 	}
 	static function remove_page($url) {
+		global $db;
 		$db->query('DELETE FROM `#^pages` WHERE url=\'' . $db->escape($url) . '\'') or enhanced_error('Failed to remove page from database', true);
 		
 		CacheEngine::CachePages();
