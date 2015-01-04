@@ -118,7 +118,7 @@ $tables['interface_history']->commit();
 echo '<li>RV2: Adding interface history table... success</li>';
 
 //run through stock cache to insert pages and language keys
-include FORUM_ROOT . '/app_config/pages.php';
+include FORUM_ROOT . '/app_config/cache/pages.php';
 $q = 'INSERT INTO `#^pages`(url,file,template,nocontentbox,admin,moderator,subdirs) VALUES';
 $page_insert_data = array();
 foreach ($pages as $url => $info) {
@@ -133,13 +133,13 @@ unset($pages);
 unset($pagessubdirs);
 
 //insert the language keys
-$handle = opendir(FORUM_ROOT . '/app_config/langs');
+$handle = opendir(FORUM_ROOT . '/app_config/cache/language');
 while ($language = readdir($handle)) {
 	if ($language != '.' && $language != '..') {
-		$subhandle = opendir(FORUM_ROOT . '/app_config/langs/' . $language);
+		$subhandle = opendir(FORUM_ROOT . '/app_config/cache/language/' . $language);
 		while ($langfile = readdir($subhandle)) {
 			if ($langfile != '.' && $langfile != '..') {
-				include FORUM_ROOT . '/app_config/langs/' . $language . '/' . $langfile;
+				include FORUM_ROOT . '/app_config/cache/language/' . $language . '/' . $langfile;
 				if ($langfile != 'main.php') {
 					$lang = $lang_addl;
 					unset($lang_addl);
