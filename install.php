@@ -1062,7 +1062,6 @@ if (isset($_GET['downloadconfigxml'])) {
 	} else {
 		$install_pages['brdtitle'] = true;
 		$page = 'brdsettings';
-		$install_pages['brdtitle'] = false;
 	}
 	unset($common);
 	if (isset($_POST['back'])) {
@@ -1155,14 +1154,16 @@ if (isset($_GET['downloadconfigxml'])) {
 } else if (isset($_POST['start'])) {
 	$install_pages['dbtype'] = true;
 	$page = 'dbtype';
-	if (!check_input($_POST['language'], array()) || !file_exists(FORUM_ROOT . '/app_config/cache/language/' . basename($_POST['language']) . '/install.php')) {
+	if (isset($_POST['language']) && (!check_input($_POST['language'], array()) || !file_exists(FORUM_ROOT . '/app_config/cache/language/' . basename($_POST['language']) . '/install.php'))) {
 		$install_pages['dbtype'] = false;
 		$page = 'welcome';
 		$install_pages['welcome'] = true;
 		$error = 'Invalid language';
 		add_cookie_data('language', 'English');
 	} else {
-		add_cookie_data('language', $_POST['language']);
+		if (isset($_POST['language'])) {
+			add_cookie_data('language', $_POST['language']);
+		}
 	}
 } else {
 	setcookie('install_cookie', '');

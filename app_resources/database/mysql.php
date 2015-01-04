@@ -7,6 +7,7 @@ Extension<mysql>
 class Database {
 	public $link;
 	var $prefix;
+	var $unstrict = false;
 	
 	function __construct(array $info) {
 		//error('Invalid table prefix; contact board administrator', __FILE__, __LINE__, '');
@@ -18,6 +19,12 @@ class Database {
 		@mysql_select_db($info['name'], $this->link);
 		if (!$this->link && !isset($info['hide_errors'])) {
 			error('Failed to start database: ' . mysqli_connect_error());
+		}
+	}
+	
+	function unstrict() {
+		if (!$this->unstrict) {
+			$this->query('SET SESSION SQL_MODE=\'\';') or enhanced_error('Failed to remove strict settings from the database', true);
 		}
 	}
 	
@@ -82,6 +89,7 @@ class Database {
 	}
 	
 	function add_table($table) {
+		$this->unstrict();
 		$query = 'CREATE TABLE `' . $this->prefix . $table->name . '`(';
 		$fields = array();
 		foreach ($table->fields as $val) {
@@ -125,6 +133,7 @@ class Database {
 	}
 	
 	function add_field($table, DBField $field, $after) {
+		$this->unstrict();
 		if ($this->field_exists($table, $field->name)) {
 			return true;
 		}
@@ -139,6 +148,7 @@ class Database {
 	}
 	
 	function alter_field($table, DBField $field, $after = '') {
+		$this->unstrict();
 		$default = '';
 		if ($field->default_val != null) {
 			$default = ' DEFAULT ' . $field->default_val . '';
