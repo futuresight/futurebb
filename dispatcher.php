@@ -112,9 +112,12 @@ if (!$futurebb_user['g_access_board'] && isset($dirs[1]) && $dirs[1] != 'login' 
 if ($page_info) {
 	// If we have valid page info, include the page
 	ob_start();
+	if (!ctype_alnum($futurebb_user['style'])) {
+		$futurebb_user['style'] = 'default';
+	}
 	if ($page_info['template']) {
 		if (file_exists(FORUM_ROOT . '/app_config/templates/' . $futurebb_user['style'] . '/header.php')) {
-			include FORUM_ROOT . '/app_config/templates/' . basename(realpath($futurebb_user['style'])) . '/header.php';
+			include FORUM_ROOT . '/app_config/templates/' . basename($futurebb_user['style']) . '/header.php';
 		} else {
 			include FORUM_ROOT . '/app_resources/includes/header.php';
 		}
@@ -122,7 +125,7 @@ if ($page_info) {
 	include FORUM_ROOT . '/app_resources/pages/' . $page_info['file'];
 	if ($page_info['template']) {
 		if (file_exists(FORUM_ROOT . '/app_config/templates/' . $futurebb_user['style'] . '/footer.php')) {
-			include FORUM_ROOT . '/app_config/templates/' . basename(realpath($futurebb_user['style'])) . '/footer.php';
+			include FORUM_ROOT . '/app_config/templates/' . basename($futurebb_user['style']) . '/footer.php';
 		} else {
 			include FORUM_ROOT . '/app_resources/includes/footer.php';
 		}
