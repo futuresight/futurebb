@@ -136,6 +136,8 @@ $db->query($q . implode(',', $page_insert_data)) or enhanced_error('Failed to in
 unset($page_insert_data);
 unset($pages);
 unset($pagessubdirs);
+unset($orig_pages);
+unset($orig_pagessubdirs);
 
 //insert the language keys
 $handle = opendir(FORUM_ROOT . '/app_config/cache/language');
@@ -148,6 +150,15 @@ while ($language = readdir($handle)) {
 				if ($langfile != 'main.php') {
 					$lang = $lang_addl;
 					unset($lang_addl);
+				}
+				if (file_exists(FORUM_ROOT . '/app_config/langs/' . $language . '/' . $langfile)) {
+					//does an old version exist? if so, don't forget to include it
+					$old_lang = $lang;
+					if ($langfile != 'main.php') {
+						$lang = $lang_addl;
+						unset($lang_addl);
+					}
+					$lang = array_merge($lang, $old_lang);
 				}
 				$q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
 				$lang_insert_data = array();
