@@ -121,9 +121,14 @@ echo '<li>RV2: Adding interface history table... success</li>';
 include FORUM_ROOT . '/app_config/cache/pages.php';
 $q = 'INSERT INTO `#^pages`(url,file,template,nocontentbox,admin,moderator,subdirs) VALUES';
 $page_insert_data = array();
+$orig_pages = $pages;
+$orig_pagessubdirs = $pagessubdirs;
+include FORUM_ROOT . '/app_config/pages.php';
+$pages = array_merge($pages, $orig_pages);
 foreach ($pages as $url => $info) {
 	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . (isset($info['admin']) && $info['admin'] ? '1' : '0') . ',' . (isset($info['mod']) && $info['mod'] ? '1' : '0') . ',0)';
 }
+$pagessubdirs = array_merge($pages_subdirs, $orig_pagessubdirs);
 foreach ($pagessubdirs as $url => $info) {
 	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . (isset($info['admin']) && $info['admin'] ? '1' : '0') . ',' . (isset($info['mod']) && $info['mod'] ? '1' : '0') . ',1)';
 }
