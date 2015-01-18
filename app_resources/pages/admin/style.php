@@ -33,7 +33,7 @@ if (isset($_GET['delete_css'])) {
 	$fname = basename($_GET['delete_css']);
 	if (file_exists(FORUM_ROOT . '/app_resources/pages/css/' . $fname . '.css')) {
 		unlink(FORUM_ROOT . '/app_resources/pages/css/' . $fname . '.css');
-		ExtensionConfig::remove_page('/styles/' . $fname . '/css');
+		ExtensionConfig::remove_page('/styles/' . $fname . '.css');
 	}
 }
 if (isset($_FILES['icon_file']) && is_uploaded_file($_FILES['icon_file']['tmp_name']) && pathinfo($_FILES['extension_file']['name'], PATHINFO_EXTENSION) == 'ico') {
