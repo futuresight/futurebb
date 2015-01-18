@@ -128,7 +128,7 @@ $pages = array_merge($pages, $orig_pages);
 foreach ($pages as $url => $info) {
 	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . (isset($info['admin']) && $info['admin'] ? '1' : '0') . ',' . (isset($info['mod']) && $info['mod'] ? '1' : '0') . ',0)';
 }
-$pagessubdirs = array_merge($pages_subdirs, $orig_pagessubdirs);
+$pagessubdirs = array_merge($pagessubdirs, $orig_pagessubdirs);
 foreach ($pagessubdirs as $url => $info) {
 	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . (isset($info['admin']) && $info['admin'] ? '1' : '0') . ',' . (isset($info['mod']) && $info['mod'] ? '1' : '0') . ',1)';
 }
@@ -154,6 +154,7 @@ while ($language = readdir($handle)) {
 				if (file_exists(FORUM_ROOT . '/app_config/langs/' . $language . '/' . $langfile)) {
 					//does an old version exist? if so, don't forget to include it
 					$old_lang = $lang;
+					include FORUM_ROOT . '/app_config/langs/' . $language . '/' . $langfile;
 					if ($langfile != 'main.php') {
 						$lang = $lang_addl;
 						unset($lang_addl);
@@ -165,7 +166,7 @@ while ($language = readdir($handle)) {
 				foreach ($lang as $key => $val) {
 					$lang_insert_data[] = '(\'' . $db->escape($language) . '\',\'' . $db->escape($key) . '\',\'' . $db->escape($val) . '\',\'' . $db->escape(basename($langfile, '.php')) . '\')';
 				}
-				$db->query($q . implode(',', $lang_insert_data)) or enhanced_error('Failed to insert language stuff', true);
+				$db->query($q . implode(',', $lang_insert_data)) or enhanced_error('Failed to insert language stuff' . $q . implode(',', $lang_insert_data), true);
 			}
 		}
 	}
