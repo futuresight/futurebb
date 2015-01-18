@@ -4,6 +4,11 @@
 //There is a reason for this. When this page was originally conceptualized, it was going to use AJAX to allow saving in real-time without submitting the form.
 //This is still planned for version 1.3, but for now it is a JS-powered page that submits like a normal form.
 //-Jacob G.
+// Send no-cache headers
+header('Expires: Mon, 1 Jan 1990 00:00:00 GMT');
+header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache'); // For HTTP/1.0 compatibility
 if (isset($_POST['form_sent'])) {
 	//process form input
 	//update old forums
@@ -55,11 +60,36 @@ if (isset($_POST['form_sent'])) {
 	
 	//delete any marked categories
 	if (isset($_POST['delete_cat'])) {
-		$dels = array();
+		$cat_dels = array();
 		foreach ($_POST['delete_cat'] as $key => $val) {
-			$dels[] = intval($key);
+			$cat_dels[] = intval($key);
 		}
-		$db->query('DELETE FROM `#^categories` WHERE id IN(' . implode(',', $dels) . ')') or error('Failed to delete category', __FILE__, __LINE__, $db->error());
+		$db->query('DELETE FROM `#^categories` WHERE id IN(' . implode(',', $cat_dels) . ')') or enhanced_error('Failed to delete categories', true);
+	}
+	
+	//update category information
+	$q = new DBSelect('categories', array('id', 'name', 'sort_position'), '', 'Failed to get category list');
+	$result = $q->commit();
+	$cats = array();
+	while ($cat = $db->fetch_assoc($result)) {
+		$id = $cat['id'];
+		$cats[] = $id;
+		if ($id > 0 && ($cat['name'] != $_POST['cat_title'][$id] || $cat['sort_position'] != $_POST['cat_sort_order'][$id])) {
+			$q = new DBUpdate('categories', array('name' => $_POST['cat_title'][$id],'sort_position' => $_POST['cat_sort_order'][$id]), 'id=' . $id, 'Failed to update category_title');
+			$q->commit();
+		}
+	}
+	
+	$cat_mappings = array();
+	//any new categories?
+	foreach ($_POST['cat_title'] as $id => $name) {
+		//if the category found in POST data doesn't exist and it's not set to be deleted (i.e. deleted above), create it
+		if (!in_array($id, $cats) && !isset($_POST['delete_cat'][$id])) {
+			//the category is not present! create it!
+			$q = new DBInsert('categories', array('name' => $name, 'sort_position' => $_POST['cat_sort_order'][$id]), 'Failed to insert new category');
+			$q->commit();
+			$cat_mappings[$id] = $db->insert_id();
+		}
 	}
 
 	//create any new forums
@@ -102,30 +132,14 @@ if (isset($_POST['form_sent'])) {
 					$ok = false;
 				}
 			}
-			$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($forum_name) . '\',' . intval($_POST['new_forum_cat'][$key]) . ',' . intval($_POST['sort_order'][$key]) . ',\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new forum', __FILE__, __LINE__, $db->error());
+			$cat_id = intval($_POST['new_forum_cat'][$key]);
+			if (isset($cat_mappings[$cat_id])) {
+				$cat_id = $cat_mappings[$cat_id];
+			}
+			$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($forum_name) . '\',' . $cat_id . ',' . intval($_POST['sort_order'][$key]) . ',\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new forum', __FILE__, __LINE__, $db->error());
 		}
 	}
 	
-	$q = new DBSelect('categories', array('id', 'name', 'sort_position'), '', 'Failed to get category list');
-	$result = $q->commit();
-	$cats = array();
-	while ($cat = $db->fetch_assoc($result)) {
-		$id = $cat['id'];
-		$cats[] = $id;
-		if ($cat['name'] != $_POST['cat_title'][$id] || $cat['sort_position'] != $_POST['cat_sort_order'][$id]) {
-			$q = new DBUpdate('categories', array('name' => $_POST['cat_title'][$id],'sort_position' => $_POST['cat_sort_order'][$id]), 'id=' . $id, 'Failed to update category_title');
-			$q->commit();
-		}
-	}
-	
-	//any new categories?
-	foreach ($_POST['cat_title'] as $id => $name) {
-		if (!in_array($id, $cats)) {
-			//the category is not present! create it!
-			$q = new DBInsert('categories', array('id' => $id, 'name' => $name, 'sort_position' => $_POST['cat_sort_order'][$id]), 'Failed to insert new category');
-			$q->commit();
-		}
-	}
 	header('Refresh: 0');
 	return;
 }
@@ -345,12 +359,12 @@ if (isset($_POST['form_sent'])) {
 	<?php
 	$result = $db->query('SELECT MAX(id),MAX(sort_position) FROM `#^categories`') or enhanced_error('Failed to get highest id', true);
 	list($maxid,$maxpos) = $db->fetch_row($result);
-	echo 'var maxCatId = ' . $maxid . ';' . "\n\t";
 	echo 'var maxCatSortOrder = ' . $maxpos . ';';
 	?>
+	var maxCatId = -1;
 	
 	function addCat() {
-		maxCatId++;
+		maxCatId--;
 		maxCatSortOrder++;
 		var catDiv = document.createElement('div');
 		catDiv.id = 'cat_' + maxCatId;

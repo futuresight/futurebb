@@ -1,8 +1,12 @@
 <?php
 //Experimental Database Abstraction Layer
 
+interface DBQuery {
+	function commit();
+}
+
 //simple insert
-class DBInsert {
+class DBInsert implements DBQuery {
 	var $table;
 	var $fields;
 	var $error;
@@ -34,7 +38,7 @@ class DBInsert {
 }
 
 //simple update
-class DBUpdate {
+class DBUpdate implements DBQuery {
 	var $table;
 	var $error;
 	var $set;
@@ -73,7 +77,7 @@ class DBUpdate {
 }
 
 //simple delete
-class DBDelete {
+class DBDelete implements DBQuery {
 	var $table;
 	var $error;
 	var $where;
@@ -90,7 +94,7 @@ class DBDelete {
 }
 
 //select - a lot more complex
-class DBSelect {
+class DBSelect implements DBQuery {
 	var $table;
 	var $fields;
 	var $where = '';
@@ -150,9 +154,6 @@ class DBSelect {
 	}
 }
 
-class DBLeftJoin extends DBJoin {
-}
-
 class DBJoin {
 	var $table;
 	var $on;
@@ -183,8 +184,11 @@ class DBJoin {
 	}
 }
 
+class DBLeftJoin extends DBJoin {
+}
+
 //table creation tools
-class DBTable {
+class DBTable implements DBQuery {
 	public $fields = array();
 	public $name;
 	

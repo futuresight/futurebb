@@ -4,6 +4,11 @@
 // Clears the output buffer and displays a generic PHP error page
 function error($text, $file = null, $line = null, $db_error = null) {
 	//database error
+	// Send no-cache headers
+	header('Expires: Mon, 1 Jan 1990 00:00:00 GMT');
+	header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+	header('Cache-Control: post-check=0, pre-check=0', false);
+	header('Pragma: no-cache'); // For HTTP/1.0 compatibility
 	@ob_end_clean();
 	?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -23,6 +28,11 @@ function error($text, $file = null, $line = null, $db_error = null) {
 
 function enhanced_error($text, $db_error = false) {
 	global $db;
+	// Send no-cache headers
+	header('Expires: Mon, 1 Jan 1990 00:00:00 GMT');
+	header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+	header('Cache-Control: post-check=0, pre-check=0', false);
+	header('Pragma: no-cache'); // For HTTP/1.0 compatibility
 	//database error with enhanced debugging
 	@ob_end_clean();
 	?>
@@ -124,7 +134,7 @@ function redirect($url) {
 	}
 	
 	// Send no-cache headers
-	header('Expires: Thu, 21 Jul 1977 07:30:00 GMT'); // When yours truly first set eyes on this world! :)
+	header('Expires: Mon, 1 Jan 1990 00:00:00 GMT');
 	header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 	header('Cache-Control: post-check=0, pre-check=0', false);
 	header('Pragma: no-cache'); // For HTTP/1.0 compatibility
