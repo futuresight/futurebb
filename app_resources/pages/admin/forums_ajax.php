@@ -88,7 +88,7 @@ if (isset($_POST['form_sent'])) {
 			//the category is not present! create it!
 			$q = new DBInsert('categories', array('name' => $name, 'sort_position' => $_POST['cat_sort_order'][$id]), 'Failed to insert new category');
 			$q->commit();
-			$cat_mappings[$id] = $db->insert_id();
+			$cat_mappings[$id] = $db->insert_id(); //replace the temporary IDs given by JS with real IDs given by the database
 		}
 	}
 
@@ -361,7 +361,7 @@ if (isset($_POST['form_sent'])) {
 	list($maxid,$maxpos) = $db->fetch_row($result);
 	echo 'var maxCatSortOrder = ' . $maxpos . ';';
 	?>
-	var maxCatId = -1;
+	var maxCatId = -1; //new categories start temporary IDs at -1 and work downwards (existing categories use existing IDs)
 	
 	function addCat() {
 		maxCatId--;
