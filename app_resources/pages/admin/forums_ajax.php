@@ -359,6 +359,9 @@ if (isset($_POST['form_sent'])) {
 	<?php
 	$result = $db->query('SELECT MAX(id),MAX(sort_position) FROM `#^categories`') or enhanced_error('Failed to get highest id', true);
 	list($maxid,$maxpos) = $db->fetch_row($result);
+	if (!$maxpos) {
+		$maxpos = 0;
+	}
 	echo 'var maxCatSortOrder = ' . $maxpos . ';';
 	?>
 	var maxCatId = -1; //new categories start temporary IDs at -1 and work downwards (existing categories use existing IDs)
