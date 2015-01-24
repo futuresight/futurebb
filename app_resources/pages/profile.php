@@ -216,11 +216,16 @@ if(isset($_POST['pm_sent'])) {
 				break;
 			case 'security':
 				if (isset($_POST['form_sent'])) {
+					$common = explode("\n", base64_decode(file_get_contents(FORUM_ROOT . '/app_config/commonpasswords.txt')));
 					if ($_POST['pwd1'] != $_POST['pwd2']) {
 						echo '<p><b>' . translate('passnomatch') . '</b></p>';
+					} elseif (strlen($_POST['pwd1']) < 8) {
+						echo '<p><b>' . translate('shortpass') . '</b></p>';					
+					} elseif (in_array($_POST['pwd1'], $common)) {
+						echo '<p><b>' . translate('commonpass') . '</b></p>';
 					} else {
 						$db->query('UPDATE `#^users` SET password=\'' . futurebb_hash($_POST['pwd1']) . '\' WHERE username=\'' . $db->escape($user) . '\'') or error('Failed to update password', __FILE__, __LINE__, $db->error());
-						if ($me) {
+						if ($cur_user['id'] == $futurebb_user['id']) {
 							LoginController::LogInUser($futurebb_user['id'], futurebb_hash($_POST['pwd1']), $_SERVER['HTTP_USER_AGENT']);
 						}
 						redirect($base_config['baseurl'] . '/users/' . rawurlencode($dirs[2]));
