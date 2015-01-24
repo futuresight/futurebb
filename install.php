@@ -907,7 +907,7 @@ if (isset($_GET['downloadconfigxml'])) {
 			'g_delete_posts'	=> 1,
 			'g_signature'		=> 1,
 			'g_user_list'		=> 1,
-			'g_user_list_groups'=> '1,2,3',
+			'g_user_list_groups'=> '',
 			'g_promote_group'	=> 0,
 			'g_promote_posts'	=> 0,
 			'g_promote_operator'=> 0,

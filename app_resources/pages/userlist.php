@@ -4,7 +4,7 @@ if (!$futurebb_user['g_user_list']) {
 	httperror(404);
 }
 $visible_groups = array();
-if ($futurebb_user['g_user_list_groups'] != '') {
+if (!$futurebb_user['g_admin_privs'] && $futurebb_user['g_user_list_groups'] != '') {
 	foreach (explode(',', $futurebb_user['g_user_list_groups']) as $val) {
 		$visible_groups[] = intval($val);
 	}
