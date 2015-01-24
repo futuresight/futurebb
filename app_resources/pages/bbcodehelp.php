@@ -36,6 +36,22 @@ include FORUM_ROOT . '/app_resources/includes/parser.php';
 		?>
         </ul>
     </div>
+	<div class="forum_content" id="lists">
+		<h3><?php echo translate('lists'); ?></h3>
+		<p><?php echo translate('listsintro'); ?></p>
+		<p><?php echo translate('forbulletedlist'); ?> <code>[list][*]<?php echo translate('item#', 1); ?>[/*][*]<?php echo translate('item#', 2); ?>[/*][*]<?php echo translate('item#', 3); ?>[/*][/list]</code><?php echo translate('produces'); ?></p>
+		<ul>
+			<li><?php echo translate('item#', 1); ?></li>
+			<li><?php echo translate('item#', 2); ?></li>
+			<li><?php echo translate('item#', 3); ?></li>
+		</ul>
+		<p><?php echo translate('fornumberlist'); ?> <code>[list=1][*]<?php echo translate('item#', 1); ?>[/*][*]<?php echo translate('item#', 2); ?>[/*][*]<?php echo translate('item#', 3); ?>[/*][/list]</code><?php echo translate('produces'); ?></p>
+		<ol>
+			<li><?php echo translate('item#', 1); ?></li>
+			<li><?php echo translate('item#', 2); ?></li>
+			<li><?php echo translate('item#', 3); ?></li>
+		</ol>
+	</div>
     <div class="forum_content" id="linksimages">
     	<h3><?php echo translate('linksandimages'); ?></h3>
         <ul>

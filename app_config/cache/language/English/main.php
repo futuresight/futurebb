@@ -307,4 +307,9 @@ $lang = array (
   'shortpass' => 'Your password is shorter than 8 characters',
   'commonpass' => 'Your password is in the list of the most commonly used passwords',
   'reply' => 'Reply',
+  'lists' => 'Lists',
+  'listsintro' => 'If you wish to have items in a series, you can do so using the <code>[list]</code> tag.',
+  'forbulletedlist' => 'For a bulleted list, just use <code>[list]</code>. For example,',
+  'fornumberlist' => 'For a numbered list, just use <code>[list=1]</code>. For example,',
+  'item#' => 'Item #$1',
 );
