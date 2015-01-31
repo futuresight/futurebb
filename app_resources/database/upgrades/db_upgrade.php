@@ -39,9 +39,7 @@ body {
 			}
 		} else {
 			if ($futurebb_user['language'] != 'English') {
-				?>
-			<p style="font-weight:bold">This page is only available in English. Unfortunately, no translations are available. Once the database upgrade is complete, all translations will work again.</p>
-				<?
+				echo '<p style="font-weight:bold">This page is only available in English. Unfortunately, no translations are available. Once the database upgrade is complete, all translations will work again.</p>';
 			}
 			?>
 			<p>Your FutureBB database appears to be out of date. If you are an administrator, you can use this utility to upgrade it. If you are not an administrator, you will not be able to access this forum until it is upgraded.</p>
