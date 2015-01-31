@@ -132,7 +132,7 @@ $pagessubdirs = array_merge($pagessubdirs, $orig_pagessubdirs);
 foreach ($pagessubdirs as $url => $info) {
 	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . (isset($info['admin']) && $info['admin'] ? '1' : '0') . ',' . (isset($info['mod']) && $info['mod'] ? '1' : '0') . ',1)';
 }
-$db->query($q . implode(',', $page_insert_data)) or enhanced_error('Failed to insert page data', true);
+$db->query('INSERT INTO `#^pages`' . implode(',', $page_insert_data)) or enhanced_error('Failed to insert page data', true);
 unset($page_insert_data);
 unset($pages);
 unset($pagessubdirs);
