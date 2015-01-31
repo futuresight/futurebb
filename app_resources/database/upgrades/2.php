@@ -132,12 +132,14 @@ $pagessubdirs = array_merge($pagessubdirs, $orig_pagessubdirs);
 foreach ($pagessubdirs as $url => $info) {
 	$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . (isset($info['admin']) && $info['admin'] ? '1' : '0') . ',' . (isset($info['mod']) && $info['mod'] ? '1' : '0') . ',1)';
 }
-$db->query('INSERT INTO `#^pages`' . implode(',', $page_insert_data)) or enhanced_error('Failed to insert page data', true);
+$q = new DBMassInsert('pages', array('url','file','template','nocontentbox','admin','moderator','subdirs'), $page_insert_data, 'Failed to insert pages');
+$q->commit();
 unset($page_insert_data);
 unset($pages);
 unset($pagessubdirs);
 unset($orig_pages);
 unset($orig_pagessubdirs);
+echo '<li>RV2: Adding pages table... success</li>';
 
 //insert the language keys
 $handle = opendir(FORUM_ROOT . '/app_config/cache/language');
@@ -161,14 +163,15 @@ while ($language = readdir($handle)) {
 					}
 					$lang = array_merge($lang, $old_lang);
 				}
-				$q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
 				$lang_insert_data = array();
 				foreach ($lang as $key => $val) {
 					$lang_insert_data[] = '(\'' . $db->escape($language) . '\',\'' . $db->escape($key) . '\',\'' . $db->escape($val) . '\',\'' . $db->escape(basename($langfile, '.php')) . '\')';
 				}
-				$db->query($q . implode(',', $lang_insert_data)) or enhanced_error('Failed to insert language stuff' . $q . implode(',', $lang_insert_data), true);
+				$q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
+				$q->commit();
 			}
 		}
 	}
 }
+echo '<li>RV2: Adding language table... success</li>';
 unset($lang);

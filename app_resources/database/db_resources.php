@@ -37,6 +37,32 @@ class DBInsert implements DBQuery {
 	}
 }
 
+class DBMassInsert implements DBQuery {
+	var $table;
+	var $fields;
+	var $error;
+	var $data;
+	
+	function __construct($table, $fields, $data, $error) {
+		$this->table = $table;
+		$this->fields = $fields;
+		$this->error = $error;
+		$this->data = $data;
+	}
+	
+	function commit() {
+		global $db, $db_info;
+		$start = 'INSERT INTO `' . $db->prefix . $this->table . '`(' . implode(',', $this->fields) . ') VALUES';
+		if (strpos($db_info['type'], 'mysql') === 0) {
+			$db->query($start . implode(',', $this->data)) or enhanced_error($this->error, true);
+		} else {
+			foreach ($this->data as $entry) {
+				$db->query($start . $entry) or enhanced_error($this->error, true);
+			}
+		}
+	}
+}
+
 //simple update
 class DBUpdate implements DBQuery {
 	var $table;
