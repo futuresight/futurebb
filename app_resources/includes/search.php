@@ -36,6 +36,7 @@ function update_search_index($pid,$msg) {
 		$q[] = '(' . $pid . ',\'' . $db->escape($word) . '\',' . $count . ')';;
 	}
 	if (!empty($q)) {
-		$db->query('INSERT INTO `#^search_index`(post_id,word,num_matches) VALUES' . implode(',', $q)) or error('Failed to update search index', __FILE__, __LINE__, $db->error());
+		$query = new DBMassInsert('search_index', array('post_id', 'word', 'num_matches'), $q, 'Failed to insert search engine data');
+		$query->commit();
 	}
 }

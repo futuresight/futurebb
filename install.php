@@ -973,7 +973,8 @@ if (isset($_GET['downloadconfigxml'])) {
 		foreach ($pagessubdirs as $url => $info) {
 			$page_insert_data[] = '(\'' . $db->escape($url) . '\',\'' . $db->escape($info['file']) . '\',' . ($info['template'] ? '1' : '0') . ',' . (isset($info['nocontentbox']) ? '1' : '0') . ',' . ($info['admin'] ? '1' : '0') . ',' . ($info['mod'] ? '1' : '0') . ',1)';
 		}
-		$db->query($q . implode(',', $page_insert_data)) or enhanced_error('Failed to insert page data', true);
+		$q = new DBMassInsert('pages', array('url', 'file', 'template', 'nocontentbox', 'admin', 'moderator', 'subdirs'), $page_insert_data, 'Failed to insert pages');
+		$q->commit();
 		unset($page_insert_data);
 		unset($pages);
 		unset($pagessubdirs);
@@ -995,7 +996,8 @@ if (isset($_GET['downloadconfigxml'])) {
 						foreach ($lang as $key => $val) {
 							$lang_insert_data[] = '(\'' . $db->escape($language) . '\',\'' . $db->escape($key) . '\',\'' . $db->escape($val) . '\',\'' . $db->escape(basename($langfile, '.php')) . '\')';
 						}
-						$db->query($q . implode(',', $lang_insert_data)) or enhanced_error('Failed to insert language stuff', true);
+						$q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
+						$q->commit();
 					}
 				}
 			}
