@@ -312,4 +312,5 @@ $lang = array (
   'forbulletedlist' => 'For a bulleted list, just use <code>[list]</code>. For example,',
   'fornumberlist' => 'For a numbered list, just use <code>[list=1]</code>. For example,',
   'item#' => 'Item #$1',
+  'timeformatdesc' => 'The following two entries allow you to set the format used for displaying all times by the software. For items that only display the date, the date format is used, but for items that display the time, the date format and time format are joined together. The formats must follow the <a href="http://php.net/manual/en/function.date.php#refsect1-function.date-parameters">PHP guidelines</a>.',
 );

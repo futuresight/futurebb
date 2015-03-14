@@ -192,4 +192,6 @@ $lang_addl = array (
   'undeletetopicheader' => 'Are you sure you wish to undelete this topic?',
   'interface' => 'Interface',
   'addforum' => 'Add forum',
+  'dateformat' => 'Date format',
+  'timeformat' => 'Time format',
 );

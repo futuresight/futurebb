@@ -27,6 +27,8 @@ if(isset($_POST['form_sent'])) {
 		'board_title'			=> 'string',
 		'admin_email'			=> 'string',
 		'footer_text'			=> 'string',
+		'date_format'			=> 'string',
+		'time_format'			=> 'string',
 		'maintenance_message'	=> 'string',
 		'rules'					=> 'string',
 		'default_language'		=> 'string',
@@ -161,6 +163,18 @@ if(isset($_POST['form_sent'])) {
 		<p><?php echo translate('customfooter'); ?><br /><textarea name="config[footer_text]" cols="50" rows="3"><?php echo htmlspecialchars($futurebb_config['footer_text']); ?></textarea></p>
 		<p><input type="text" name="config[topics_per_page]" value="<?php echo $futurebb_config['topics_per_page']; ?>" size="3" /> <?php echo translate('topicsperpage'); ?><br /><input type="text" name="config[posts_per_page]" value="<?php echo $futurebb_config['posts_per_page']; ?>" size="3" /> <?php echo translate('postsperpage'); ?></p>
 		<p><input name="config[show_post_count]" type="checkbox" <?php if($futurebb_config['show_post_count'] == 1) echo 'checked="checked"'; ?> value="1" id="show_post_count" /> <label for="show_post_count"><?php echo translate('showpostcounts'); ?></label> - <?php echo translate('showpostcountsdesc'); ?></p>
+		<h4><?php echo translate('timeformat'); ?></h4>
+		<p><?php echo translate('timeformatdesc'); ?></p>
+		<table border="0" class="optionstable">
+       		<tr>
+				<th><?php echo translate('dateformat'); ?></th>
+				<td><input type="text" name="config[date_format]" value="<?php echo htmlspecialchars($futurebb_config['date_format']); ?>" /></td>
+			</tr>
+			<tr>
+				<th><?php echo translate('timeformat'); ?></th>
+				<td><input type="text" name="config[time_format]" value="<?php echo htmlspecialchars($futurebb_config['time_format']); ?>" /></td>
+			</tr>
+		</table>
         
         <h3 id="bbcode"><?php echo translate('bbcode'); ?></h3>
         <table border="0" class="optionstable">

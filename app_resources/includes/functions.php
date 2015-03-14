@@ -182,7 +182,7 @@ function set_config($c_name, $c_value) {
 
 // Return a formatted date/time following user preferences and time zone
 function user_date($unix_stamp, $date_only = false) {
-	global $futurebb_user;
+	global $futurebb_user, $futurebb_config;
 	static $timezone;
 	if (!isset($timezone)) {
 		$timezones = DateTimeZone::listIdentifiers();
@@ -199,9 +199,9 @@ function user_date($unix_stamp, $date_only = false) {
 	$date = new DateTime('@' . $unix_stamp);
 	$date->setTimezone(new DateTimeZone($timezone));
 	if ($date_only) {
-		return $date->format('d M y');
+		return $date->format($futurebb_config['date_format']);
 	} else {
-		return $date->format('d M y H:i');
+		return $date->format($futurebb_config['date_format'] . ' ' . $futurebb_config['time_format']);
 	}
 }
 
