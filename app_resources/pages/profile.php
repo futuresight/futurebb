@@ -144,7 +144,7 @@ if(isset($_POST['pm_sent'])) {
 						$timezones = DateTimeZone::listIdentifiers();
 						foreach ($timezones as $key => $val) {
 							echo '<option value="'.  $key . '"';
-							if ($key == $futurebb_user['timezone']) {
+							if ($key == $cur_user['timezone']) {
 								echo ' selected="selected"';
 							}
 							echo '>' . $val . '</option>';
