@@ -141,7 +141,17 @@ if(isset($_POST['pm_sent'])) {
 					</tr>
 					<tr>
 						<td><?php echo translate('timezone'); ?></td>
-						<td><select name="timezone"><?php for ($i = -12; $i <= 12; $i++) echo '<option value="' . $i . '"' . ($i == $cur_user['timezone'] ? ' selected="selected"' : '') . '>GMT' . ($i >= 0 ? '+': '') . $i . '</option>'; ?></select></td>
+						<td><select name="timezone"><?php
+						$timezones = DateTimeZone::listIdentifiers();
+						foreach ($timezones as $key => $val) {
+							echo '<option value="'.  $key . '"';
+							if ($key == $futurebb_user['timezone']) {
+								echo ' selected="selected"';
+							}
+							echo '>' . $val . '</option>';
+						}
+						?>
+						</select></td>
 					</tr>
 					<tr>
 						<td><?php echo translate('styleset'); ?></td>

@@ -107,7 +107,13 @@ $_SESSION['verified'] = 0;
 		</tr>
 		<tr>
 			<th><?php echo translate('timezone'); ?></th>
-			<td><select name="timezone"><?php for ($i = -12; $i <= 12; $i++) echo '<option value="' . $i . '">GMT' . ($i >= 0 ? '+': '') . $i . '</option>'; ?></select></td>
+			<td><select name="timezone"><?php
+			$timezones = DateTimeZone::listIdentifiers();
+			foreach ($timezones as $key => $val) {
+				echo '<option value="'.  $key . '">' . $val . '</option>';
+			}
+			?>
+			</select></td>
 		</tr>
 	</table>
 	<p><input type="submit" name="form_sent" value="<?php echo translate('submit'); ?>" /></p>

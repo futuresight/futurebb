@@ -183,14 +183,25 @@ function set_config($c_name, $c_value) {
 // Return a formatted date/time following user preferences and time zone
 function user_date($unix_stamp, $date_only = false) {
 	global $futurebb_user;
-	$unix_stamp += intval($futurebb_user['timezone']) * 3600;
-	if ($futurebb_user['dst']) {
-		$unix_stamp += 3600;
+	static $timezone;
+	if (!isset($timezone)) {
+		$timezones = DateTimeZone::listIdentifiers();
+		if (isset($timezones[$futurebb_user['timezone']])) {
+			$timezone = $timezones[$futurebb_user['timezone']];
+		} else {
+			$timezone = 'UTC';
+		}
+		unset($timezones);
 	}
+	//$unix_stamp += intval($futurebb_user['timezone']) * 3600;
+	//print_r(DateTimeZone::listIdentifiers($futurebb_user['timezone']));
+	
+	$date = new DateTime('@' . $unix_stamp);
+	$date->setTimezone(new DateTimeZone($timezone));
 	if ($date_only) {
-		return gmdate('d M y', $unix_stamp);
+		return $date->format('d M y');
 	} else {
-		return gmdate('d M y H:i', $unix_stamp);
+		return $date->format('d M y H:i');
 	}
 }
 
