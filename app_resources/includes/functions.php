@@ -518,6 +518,18 @@ function translate() {
 	if (func_num_args() > 1) {
 		unset($args[0]);
 		foreach ($args as $key => $arg) {
+			//before doing basic replacement, do "smart" replacement
+			$returnstr = preg_replace_callback('%\<SWITCH \$' . $key . '>\((.*?)\)%', function($matches) use($arg) {
+				$options = explode(',', $matches[1]);
+				return $options[intval($arg) - 1];
+			}, $returnstr);
+			$returnstr = preg_replace_callback('%\<PLURAL \$' . $key . '>\((.*?),(.*?)\)%', function($matches) use($arg) {
+				if ($arg == 1) {
+					return $matches[1];
+				} else {
+					return $matches[2];
+				}
+			}, $returnstr);
 			$returnstr = str_replace('$' . $key, $arg, $returnstr);
 		}
 	}
