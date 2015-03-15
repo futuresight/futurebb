@@ -73,10 +73,10 @@ if (isset($_POST['form_sent_update'])) {
 
 $user_groups = array();
 $group_info = array();
-$result = $db->query('SELECT g_id,g_name,g_permanent FROM `#^user_groups`') or error('Failed to make default group menu', __FILE__, __LINE__, $db->error());
-while (list($id,$name,$perm) = $db->fetch_row($result)) {
+$result = $db->query('SELECT g_id,g_name,g_permanent,g_guest_group FROM `#^user_groups`') or error('Failed to make default group menu', __FILE__, __LINE__, $db->error());
+while (list($id,$name,$perm,$guest) = $db->fetch_row($result)) {
 	$user_groups[$id] = $name;
-	$group_info[$id] = array('permanent' => $perm);
+	$group_info[$id] = array('permanent' => $perm, 'guest' => $guest);
 }
 ?>
 <div class="container">
@@ -95,9 +95,11 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 		<form action="<?php echo $base_config['baseurl']; ?>/admin/user_groups" method="post" enctype="multipart/form-data">
 			<p><?php echo translate('defaultusergroup'); ?> <select name="default_user_group"><?php
 			foreach ($user_groups as $id => $name) {
-				echo '<option value="' . $id . '"';
-				if ($id == $futurebb_config['default_user_group']) {
-					echo ' selected="selected"';
+				if (!$group_info[$id]['guest']) {
+					echo '<option value="' . $id . '"';
+					if ($id == $futurebb_config['default_user_group']) {
+						echo ' selected="selected"';
+					}
 				}
 				echo '>' . htmlspecialchars($name) . '</option>';
 			}
@@ -107,7 +109,9 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 			<h4><?php echo translate('newusergroup'); ?></h4>
 			<p><?php echo translate('basegroupon'); ?> <select name="baseon"><?php
 			foreach ($user_groups as $id => $name) {
-				echo '<option value="' . $id . '">' . htmlspecialchars($name) . '</option>';
+				if (!$group_info[$id]['guest']) {
+					echo '<option value="' . $id . '">' . htmlspecialchars($name) . '</option>';
+				}
 			}
 			?></select> <input type="submit" value="<?php echo translate('submit'); ?>" /></p>
 		</form>
@@ -222,11 +226,13 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 					<td>
 					<?php
 					foreach ($user_groups as $id => $name) {
-						echo '<input type="checkbox" name="user_list[' . $id . ']" id="user_list_' . $id . '" value="' . $id . '"';
-						if (in_array($id, $visible_groups)) {
-							echo ' checked="checked"';
+						if (!$group_info[$id]['guest']) {
+							echo '<input type="checkbox" name="user_list[' . $id . ']" id="user_list_' . $id . '" value="' . $id . '"';
+							if (in_array($id, $visible_groups)) {
+								echo ' checked="checked"';
+							}
+							echo ' /> <label for="user_list_' . $id . '">' . htmlspecialchars($name) . '</label><br />';
 						}
-						echo ' /> <label for="user_list_' . $id . '">' . htmlspecialchars($name) . '</label><br />';
 					}
 					?><br /><?php echo translate('userlistvisgrpsdesc'); ?>
 					</td>
@@ -236,7 +242,7 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
             <?php if ($group_id != 2 && $group_id != 1) { //hide for guests/admins ?>
 			<p><?php echo translate('promoteto'); ?> <select name="config[g_promote_group]"><option value="0"><?php echo translate('dontpromote'); ?></option><?php
 			foreach ($user_groups as $id => $name) {
-				if ($id != intval($dirs[3])) {
+				if ($id != intval($dirs[3]) && !$group_info[$id]['guest']) {
 					echo '<option value="' . $id . '"';
 					if ($id == $cur_group['g_promote_group']) {
 						echo ' selected="selected"';
@@ -266,7 +272,7 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 			<?php
 			echo '<p>' . translate('moveallusersto') . ' <select name="newgroup">';
 			foreach ($user_groups as $id => $name) {
-				if ($id != intval($dirs[3])) {
+				if ($id != intval($dirs[3]) && !$group_info[$id]['guest']) {
 					echo '<option value="' . $name . '">' . htmlspecialchars($name) . '</option>';
 				}
 			}
