@@ -200,7 +200,7 @@ while ($cur_post = $db->fetch_assoc($result)) {
 					echo '>' . $cur_post['signature'] . '</p>';
 				}
 				if ($futurebb_user['g_mod_privs']) {
-					echo '<hr /><p class="ipaddress">IP: <a href="' . $base_config['baseurl'] . '/admin/ip_tracker/?ip=' . $cur_post['poster_ip'] . '">' . $cur_post['poster_ip'] . '</p>';
+					echo '<hr /><p class="ipaddress">IP: <a href="' . $base_config['baseurl'] . '/admin/ip_tracker/?ip=' . $cur_post['poster_ip'] . '">' . $cur_post['poster_ip'] . '</a></p>';
 				}
 				?>
 				

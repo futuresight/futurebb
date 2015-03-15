@@ -1,21 +1,25 @@
 <?php
 /*
 ***** FutureBB Development Framework *****
-Copyright (C)2012-2014 FutureSight Technologies - ALL RIGHTS RESERVED
+Copyright (C)2012-2015 FutureSight Technologies - ALL RIGHTS RESERVED
 See README.txt for more license details
 
 ***** DISPATCHER.PHP *****
-All HTTP requests made to FutureBB are redirected to this file.
+All HTTP requests made to FutureBB (except those to static files and the installer) are redirected to this file.
 This file handles the requests and sends them off to the appropriate unit or script.
 
-Variables created in this file may be used globally in the rest of the forum.
+Please note that in order to allow other software to interface with FutureBB, much of the key startup functions and variable initializations take place in app_resources/includes/startup.php
+
+Variables created in this file and startup.php may be used globally in the rest of the forum.
 These include:
 
-TYPE		NAME					NOTES
-array		base_config				Basic persistent configuration (stored in config.xml)
-array		db_info					SQL Database settings
-array		futurebb_config			Miscellaneous site configuration (stored in database)
-array		futurebb_user			Information about the user from database
+TYPE			NAME					NOTES
+array			base_config				Basic persistent configuration (stored in config.xml)
+array			db_info					SQL Database settings
+array			futurebb_config			Miscellaneous site configuration (stored in database)
+array			futurebb_user			Information about the user from database
+Database Object	db						The object representing the database (database platform-independent)
+
 */
 
 $start_time = microtime();
