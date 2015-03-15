@@ -12,10 +12,13 @@ function PMBox($preload = '') {
 	// Private messaging
 	if(($futurebb_config['allow_privatemsg'] == 1 && $futurebb_user['id'] != 0 && $futurebb_user['id'] != $cur_user['id'] && $cur_user['block_pm'] == 0) || $futurebb_user['g_mod_privs']) {
 		echo '<h3>' . translate('sendPM') . '</h3>';
-		echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '" method="post" enctype="multipart/form-data" name="sendpm">
-		<textarea name="pm_text" rows="5" cols="50">' . htmlspecialchars($preload) . '</textarea><br />
+		echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '" method="post" enctype="multipart/form-data">
+		<p><textarea name="pm_text" rows="5" cols="50">' . htmlspecialchars($preload) . '</textarea><br />
 		<input name="pm_sent" type="submit" value="' . translate('send') . '" />';
-		if($futurebb_user['g_mod_privs']) echo '<input type="checkbox" name="send_warning" id="send_warning" /> <label for="send_warning">' . translate('sendas_admin') . '</label>';
+		if($futurebb_user['g_mod_privs']) {
+			echo '<input type="checkbox" name="send_warning" id="send_warning" /> <label for="send_warning">' . translate('sendas_admin') . '</label>';
+		}
+		echo '</p>';
 		echo '</form>';
 	}
 }
@@ -216,8 +219,8 @@ if(isset($_POST['pm_sent'])) {
 				<p><?php echo translate('dateregistered'); ?>: <?php echo user_date($cur_user['registered']); ?> (IP: <a href="<?php echo $base_config['baseurl']; ?>/admin/ip_tracker/?ip=<?php echo $cur_user['registration_ip']; ?>"><?php echo $cur_user['registration_ip']; ?></a>)</p>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('save'); ?>" /></p>
 				<?php
-				PMBox();
 				echo '</form>';
+				PMBox();
 				break;
 			case 'security':
 				if (isset($_POST['form_sent'])) {
