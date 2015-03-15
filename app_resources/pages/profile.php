@@ -213,7 +213,7 @@ if(isset($_POST['pm_sent'])) {
 						<td><input type="checkbox" name="block_notif"<?php if ($cur_user['block_notif']) echo ' checked="checked"'; ?> /></td>
 					</tr>
 				</table>
-				<p><?php echo translate('dateregistered'); ?>: <?php echo user_date($cur_user['registered']); ?> (IP: <?php echo $cur_user['registration_ip']; ?>)</p>
+				<p><?php echo translate('dateregistered'); ?>: <?php echo user_date($cur_user['registered']); ?> (IP: <a href="<?php echo $base_config['baseurl']; ?>/admin/ip_tracker/?ip=<?php echo $cur_user['registration_ip']; ?>"><?php echo $cur_user['registration_ip']; ?></a>)</p>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('save'); ?>" /></p>
 				<?php
 				PMBox();
