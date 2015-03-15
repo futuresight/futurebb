@@ -530,7 +530,7 @@ function translate() {
 					return $matches[2];
 				}
 			}, $returnstr);
-			$returnstr = str_replace('$' . $key, $arg, $returnstr);
+			$returnstr = preg_replace('%\$' . $key . '([^0-9]|$)%', $arg . '$1', $returnstr);
 		}
 	}
 	return $returnstr;

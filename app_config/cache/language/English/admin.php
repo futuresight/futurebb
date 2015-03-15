@@ -194,4 +194,5 @@ $lang_addl = array (
   'addforum' => 'Add forum',
   'dateformat' => 'Date format',
   'timeformat' => 'Time format',
+  'basegroupon' => 'Base new group on:',
 );

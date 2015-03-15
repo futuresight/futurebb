@@ -41,18 +41,34 @@ if (isset($_POST['form_sent_update'])) {
 		));
 	}
 	$sql = '';
-	foreach ($cfg_list as $name => $type) {
-		switch ($type) {
-			case 'bool':
-				$sql .= ',' . $name . '=' . (isset($_POST['config'][$name]) ? '1' : '0'); break;
-			case 'string':
-				$sql .= ',' . $name . '=\'' . $db->escape($_POST['config'][$name]) . '\''; break;
-			case 'int':
-				$sql .= ',' . $name . '=' . intval($_POST['config'][$name]) . ''; break;
+	if (isset($_POST['new_group'])) {
+		$keys = implode(',', array_keys($cfg_list));
+		foreach ($cfg_list as $name => $type) {
+			switch ($type) {
+				case 'bool':
+					$sql .= ',' . (isset($_POST['config'][$name]) ? '1' : '0'); break;
+				case 'string':
+					$sql .= ',\'' . $db->escape($_POST['config'][$name]) . '\''; break;
+				case 'int':
+					$sql .= ',' . intval($_POST['config'][$name]) . ''; break;
+			}
 		}
+		$sql = substr($sql, 1);
+		$db->query('INSERT INTO `#^user_groups`(' . $keys . ') VALUES(' . $sql . ')') or enhanced_error('Failed to insert new group', true);
+	} else {
+		foreach ($cfg_list as $name => $type) {
+			switch ($type) {
+				case 'bool':
+					$sql .= ',' . $name . '=' . (isset($_POST['config'][$name]) ? '1' : '0'); break;
+				case 'string':
+					$sql .= ',' . $name . '=\'' . $db->escape($_POST['config'][$name]) . '\''; break;
+				case 'int':
+					$sql .= ',' . $name . '=' . intval($_POST['config'][$name]) . ''; break;
+			}
+		}
+		$sql = substr($sql, 1);
+		$db->query('UPDATE `#^user_groups` SET ' . $sql . ' WHERE g_id=' . intval($_POST['group_id'])) or error('Failed to update group info', __FILE__, __LINE__, $db->error());
 	}
-	$sql = substr($sql, 1);
-	$db->query('UPDATE `#^user_groups` SET ' . $sql . ' WHERE g_id=' . intval($_POST['group_id'])) or error('Failed to update group info', __FILE__, __LINE__, $db->error());
 }
 
 $user_groups = array();
@@ -87,7 +103,14 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 			}
 			?></select> <input type="submit" name="form_sent" value="<?php echo translate('update'); ?>" /></p>
 		</form>
-		<p><a href="<?php echo $base_config['baseurl']; ?>/admin/user_groups/new"><?php echo translate('newusergroup'); ?></a></a>
+		<form action="<?php echo $base_config['baseurl']; ?>/admin/user_groups/new" method="get" enctype="multipart/form-data">
+			<h4><?php echo translate('newusergroup'); ?></h4>
+			<p><?php echo translate('basegroupon'); ?> <select name="baseon"><?php
+			foreach ($user_groups as $id => $name) {
+				echo '<option value="' . $id . '">' . htmlspecialchars($name) . '</option>';
+			}
+			?></select> <input type="submit" value="<?php echo translate('submit'); ?>" /></p>
+		</form>
 		<table border="0">
 		<?php
 		foreach ($user_groups as $id => $name) {
@@ -101,8 +124,8 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 		}
 		?>
 		</table>
-		<?php } else if ($dirs[3] == intval($dirs[3]) && $dirs[4] == 'edit') {
-			$group_id = intval($dirs[3]);
+		<?php } else if ($dirs[3] == 'new' || (isset($dirs[3]) && $dirs[3] == intval($dirs[3]) && isset($dirs[4]) && $dirs[4] == 'edit')) {
+			$group_id = ($dirs[3] == 'new' ? intval($_GET['baseon']) : intval($dirs[3]));
 			$result = $db->query('SELECT * FROM `#^user_groups` WHERE g_id=' . $group_id) or error('Failed to get group info', __FILE__, __LINE__, $db->error());
 			if (!$db->num_rows($result)) {
 				httperror(404);
@@ -114,6 +137,11 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 			}
 		?>
 		<form action="<?php echo $base_config['baseurl']; ?>/admin/user_groups" method="post" enctype="multipart/form-data">
+			<?php
+			if ($dirs[3] == 'new') {
+				echo '<h3>' . translate('newusergroup') . '<input type="hidden" name="new_group" value="1" /></h3>';
+			}
+			?>
 			<table border="0">
 				<tr>
 					<td><?php echo translate('groupname'); ?></td>
@@ -247,9 +275,6 @@ while (list($id,$name,$perm) = $db->fetch_row($result)) {
 			<p><input type="submit" name="form_sent" value="<?php echo translate('delete'); ?>" /> &bull; <a href="<?php echo $base_config['baseurl']; ?>/admin/user_groups"><?php echo translate('jk'); ?></a></p>
 		</form>
 		<?php
-		} else if ($dirs[3] == 'new') {
-			$db->query('INSERT INTO `#^user_groups`(g_name,g_title) VALUES(\'New user group\',\'New user group member\')') or error('Failed to make new user group', __FILE__, __LINE__, $db->error());
-			header('Location: ' . $base_config['baseurl'] . '/admin/user_groups');
 		} else { 
 			httperror(404);
 		}
