@@ -36,28 +36,8 @@ if (isset($_POST['add_new_forum'])) {
 			$replies[] = $group['id'];
 		}
 	}
-	//make new forum
-	$base_name = URLEngine::make_friendly($_POST['name']);
-	$name = $base_name;
-	$add_num = 0;
 	
-	//check for forums with the same URL
-	$result = $db->query('SELECT url FROM `#^forums` WHERE url LIKE \'' . $db->escape($name) . '%\'') or error('Failed to check for similar URLs', __FILE__, __LINE__, $db->error());
-	$urllist = array();
-	while (list($url) = $db->fetch_row($result)) {
-		$urllist[] = $url;
-	}
-	$ok = false;
-	$add_num = 0;
-	while (!$ok) {
-		$ok = true;
-		if (in_array($name, $urllist)) {
-			$add_num++;
-			$name = $base_name . $add_num;
-			$ok = false;
-		}
-	}
-	$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($_POST['name']) . '\',' . intval($_POST['category']) . ',0,\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new category', __FILE__, __LINE__, $db->error());
+	create_forum($_POST['category'], $_POST['name'], $view, $topics, $replies);
 }
 if (!isset($dirs[3])) {
 	$dirs[3] = '';
@@ -72,28 +52,9 @@ if (isset($_POST['form_sent_forums'])) {
 		$db->query('UPDATE `#^forums` SET sort_position=' . intval($pos) . ' WHERE id=' . intval($id)) or error('Failed to update forum', __FILE__, __LINE__, $db->error());
 	}
 	$result = $db->query('SELECT id,url,name FROM `#^forums` ORDER BY id ASC') or error('Failed to get forums', __FILE__, __LINE__, $db->error());
-	while (list($id,$furl,$title) = $db->fetch_row($result)) {
-		if (isset($_POST['title'][$id]) && $_POST['title'][$id] != $title && $_POST['title'][$id] != '') {
-			//make redirect forum
-			$base_name = URLEngine::make_friendly($_POST['title'][$id]);
-			$name = $base_name;
-			$add_num = 0;
-			$result = $db->query('SELECT url FROM `#^forums` WHERE url LIKE \'' . $db->escape($name) . '%\'') or error('Failed to check for similar URLs', __FILE__, __LINE__, $db->error());
-			$urllist = array();
-			while (list($url) = $db->fetch_row($result)) {
-				$urllist[] = $url;
-			}
-			$ok = false;
-			while (!$ok) {
-				$ok = true;
-				if (in_array($name, $urllist)) {
-					$add_num++;
-					$name = $base_name . $add_num;
-					$ok = false;
-				}
-			}
-			$db->query('UPDATE `#^forums` SET url=\'' . $name . '\',name=\'' . $db->escape($_POST['title'][$id]) . '\' WHERE id=' . intval($id)) or error('Failed to update forum URL', __FILE__, __LINE__, $db->error());
-			$db->query('INSERT INTO `#^forums`(url,redirect_id) VALUES(\'' . $db->escape($furl) . '\',' . $id . ')') or error('Failed to insert redirect forum', __FILE__, __LINE__, $db->error());
+	while (list($id,$oldurl,$oldtitle) = $db->fetch_row($result)) {
+		if (isset($_POST['title'][$id]) && $_POST['title'][$id] != $oldtitle && $_POST['title'][$id] != '') {
+			rename_forum($id, $oldurl, $_POST['title'][$id]);
 		}
 	}
 	if (isset($_POST['del'])) {
@@ -214,6 +175,6 @@ if ($db_info['type'] != 'sqlite3') {
 ?>
 <script type="text/javascript">
 //redirect people if their browser supports JS
-window.location = "<?php echo $base_config['baseurl']; ?>/admin/forums/enhanced";
+//window.location = "<?php echo $base_config['baseurl']; ?>/admin/forums/enhanced";
 </script>
 <?php } ?>

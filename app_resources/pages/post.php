@@ -67,56 +67,8 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	// New post + new topic
 	if ($dirs[2] == 'forum' && empty($errors) && !isset($_POST['preview'])) {
 		$fid = intval($dirs[3]);
-		$name = URLEngine::make_friendly($_POST['subject']);
-		$base_name = $name;
-		//check for forums with the same URL
-		$result = $db->query('SELECT url FROM `#^topics` WHERE url LIKE \'' . $db->escape($name) . '%\'') or error('Failed to check for similar URLs', __FILE__, __LINE__, $db->error());
-		$urllist = array();
-		while (list($url) = $db->fetch_row($result)) {
-			$urllist[] = $url;
-		}
-		$ok = false;
-		$add_num = 0;
-		while (!$ok) {
-			$ok = true;
-			if (in_array($name, $urllist)) {
-				$add_num++;
-				$name = $base_name . '-' . $add_num;
-				$ok = false;
-			}
-		}
-		$db->query('INSERT INTO `#^topics`(subject,url,forum_id) VALUES(\'' . $db->escape($_POST['subject']) . '\',\'' . $db->escape($name) . '\',' . $fid . ')') or error('Failed to create topic', __FILE__, __LINE__, $db->error());
-		$tid = $db->insert_id();
-		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies'], $futurebb_config['enable_bbcode']
-		));
-		$db->query('INSERT INTO `#^posts`(poster,poster_ip,content,parsed_content,posted,topic_id,disable_smilies) VALUES(' . $futurebb_user['id'] . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',\'' . $db->escape($_POST['message']) . '\',\'' . $db->escape($parsedtext) . '\',' . time() . ',' . $tid . ',' . intval(isset($_POST['hidesmilies'])) . ')') or error('Failed to make first post<br />' . $q, __FILE__, __LINE__, $db->error());
-		$pid = $db->insert_id();
-		// Let's take a break to fire any notifications from @ tags
-		if($futurebb_config['allow_notifications'] == 1) {
-			if(preg_match_all('%@([a-zA-Z0-9_\-]+)%', $parsedtext, $matches)) {
-				array_slice($matches[1], 0, 8);
-				foreach($matches[1] as $tagged_user) {
-					$tagged_res = $db->query('SELECT id, block_notif FROM `#^users` WHERE username = \'' . $tagged_user . '\'') or error('Failed to find users to tag', __FILE__, __LINE__, $db->error());
-					if($db->num_rows($tagged_res)) {
-						$tagged_id = $db->fetch_assoc($tagged_res);
-						if($tagged_id['block_notif'] == 0) {
-							$db->query('INSERT INTO `#^notifications` (type, user, send_time, contents, arguments)
-							VALUES (\'notification\', ' . intval($tagged_id['id']) . ', ' . time() . ', '. $pid . ', \'' . $futurebb_user['username'] . ',' . $db->escape($_POST['subject']) . '\')');
-						}
-					}
-				}
-			}
-		}
-		
-		// Continue posting
-		$db->query('UPDATE `#^topics` SET last_post=' . time() . ',last_post_id=' . $pid . ',first_post_id=' . $pid . ' WHERE id=' . $tid) or error('Failed to update topic info', __FILE__, __LINE__, $db->error());
-		$db->query('UPDATE `#^forums` SET last_post=' . time() . ',last_post_id=' . $pid . ',num_posts=num_posts+1,num_topics=num_topics+1 WHERE id=' . $fid) or error('Failed to update forum last post', __FILE__, __LINE__, $db->error());
-		$db->query('DELETE FROM `#^read_tracker` WHERE forum_id=' . $fid . ' AND user_id<>' . $futurebb_user['id']) or error('Failed to update read tracker', __FILE__, __LINE__, $db->error());
-		$db->query('UPDATE `#^users` SET num_posts=num_posts+1 WHERE id=' . $futurebb_user['id']) or error('Failed to update number of posts', __FILE__, __LINE__, $db->error());
-		
-		update_search_index($pid,$_POST['message']);
-		
-		redirect($base_config['baseurl'] . '/' . $forum_info['url'] . '/' . $name);
+		$topic_url = create_topic($_POST['subject'], $_POST['message'], $futurebb_user['id'], $fid, isset($_POST['hidesmilies']));
+		redirect($base_config['baseurl'] . '/' . $forum_info['url'] . '/' . $topic_url);
 		
 		// New post
 	} else if ($dirs[2] == 'topic' && empty($errors) && !isset($_POST['preview'])) {
