@@ -22,20 +22,6 @@ $pages = array (
     'admin' => false,
     'mod' => false,
   ),
-  '/styles/default.css' => 
-  array (
-    'file' => 'css/default.css',
-    'template' => false,
-    'admin' => false,
-    'mod' => false,
-  ),
-  '/styles/embed.css' => 
-  array (
-    'file' => 'css/embed.css',
-    'template' => false,
-    'admin' => false,
-    'mod' => false,
-  ),
   '/search' => 
   array (
     'file' => 'search.php',
@@ -112,13 +98,6 @@ $pages = array (
     'admin' => false,
     'mod' => false,
   ),
-  '/styles/default.css/' => 
-  array (
-    'file' => 'css/default.css',
-    'template' => false,
-    'admin' => false,
-    'mod' => false,
-  ),
   '/search/' => 
   array (
     'file' => 'search.php',
@@ -152,14 +131,6 @@ $pages = array (
   '/admin/censoring/' => 
   array (
     'file' => 'admin/censoring.php',
-    'template' => true,
-    'admin' => true,
-    'mod' => false,
-    'nocontentbox' => true,
-  ),
-  '/admin/style/' => 
-  array (
-    'file' => 'admin/style.php',
     'template' => true,
     'admin' => true,
     'mod' => false,
@@ -327,5 +298,12 @@ $pagessubdirs = array (
     'admin' => true,
     'mod' => false,
     'nocontentbox' => true,
+  ),
+  '/styles' => 
+  array (
+    'file' => 'style.php',
+    'template' => false,
+    'admin' => false,
+    'mod' => false,
   ),
 );

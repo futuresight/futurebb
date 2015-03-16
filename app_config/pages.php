@@ -18,16 +18,6 @@ $pages = array (
     'file' => 'logout.php',
     'template' => true,
   ),
-  '/styles/default.css' => 
-  array (
-    'file' => 'css/default.css',
-    'template' => false,
-  ),
-  '/styles/embed.css' => 
-  array (
-    'file' => 'css/embed.css',
-    'template' => false,
-  ),
   '/search' => 
   array (
     'file' => 'search.php',
@@ -154,6 +144,12 @@ $pagessubdirs = array (
   '/embed' => 
   array (
     'file' => 'embed.php',
+    'template' => false,
+    'nocontentbox' => true,
+  ),
+  '/styles' => 
+  array (
+    'file' => 'style.php',
     'template' => false,
     'nocontentbox' => true,
   ),
