@@ -744,7 +744,7 @@ function rename_forum($oldid, $oldurl, $newtitle) {
 	$db->query('INSERT INTO `#^forums`(url,redirect_id) VALUES(\'' . $db->escape($oldurl) . '\',' . $oldid . ')') or error('Failed to insert redirect forum', __FILE__, __LINE__, $db->error());
 }
 
-function create_forum($category, $fname, $view, $topics, $replies) {
+function create_forum($category, $fname, $view, $topics, $replies, $sort = 0) {
 	global $db;
 	//make new forum
 	$base_name = URLEngine::make_friendly($fname);
@@ -767,5 +767,5 @@ function create_forum($category, $fname, $view, $topics, $replies) {
 			$ok = false;
 		}
 	}
-	$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($fname) . '\',' . intval($category) . ',0,\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new category', __FILE__, __LINE__, $db->error());
+	$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($fname) . '\',' . intval($category) . ',' . intval($sort) . ',\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new category', __FILE__, __LINE__, $db->error());
 }

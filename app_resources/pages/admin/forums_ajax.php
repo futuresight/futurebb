@@ -111,6 +111,8 @@ if (isset($_POST['form_sent'])) {
 			}
 		}
 		foreach ($_POST['new_forum'] as $key => $forum_name) {
+			create_forum(intval($_POST['new_forum_cat'][$key]), $forum_name, $view, $topics, $replies, intval($_POST['sort_order'][$key]));
+			/*
 			//make new forum
 			$base_name = URLEngine::make_friendly($forum_name);
 			$name = $base_name;
@@ -136,7 +138,7 @@ if (isset($_POST['form_sent'])) {
 			if (isset($cat_mappings[$cat_id])) {
 				$cat_id = $cat_mappings[$cat_id];
 			}
-			$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($forum_name) . '\',' . $cat_id . ',' . intval($_POST['sort_order'][$key]) . ',\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new forum', __FILE__, __LINE__, $db->error());
+			$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($forum_name) . '\',' . $cat_id . ',' . intval($_POST['sort_order'][$key]) . ',\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new forum', __FILE__, __LINE__, $db->error());*/
 		}
 	}
 	
