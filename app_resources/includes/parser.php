@@ -51,7 +51,7 @@ abstract class BBCodeController {
 		
 		// Format @username into tags
 		if($futurebb_config['allow_notifications'] == 1) {
-			$text = preg_replace('%\s@([a-zA-Z0-9_\-]+)%', '<span class="usertag">@$1</span>', $text);
+			$text = preg_replace('%(\s|^)@([a-zA-Z0-9_\-]+)%', '<span class="usertag">@$2</span>', $text);
 		}
 		
 		//run the bbcode parser with the items entered into the array at the beginning of this function
@@ -65,6 +65,40 @@ abstract class BBCodeController {
 		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_replace', $text); //put [code] tags back
 		
 		$text = self::add_line_breaks($text);
+		
+		//make the @username into links where applicable
+		$at_usernames = array();
+		$text = preg_replace_callback('%<span class="usertag">@([a-zA-Z0-9_\-]+)</span>%', function($matches) use(&$at_usernames) {
+			if (in_array($matches[1], $at_usernames)) {
+				$return = array_search($matches[1], $at_usernames);
+			} else {
+				$at_usernames[] = $matches[1];
+				$return = sizeof($at_usernames) - 1;
+			}
+			return '<span class="usertag">' . $return . '</span>';
+		}, $text);
+		
+		if (!empty($at_usernames)) {
+			$at_usernames_safe = array();
+			foreach ($at_usernames as $username) {
+				$at_usernames_safe[] = '\'' . $db->escape(strtolower($username)) . '\'';
+			}
+			$returned_usernames = array();
+			$result = $db->query('SELECT LOWER(username) FROM `#^users` WHERE LOWER(username) IN(' . implode(',', $at_usernames_safe) . ')') or enhanced_error('Failed to validate usernames', true);
+			while (list($username) = $db->fetch_row($result)) {
+				$returned_usernames[] = $username;
+			}
+			$text = preg_replace_callback('%<span class="usertag">(\d+)</span>%', function($matches) use($at_usernames, $returned_usernames) {
+				global $base_config;
+				$req_username = $at_usernames[$matches[1]];
+				if (in_array(strtolower($req_username), $returned_usernames)) {
+					$return = '<a href="' . $base_config['baseurl'] . '/users/' . $req_username . '">@' . $req_username . '</a>';
+				} else {
+					$return = '@' . $req_username;
+				}
+				return '<span class="usertag">' . $return . '</span>';
+			}, $text);
+		}
 		
 		//handle list tags last, they're weird
 		$text = self::handle_list_tags($text);

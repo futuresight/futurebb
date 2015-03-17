@@ -19,7 +19,7 @@ if (isset($_POST['form_sent'])) {
 	if (!preg_match('%^(.*?)@(.*?)\.(.*?)$%', $_POST['email'])) {
 		$errors[] = translate('bademail');
 	}
-	$result = $db->query('SELECT 1 FROM `#^users` WHERE username=\'' . $db->escape($_POST['username']) . '\'') or error('Failed to check for duplicate users', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT 1 FROM `#^users` WHERE LOWER(username)=\'' . $db->escape(strtolower($_POST['username'])) . '\'') or error('Failed to check for duplicate users', __FILE__, __LINE__, $db->error());
 	if ($db->num_rows($result)) {
 		$errors[] = translate('duplicateuser');
 	}
