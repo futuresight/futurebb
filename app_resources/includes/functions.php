@@ -486,6 +486,41 @@ abstract class ExtensionConfig {
 			}
 		}
 	}
+	static function run_hooks($event, $args = array()) {
+		static $hook_list;
+		
+		//a "hook" is a function that runs on a certain event - this functionality is designed for extensions to integrate more easily
+		
+		if (!isset($hook_list)) {
+			//populate hook list
+			$handle = opendir(FORUM_ROOT . '/app_config/extensions');
+			while ($ext_id = readdir($handle)) {
+				if ($ext_id != '.' && $ext_id != '..' && file_exists(FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/hooks.php')) {
+					//the hooks file looks something like $hooks['event'][] = function() {}
+					include FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/hooks.php';
+					if (isset($hooks)) {
+						foreach ($hooks as $event_name => $event_list) {
+							if (!isset($hook_list[$event_name])) {
+								$hook_list[$event_name] = array();
+							}
+							foreach ($event_list as $function) {
+								$hook_list[$event_name][] = $function;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		foreach ($hook_list[$event] as $function) {
+			//run each function associated with the event; stop if any of them return false
+			//the args are sent in one array
+			if (!$function($args)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
 
 function translate() {
