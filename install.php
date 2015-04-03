@@ -1041,7 +1041,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$page = 'adminacc';
 		$install_pages['brdtitle'] = false;
 		$error = 'pwdmismatch';
-	} else if (strlen($_POST['adminusername']) < 4 || !check_input($_POST['adminusername'], array('_', '-'))) {
+	} else if (strlen($_POST['adminusername']) < 4 || !check_username($_POST['adminusername'])) {
 		$install_pages['adminacct'] = true;
 		$page = 'adminacc';
 		$install_pages['brdtitle'] = false;

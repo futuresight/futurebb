@@ -34,12 +34,9 @@ if (isset($_POST['form_sent'])) {
 	if (in_array($_POST['password1'], $common)) {
 		$errors[] = translate('commonpass');
 	}
-	for ($i = 0; $i < strlen($_POST['username']); $i++) {
-		$char = $_POST['username']{$i};
-		$allowed_chars = array('-','_');
-		if (!ctype_alnum($char) && !in_array($char, $allowed_chars)) {
-			$errors[] = translate('badusername', htmlspecialchars($char));
-		}
+	unset($common); //unset the variable to save memory
+	if (!check_username($_POST['username'])) {
+		$errors[] = translate('badusername', htmlspecialchars($char));
 	}
 	$result = $db->query('SELECT 1 FROM `#^users` WHERE registration_ip=\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\' AND registered>' . (time() - 60 * 60 * 2)) or error('Failed to check for recent registrations from this IP', __FILE__, __LINE__, $db->error());
 	if ($db->num_rows($result)) {
