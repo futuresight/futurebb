@@ -1,9 +1,10 @@
 <?php
-//A note for whomever is looking at the code:
-//I know this file is called forums_ajax.php, even though it does not use AJAX
-//There is a reason for this. When this page was originally conceptualized, it was going to use AJAX to allow saving in real-time without submitting the form.
-//This is still planned for version 1.3, but for now it is a JS-powered page that submits like a normal form.
-//-Jacob G.
+// Welcome to the AJAX-based forum editor. Starting in version 1.3, this is fully AJAX-capable.
+// A note for whomever is looking at the code:
+// This page originally was just JS editing with saving via a standard form submission. The AJAX was entirely retrofitted.
+// As a result, the retrofitted AJAX may look a little weird.
+// - Jacob G.
+
 // Send no-cache headers
 header('Expires: Mon, 1 Jan 1990 00:00:00 GMT');
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
@@ -423,8 +424,50 @@ if (isset($_POST['form_sent'])) {
 				newWin.close();
 			}
 		} else {
-			alert('You have modified a forum or already have one open for editing. Please refresh the page and then try again.');
+			alert('<?php echo translate('forumalreadyopen'); ?>');
 		}
+	}
+	
+	function ajaxSave() {
+		//save via AJAX
+		var form = document.getElementById('theform');
+		var formStr = collectFormData(form).join('&');
+		
+		if (window.XMLHttpRequest) {
+			req = new XMLHttpRequest();
+		} else {
+			req = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		req.open("POST", '<?php echo $base_config['baseurl']; ?>/admin/forums/enhanced', true);
+		req.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
+		req.send(formStr);
+		
+		req.onreadystatechange = function() {
+			if (req.readyState==4 && req.status==200) {
+				window.onbeforeunload = function() {};
+				alert('Saved!');
+				document.getElementById('submitBox').style.display = 'none';
+			} else {
+				//failure
+			}
+		 }
+	}
+	
+	//recursive function to collect all form
+	function collectFormData(form) {
+		var result = [];
+		if (form.name != null && form.name != 'item' && form.name != '') {
+			//it has a name, so throw it on
+			result.push(encodeURIComponent(form.name) + '=' + encodeURIComponent(form.value));
+		}
+		if (form.hasChildNodes) {
+			//it has children
+			var children = form.childNodes;
+			for (id in children) {
+				result = result.concat(collectFormData(children[id]));
+			}
+		}
+		return result;
 	}
 	//]]>
 	</script>
@@ -461,7 +504,7 @@ if (isset($_POST['form_sent'])) {
 				}
 				?>
 			</div>
-            <p id="submitBox" style="display:none"><input type="submit" value="Save" name="form_sent" onclick="return prepareSubmit();" /></p>
+            <p id="submitBox" style="display:none"><input type="submit" value="Save" name="form_sent" onclick="ajaxSave(); return false;" /></p>
     	</form>
     </div>
 </div>
