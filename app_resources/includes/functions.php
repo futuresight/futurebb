@@ -292,7 +292,10 @@ abstract class LoginController {
 	
 	static function LoadNotifications() {
 		// Select notifications from the database and put them into the user variable
-		global $futurebb_user, $db, $base_config;
+		global $futurebb_user, $db, $base_config, $futurebb_config;
+		if ($futurebb_config['bbcode_privatemsg']) {
+			include_once FORUM_ROOT . '/app_resources/includes/parser.php';
+		}
 		$futurebb_user['notifications'] = array();
 		// The following is the standard format for the array containing user notifications
 		// (string $type, int $send_time, string $contents)
@@ -311,10 +314,20 @@ abstract class LoginController {
 		while ($notifs_raw = $db->fetch_assoc($result)) {
 			$sender = '';
 			if($notifs_raw['type'] == 'warning') {
-				$contents_raw = translate('user_sent_warning', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($notifs_raw['arguments']) . '">' . htmlspecialchars($notifs_raw['arguments']) . '</a>') . '<br />' . $notifs_raw['contents'];
+				$contents_raw = translate('user_sent_warning', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($notifs_raw['arguments']) . '">' . htmlspecialchars($notifs_raw['arguments']) . '</a>') . '<br />';
+				if ($futurebb_config['bbcode_privatemsg']) {
+					$contents_raw .= BBCodeController::parse_msg($notifs_raw['contents'], true, false, true);
+				} else {
+					$contents_raw .= htmlspecialchars($notifs_raw['contents']);
+				}
 				$sender = $notifs_raw['arguments'];
 			} elseif($notifs_raw['type'] == 'msg') {
-				$contents_raw = translate('user_sent_msg', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($notifs_raw['arguments']) . '">' . htmlspecialchars($notifs_raw['arguments']) . '</a>') . '<br />' . $notifs_raw['contents'];
+				$contents_raw = translate('user_sent_msg', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($notifs_raw['arguments']) . '">' . htmlspecialchars($notifs_raw['arguments']) . '</a>') . '<br />';
+				if ($futurebb_config['bbcode_privatemsg']) {
+					$contents_raw .= BBCodeController::parse_msg($notifs_raw['contents'], true, false, true);
+				} else {
+					$contents_raw .= htmlspecialchars($notifs_raw['contents']);
+				}
 				$sender = $notifs_raw['arguments'];
 			} elseif($notifs_raw['type'] == 'notification') {
 				$parts = explode(',', $notifs_raw['arguments'], 2);

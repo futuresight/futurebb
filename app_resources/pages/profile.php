@@ -8,12 +8,23 @@ if (!isset($dirs[3])) {
 }
 translate('<addfile>', 'profile');
 function PMBox($preload = '') {
-	global $futurebb_config, $futurebb_user, $cur_user, $base_config, $dirs;
+	global $futurebb_config, $futurebb_user, $cur_user, $base_config, $dirs, $pm_errors;
 	// Private messaging
 	if(($futurebb_config['allow_privatemsg'] == 1 && $futurebb_user['id'] != 0 && $futurebb_user['id'] != $cur_user['id'] && $cur_user['block_pm'] == 0) || $futurebb_user['g_mod_privs']) {
+		if (isset($pm_errors) && !empty($pm_errors) && isset($_POST['pm_text'])) {
+			//if the message didn't send because of an error, show it
+			$preload = $_POST['pm_text'];
+		}
 		echo '<h3>' . translate('sendPM') . '</h3>';
-		echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '" method="post" enctype="multipart/form-data">
-		<p><textarea name="pm_text" rows="5" cols="50">' . htmlspecialchars($preload) . '</textarea><br />
+		echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '" method="post" enctype="multipart/form-data">';
+		if (isset($pm_errors) && !empty($pm_errors)) {
+			echo '<p>' . translate('errordesc') . '<ul>';
+			foreach ($pm_errors as $val) {
+				echo '<li>' . $val . '</li>';
+			}
+			echo '</ul></p>';
+		}
+		echo '<p><textarea name="pm_text" rows="5" cols="50">' . htmlspecialchars($preload) . '</textarea><br />
 		<input name="pm_sent" type="submit" value="' . translate('send') . '" />';
 		if($futurebb_user['g_mod_privs']) {
 			echo '<input type="checkbox" name="send_warning" id="send_warning" /> <label for="send_warning">' . translate('sendas_admin') . '</label>';
@@ -47,10 +58,22 @@ if ($cur_user['username'] != $user) {
 $page_title = $user . ' - Users';
 
 if(isset($_POST['pm_sent'])) {
-	// Send PM / Warning to user
-	$send_type = 'msg';
-	if(isset($_POST['send_warning'])) $send_type = 'warning';
-	$db->query('INSERT INTO `#^notifications` (type, user, send_time, contents, arguments) VALUES (\'' . $send_type . '\', ' . $cur_user['id'] . ', ' . time() . ', \'' . $db->escape(htmlspecialchars($_POST['pm_text'])) . '\', \'' . $db->escape($futurebb_user['username']) .'\')') or enhanced_error('Failed to send PM', true);
+	if (!$cur_user['block_pm']) {
+		// Send PM / Warning to user
+		$send_type = 'msg';
+		if(isset($_POST['send_warning'])) {
+			$send_type = 'warning';
+		}
+		//check the message
+		include_once FORUM_ROOT . '/app_resources/includes/parser.php';
+		$pm_errors = array();
+		if ($futurebb_config['bbcode_privatemsg']) {
+			BBcodeController::error_check($_POST['pm_text'], $pm_errors);
+		}
+		if (empty($pm_errors)) {
+			$db->query('INSERT INTO `#^notifications` (type, user, send_time, contents, arguments) VALUES (\'' . $send_type . '\', ' . $cur_user['id'] . ', ' . time() . ', \'' . $db->escape($_POST['pm_text']) . '\', \'' . $db->escape($futurebb_user['username']) .'\')') or enhanced_error('Failed to send PM', true);
+		}
+	}
 }
 ?>
 <div class="container">
