@@ -4,7 +4,6 @@ LoginController::LoadNotifications();
 if (isset($_GET['nopage'])) {
 	ob_end_clean();
 }
-include_once FORUM_ROOT . '/app_resources/includes/parser.php';
 ?>
 
 <table<?php if (!isset($_GET['nopage'])) echo ' width="100%"'; ?> border="0">
