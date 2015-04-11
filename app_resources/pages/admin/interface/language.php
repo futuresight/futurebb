@@ -35,15 +35,7 @@ if (isset($_POST['delete_id'])) {
 	$q->commit();
 	
 	//clear the cache
-	$maindir = FORUM_ROOT . '/app_config/cache/language';
-	if (file_exists($maindir) && is_dir($maindir)) {
-		$handle = opendir($maindir);
-		while ($file = readdir($handle)) {
-			if ($file != '.' && $file != '..') {
-				unlink($maindir . '/' . $file);
-			}
-		}
-	}
+	CacheEngine::CacheLanguage();
 	redirect($base_config['baseurl'] . '/admin/interface/language');
 }
 if (isset($_POST['form_sent'])) {
@@ -81,15 +73,7 @@ if (isset($_POST['form_sent'])) {
 			}
 		}
 		//clear the cache
-		$maindir = FORUM_ROOT . '/app_config/cache/language';
-		if (file_exists($maindir) && is_dir($maindir)) {
-			$handle = opendir($maindir);
-			while ($file = readdir($handle)) {
-				if ($file != '.' && $file != '..') {
-					unlink($maindir . '/' . $file);
-				}
-			}
-		}
+		CacheEngine::CacheLanguage();
 		redirect($base_config['baseurl'] . '/admin/interface/language');
 		return;
 	} else {
