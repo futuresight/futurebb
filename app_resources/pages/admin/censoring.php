@@ -29,7 +29,20 @@ if (isset($_GET['download'])) {
 	$db->close();
 	die;
 }
+if (isset($_POST['form_sent_add'])) {
+	//add a new entry
+	$censoring = base64_decode($futurebb_config['censoring']);
+	$entries = explode("\n", $censoring);
+	$entries[] = $_POST['newfind'] . chr(1) . $_POST['newreplace'];
+	foreach ($entries as $key => $val) {
+		if ($val == '' || $val == chr(1)) {
+			unset($entries[$key]);
+		}
+	}
+	set_config('censoring', base64_encode(implode("\n", $entries)));
+}
 if (isset($_POST['form_sent'])) {
+	//update/delete old entries
 	$entries = array();
 	foreach ($_POST['find'] as $key => $find) {
 		if ($find == '') {
@@ -77,9 +90,6 @@ if (isset($_POST['form_sent_upload']) && is_uploaded_file($_FILES['dict']['tmp_n
 }
 $censoring = base64_decode($futurebb_config['censoring']);
 $entries = explode("\n", $censoring);
-if (isset($_POST['add_new'])) {
-	$entries[] = '';
-}
 ?>
 <div class="container">
 	<?php make_admin_menu(); ?>
@@ -87,19 +97,33 @@ if (isset($_POST['add_new'])) {
 		<h2><?php echo translate('censoring'); ?></h2>
 		<p><?php echo translate('censorintro'); ?></p>
 		<form action="<?php echo $base_config['baseurl']; ?>/admin/censoring" method="post" enctype="multipart/form-data">
-			<p><input type="submit" name="add_new" value="<?php echo translate('newword'); ?>" /></p>
+			<h3><?php echo translate('newword'); ?></h3>
+			<table border="0">
+				<tr><th><?php echo translate('find'); ?></th><th><?php echo translate('replacewith'); ?></th></tr>
+				<tr><td><input type="text" name="newfind" /></td><td><input type="text" name="newreplace" /></td></tr>
+			</table>
+			<p><input type="submit" name="form_sent_add" value="<?php echo translate('submit'); ?>" /></p>
+		</form>
+		<form action="<?php echo $base_config['baseurl']; ?>/admin/censoring" method="post" enctype="multipart/form-data">
+			<h3><?php echo translate('existingwords'); ?></h3>
 			<table border="0">
 				<tr>
 					<th><?php echo translate('find'); ?></th>
 					<th><?php echo translate('replacewith'); ?></th>
 				</tr>
-			<?php foreach ($entries as $key => $val) {
-				$parts = explode(chr(1), $val);
-				?>
-				<tr>
-					<td><input type="text" name="find[<?php echo $key; ?>]" value="<?php if (isset($parts[0])) echo $parts[0]; ?>" /></td>
-					<td><input type="text" name="replace[<?php echo $key; ?>]" value="<?php if (isset($parts[1])) echo $parts[1]; ?>" /></td>
-			<?php } ?>
+			<?php
+			if (sizeof($entries) > 1 || ($entries[0] != '' && $entries[0] != chr(1))) {
+				foreach ($entries as $key => $val) {
+					$parts = explode(chr(1), $val);
+					?>
+					<tr>
+						<td><input type="text" name="find[<?php echo $key; ?>]" value="<?php if (isset($parts[0])) echo $parts[0]; ?>" /></td>
+						<td><input type="text" name="replace[<?php echo $key; ?>]" value="<?php if (isset($parts[1])) echo $parts[1]; ?>" /></td>
+					</tr>
+				<?php 
+				} 
+			}
+			?>
 			</table>
 			<p><input type="submit" name="form_sent" value="<?php echo translate('update'); ?>" /></p>
 		</form>

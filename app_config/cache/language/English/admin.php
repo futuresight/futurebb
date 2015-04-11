@@ -195,4 +195,6 @@ $lang_addl = array (
   'dateformat' => 'Date format',
   'timeformat' => 'Time format',
   'basegroupon' => 'Base new group on:',
+  'forumalreadyopen' => 'You have modified a forum or already have one open for editing. Please refresh the page and then try again.',
+  'existingwords' => 'Existing words',
 );
