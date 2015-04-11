@@ -44,6 +44,9 @@ if (isset($_POST['form_sent_add'])) {
 if (isset($_POST['form_sent'])) {
 	//update/delete old entries
 	$entries = array();
+	foreach ($_POST['delete'] as $key => $val) {
+		$_POST['find'][$key] = '';
+	}
 	foreach ($_POST['find'] as $key => $find) {
 		if ($find == '') {
 			unset($_POST['find'][$key]);
@@ -110,6 +113,7 @@ $entries = explode("\n", $censoring);
 				<tr>
 					<th><?php echo translate('find'); ?></th>
 					<th><?php echo translate('replacewith'); ?></th>
+					<th><?php echo translate('delete'); ?></th>
 				</tr>
 			<?php
 			if (sizeof($entries) > 1 || ($entries[0] != '' && $entries[0] != chr(1))) {
@@ -119,6 +123,7 @@ $entries = explode("\n", $censoring);
 					<tr>
 						<td><input type="text" name="find[<?php echo $key; ?>]" value="<?php if (isset($parts[0])) echo $parts[0]; ?>" /></td>
 						<td><input type="text" name="replace[<?php echo $key; ?>]" value="<?php if (isset($parts[1])) echo $parts[1]; ?>" /></td>
+						<td><input type="checkbox" name="delete[<?php echo $key; ?>]" /></td>
 					</tr>
 				<?php 
 				} 
