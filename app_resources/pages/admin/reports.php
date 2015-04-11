@@ -13,7 +13,6 @@ if (isset($_POST['review'])) {
 	$rid = intval(key($_POST['review']));
 	$db->query('UPDATE `#^reports` SET status=\'review\',zapped_by=' . $futurebb_user['id'] . ' WHERE id=' . $rid) or error('Failed to zap report', __FILE__, __LINE__, $db->error());
 }
-include FORUM_ROOT . '/app_resources/includes/parser.php';
 ?>
 <div class="container">
 	<?php make_admin_menu(); ?>
@@ -49,12 +48,12 @@ include FORUM_ROOT . '/app_resources/includes/parser.php';
 								case 'warning':
 									echo '<img src="' . $base_config['baseurl'] . '/static/img/msg_warning.png" alt="warning" width="22" />';
 									echo '<span class="notifications_count">#' . $cur_report['post_id'] . '</span> ';
-									echo translate('user_sent_warning', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_report['arguments']) . '">' . htmlspecialchars($cur_report['arguments']) . '</a>') . '<br />' . $cur_report['contents'];
+									echo translate('user_sent_warning', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_report['arguments']) . '">' . htmlspecialchars($cur_report['arguments']) . '</a>') . '<br />' . htmlspecialchars($cur_report['contents']);
 									break;
 								case 'msg':
 									echo '<img src="' . $base_config['baseurl'] . '/static/img/msg_msg.png" alt="message" width="22" />';
 									echo '<span class="notifications_count">#' . $cur_report['post_id'] . '</span> ';
-									echo translate('user_sent_msg', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_report['arguments']) . '">' . htmlspecialchars($cur_report['arguments']) . '</a>') . '<br />' . $cur_report['contents'];
+									echo translate('user_sent_msg', '<a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($cur_report['arguments']) . '">' . htmlspecialchars($cur_report['arguments']) . '</a>') . '<br />' . htmlspecialchars($cur_report['contents']);
 									break;
 								case 'notification':
 									$parts = explode(',', $cur_report['arguments'], 2);

@@ -99,7 +99,7 @@ switch ($dirs[3]) {
 		}
 		break;
 	case 'reparse_posts':
-		include FORUM_ROOT . '/app_resources/includes/parser.php';
+		include_once FORUM_ROOT . '/app_resources/includes/parser.php';
 		$per_page = 300;
 		if (!isset($_GET['start'])) {
 			$_GET['start'] = 0;
@@ -132,7 +132,7 @@ switch ($dirs[3]) {
 		header('Refresh: 1; url=' . $base_config['baseurl'] . '/admin/maintenance/reparse_posts?start=' . ($_GET['start'] + $per_page));
 		return;
 	case 'reparse_sigs':
-		include FORUM_ROOT . '/app_resources/includes/parser.php';
+		include_once FORUM_ROOT . '/app_resources/includes/parser.php';
 		$per_page = 300;
 		if (!isset($_GET['start'])) {
 			$_GET['start'] = 0;
