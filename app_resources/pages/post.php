@@ -21,8 +21,8 @@ function check_flood(&$errors) {
 		}
 	}
 }
-include FORUM_ROOT . '/app_resources/includes/parser.php';
-include FORUM_ROOT . '/app_resources/includes/search.php';
+include_once FORUM_ROOT . '/app_resources/includes/parser.php';
+include_once FORUM_ROOT . '/app_resources/includes/search.php';
 if ($dirs[2] == 'forum') {
 	$result = $db->query('SELECT name,url,topic_groups FROM `#^forums` WHERE id=' . intval($dirs[3])) or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result)) {

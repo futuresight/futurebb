@@ -39,7 +39,9 @@ foreach($futurebb_user['notifications'] as $entry) {
 		default:
 			echo '<img src="' . $base_config['baseurl'] . '/static/img/msg_msg.png" alt="message" width="22" />';
 	}
-	echo '</td><td>' . $entry['contents'] . '</td>';
+	echo '</td><td>';
+	echo $entry['contents'];
+	echo '</td>';
 	echo '<td style="width: 140px;">' . user_date($entry['send_time']) . '</td>';
 	echo '<td style="width: 120px;"><a href="' . $base_config['baseurl'] . '/report/message/' . $entry['id'] . '">';
 	if($entry['type'] == 'warning') {
