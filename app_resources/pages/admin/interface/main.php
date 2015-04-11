@@ -18,6 +18,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 				case 'language':
 				case 'admin_pages':
 				case 'history':
+				case 'clearcache':
 					include FORUM_ROOT . '/app_resources/pages/admin/interface/' . $dirs[3] . '.php';
 					break;
 				default:
@@ -40,6 +41,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/language">Translation keys (nearly all text)</a></li>
 				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/admin_pages">Administration sidebar links</a></li>
 				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/history">Editing history</a></li>
+				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/clearcache">Clear entire cache</a></a>
 			</ul>
 			<?php
 		}

@@ -10,15 +10,7 @@ if (isset($_POST['add_new'])) {
 	$q->commit();
 	
 	//clear the cache
-	$maindir = FORUM_ROOT . '/app_config/cache/language';
-	if (file_exists($maindir) && is_dir($maindir)) {
-		$handle = opendir($maindir);
-		while ($file = readdir($handle)) {
-			if ($file != '.' && $file != '..') {
-				unlink($maindir . '/' . $file);
-			}
-		}
-	}
+	CacheEngine::CacheLanguage();
 	redirect($base_config['baseurl'] . '/admin/interface/language?language=' . $_POST['language'] . '&category=' . $_POST['category']);
 }
 
