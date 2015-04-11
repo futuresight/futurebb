@@ -33,6 +33,7 @@ if(isset($_POST['form_sent'])) {
 		'rules'					=> 'string',
 		'default_language'		=> 'string',
 		'allow_privatemsg'		=> 'bool',
+		'bbcode_privatemsg'		=> 'bool',
 		'allow_notifications'	=> 'bool',
 		'online_timeout'		=> 'int',
 		'topics_per_page'		=> 'int',
@@ -133,6 +134,10 @@ if(isset($_POST['form_sent'])) {
 			<tr>
 				<th><?php echo translate('allowPM'); ?></th>
 				<td><input type="checkbox" name="config[allow_privatemsg]" <?php if($futurebb_config['allow_privatemsg'] == 1) echo 'checked="checked"'; ?> /></td>
+			</tr>
+			<tr>
+				<th><?php echo translate('bbcodeinPM'); ?></th>
+				<td><input type="checkbox" name="config[bbcode_privatemsg]" <?php if($futurebb_config['bbcode_privatemsg'] == 1) echo 'checked="checked"'; ?> /></td>
 			</tr>
 			<tr>
 				<th><?php echo translate('allownotifs'); ?></th>
