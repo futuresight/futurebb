@@ -31,6 +31,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 				while ($cur_ban = $db->fetch_assoc($result)) {
 					echo '<tr><td>' . htmlspecialchars($cur_ban['username']) . '</td><td>' . $cur_ban['ip'] . '</td><td>' . htmlspecialchars($cur_ban['message']) . '</td><td>' . ($cur_ban['expires'] == null ? translate('never') : user_date($cur_ban['expires'])) . '</td><td><a href="' . $base_config['baseurl'] . '/admin/bans/edit/' . $cur_ban['id'] . '">' . translate('edit') . '</a> / <a href="' . $base_config['baseurl'] . '/admin/bans/delete/' . $cur_ban['id'] . '">' . translate('delete') . '</a></td></tr>';
 				}
+				$db->query('DELETE FROM `#^bans` WHERE expires<=' . time()) or enhanced_error('Failed to delete old bans', true); //delete any bans that have already expired
 				?>
 			</table>
 		<?php

@@ -1,4 +1,5 @@
 <?php
+$db->query('DELETE FROM `#^bans` WHERE expires<=' . time()) or enhanced_error('Failed to delete old bans', true); //delete any bans that have already expired
 if ($ban_type == 'ban') {
 	$page_title = translate('banned');
 	$result = $db->query('SELECT message,expires FROM `#^bans` WHERE (username=\'' . $db->escape($futurebb_user['username']) . '\' OR ip=\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\') AND (expires>' . time() . ' OR expires IS NULL)') or error('Failed to check for bans', __FILE__, __LINE__, $db->error());
