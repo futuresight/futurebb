@@ -11,7 +11,7 @@ if (!$futurebb_user['g_admin_privs'] && !$futurebb_user['g_mod_privs'] && ($cur_
 }
 $can_edit_subject = ($cur_post['first_post_id'] == $pid); //only allow subject editing if the first post
 $breadcrumbs = array('Index' => '', $cur_post['forum_name'] => $cur_post['furl'], $cur_post['subject'] => $cur_post['furl'] . '/' . $cur_post['turl'], 'Edit post' => '!nourl!');
-include FORUM_ROOT . '/app_resources/includes/parser.php';
+include_once FORUM_ROOT . '/app_resources/includes/parser.php';
 include FORUM_ROOT . '/app_resources/includes/search.php';
 if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	$errors = array();

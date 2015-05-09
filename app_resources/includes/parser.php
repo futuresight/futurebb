@@ -43,11 +43,11 @@ abstract class BBCodeController {
 		
 		$text = htmlspecialchars($text); //clear out any funny business
 		
+		$text = preg_replace_callback('%?\[code\](.*?)\[/code\]?%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
+		
 		//links and images (these can't be grouped with the rest because they use a different function
 		$text = preg_replace_callback('%\[url=?(.*?)\](.*?)\[/url\]%s', 'self::handle_url_tag', $text);
 		$text = preg_replace_callback('%\[img\](.*?)\[/img\]%s', 'self::handle_img_tag', $text);
-
-		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
 		
 		// Format @username into tags
 		if($futurebb_config['allow_notifications'] == 1) {
@@ -180,14 +180,14 @@ abstract class BBCodeController {
 				$i1 = 0;
 			}
 			$i1++;
-			$code_matches[$i1] = $text;
+			$code_matches[$i1] = trim($text);
 			return '[code]' . $i1 . '[/code]';
 		} else if ($mode == 2) {
 			if (!isset($i2)) {
 				$i2 = 0;
 			}
 			$i2++;
-			return '<div class="quotebox" style="font-family:Courier">' . $code_matches[$i2] . '</div>';
+			return '</p><div class="quotebox" style="font-family:Courier">' . $code_matches[$i2] . '</div><p>';
 		} else {
 			return '';
 		}
