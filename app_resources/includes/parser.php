@@ -43,7 +43,7 @@ abstract class BBCodeController {
 		
 		$text = htmlspecialchars($text); //clear out any funny business
 		
-		$text = preg_replace_callback('%?\[code\](.*?)\[/code\]?%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
+		$text = preg_replace_callback('%\s?\[code\](.*?)\[/code\]\s?%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
 		
 		//links and images (these can't be grouped with the rest because they use a different function
 		$text = preg_replace_callback('%\[url=?(.*?)\](.*?)\[/url\]%s', 'self::handle_url_tag', $text);
@@ -62,7 +62,7 @@ abstract class BBCodeController {
 			self::parse_smilies($text);
 		}
 		
-		$text = preg_replace_callback('%\[code\](.*?)\[/code\]%msi', 'self::handle_code_tag_replace', $text); //put [code] tags back
+		$text = preg_replace_callback('%\s?\[code\](.*?)\[/code\]\s?%msi', 'self::handle_code_tag_replace', $text); //put [code] tags back
 		
 		$text = self::add_line_breaks($text);
 		
