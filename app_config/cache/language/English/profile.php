@@ -4,4 +4,5 @@ $lang_addl = array (
   'sendPM' => 'Send the user a private message',
   'sendas_admin' => 'Send as admin-issued warning',
   'pm_reply_header' => 'Replying to message at $1:',
+  'showallposts' => 'Show all posts',
 );

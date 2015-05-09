@@ -240,6 +240,9 @@ if(isset($_POST['pm_sent'])) {
 					</tr>
 				</table>
 				<p><?php echo translate('dateregistered'); ?>: <?php echo user_date($cur_user['registered']); ?> (IP: <a href="<?php echo $base_config['baseurl']; ?>/admin/ip_tracker/?ip=<?php echo $cur_user['registration_ip']; ?>"><?php echo $cur_user['registration_ip']; ?></a>)</p>
+				<?php
+				echo '<p><a href="' . $base_config['baseurl'] . '/search?query=&author=' . rawurlencode(htmlspecialchars($cur_user['username'])) . '&forum=0">' . translate('showallposts') . '</a></p>';
+				?>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('save'); ?>" /></p>
 				<?php
 				echo '</form>';
