@@ -42,6 +42,10 @@ if (isset($_POST['form_sent'])) {
 	if ($db->num_rows($result)) {
 		$errors[] = translate('dupeipreg');
 	}
+	$hook_result = ExtensionConfig::run_hooks('review-registration', array('username' => $_POST['username'], 'password' => $_POST['password']));
+	if (!$hook_result && empty($errors)) {
+		$errors[] = translate('unknownerror');
+	}
 	if (empty($errors)) {
 		if ($futurebb_config['verify_registrations']) {
 			$access_code = '\'' . $db->escape(md5($_POST['email'] . time() . rand(1,1000))) . '\'';
