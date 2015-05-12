@@ -423,6 +423,18 @@ if (isset($_POST['form_sent'])) {
 			window.onunload = function() {
 				newWin.close();
 			}
+			newWin.onsubmit = function() {
+				//edits were made in that window, so reload the page
+				if (document.getElementById('submitBox').style.display == 'none') {
+					window.location.reload();
+				} else {
+					var shouldReload = confirm('<?php echo translate('otherforumeditsconfirmrefresh'); ?>');
+					if (shouldReload) {
+						window.onbeforeonload = function() {};
+						window.location.reload();
+					}
+				}
+			}
 		} else {
 			alert('<?php echo translate('forumalreadyopen'); ?>');
 		}

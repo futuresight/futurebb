@@ -198,4 +198,5 @@ $lang_addl = array (
   'forumalreadyopen' => 'You have modified a forum or already have one open for editing. Please refresh the page and then try again.',
   'existingwords' => 'Existing words',
   'bbcodeinPM' => 'BBCode in private messages',
+  'otherforumeditsconfirmrefresh' => 'Edits to a forum have been submitted in another window. Do you want to refresh this page to reflect those changes?',
 );
