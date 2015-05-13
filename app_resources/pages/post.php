@@ -64,6 +64,20 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	if ($_POST['message'] == '')
 		$errors[] = translate('blankmsg');
 	
+	$continue_posting = ExtensionConfig::run_hooks('check-post', 
+		array(
+			'type' => $dirs[2] == 'forum' ? 'topic' : 'reply',
+			'subject' => isset($_POST['subject']) ? $_POST['subject'] : '',
+			'message' => $_POST['message'],
+			'topic_id' => $dirs[3] == 'topic' ? intval($dirs[2]) : '',
+			'forum_id' => $dirs[3] == 'forum' ? intval($dirs[2]) : ''
+		)
+	); 
+	
+	if (!$continue_posting && empty($errors)) {
+		$errors[] = translate('unknownerror');
+	}
+	
 	// New post + new topic
 	if ($dirs[2] == 'forum' && empty($errors) && !isset($_POST['preview'])) {
 		$fid = intval($dirs[3]);
@@ -73,7 +87,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		// New post
 	} else if ($dirs[2] == 'topic' && empty($errors) && !isset($_POST['preview'])) {
 		$tid = intval($dirs[3]);
-		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), $futurebb_confog['enable_bbcode']);
+		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), $futurebb_config['enable_bbcode']);
 		$db->query('INSERT INTO `#^posts`(poster,poster_ip,content,parsed_content,posted,topic_id,disable_smilies) VALUES(' . $futurebb_user['id'] . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',\'' . $db->escape($_POST['message']) . '\',\'' . $db->escape($parsedtext) . '\',' . time() . ',' . $tid . ',' . intval(isset($_POST['hidesmilies'])) . ')') or error('Failed to make first post', __FILE__, __LINE__, $db->error());
 		$pid = $db->insert_id();
 		
