@@ -507,6 +507,7 @@ abstract class ExtensionConfig {
 		if (!isset($hook_list)) {
 			//populate hook list
 			$handle = opendir(FORUM_ROOT . '/app_config/extensions');
+			$hook_list = array();
 			while ($ext_id = readdir($handle)) {
 				if ($ext_id != '.' && $ext_id != '..' && file_exists(FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/hooks.php')) {
 					//the hooks file looks something like $hooks['event'][] = function() {}
@@ -525,11 +526,13 @@ abstract class ExtensionConfig {
 			}
 		}
 		
-		foreach ($hook_list[$event] as $function) {
-			//run each function associated with the event; stop if any of them return false
-			//the args are sent in one array
-			if (!$function($args)) {
-				return false;
+		if (isset($hook_list[$event])) {
+			foreach ($hook_list[$event] as $function) {
+				//run each function associated with the event; stop if any of them return false
+				//the args are sent in one array
+				if (!$function($args)) {
+					return false;
+				}
 			}
 		}
 		return true;

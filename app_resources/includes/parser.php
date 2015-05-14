@@ -293,7 +293,7 @@ abstract class BBCodeController {
 			}
 		}
 		if (empty(self::$tags)) {
-			self::$tags = array('b','i','u','s','color','colour','url','img','quote','code','list','\*');
+			self::$tags = array('b','i','u','s','color','colour','url','img','quote','code','list','\*', 'table', 'tr', 'td');
 		}
 		if (preg_match_all('%\[(' . implode('|', self::$tags) . ')=(.*?)(\[|\])\]%', $text, $matches)) {
 			$errors[] = translate('bracketparam', $matches[1][0]);
@@ -302,8 +302,9 @@ abstract class BBCodeController {
 		
 		//parsing rules
 		$no_nest_tags = array('img');
-		$block_tags = array('quote', 'code', 'list');
+		$block_tags = array('quote', 'code', 'list', 'table', 'tr');
 		$inline_tags = array('b', 'i', 'u', 's', 'color', 'colour', 'url', 'img', '\*');
+		$nest_only = array('table' => array('tr'), 'tr' => array('td', 'th')); //tags that can only have a specific set of subtags
 		
 		$bbcode_parts = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY); //this regular expression was copied from FluxBB. However, everything used to parse it is completely original
 		//split the message into tags and check syntax
@@ -331,6 +332,10 @@ abstract class BBCodeController {
 				if ($last_key > 0 && in_array($open_tags[$last_key - 1], $inline_tags) && in_array($matches[1], $block_tags)) {
 					$errors[] = translate('blockininline', $matches[1], $open_tags[$last_key - 1]);
 				}
+				//check for the tags that only allow specific tags directly inside them
+				if ($last_key > 0 && array_key_exists($open_tags[$last_key - 1], $nest_only) && !in_array($open_tags[$last_key], $nest_only[$open_tags[$last_key - 1]])) {
+					$errors[] = translate('specificnestingerror', $matches[1], $open_tags[$last_key - 1]);
+				}
 				//check if there is any bbcode inside a tag which can't nest
 				if ($last_key > 0 && in_array($open_tags[$last_key - 1], $no_nest_tags)) {
 					$errors[] = translate('nonesting', $open_tags[$last_key - 1]);
@@ -341,6 +346,7 @@ abstract class BBCodeController {
 						$errors[] = translate('toomanynestedquotes', $futurebb_config['max_quote_depth']);
 					}
 				}
+				
 				$last_key++;
 			}
 		}
