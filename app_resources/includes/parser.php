@@ -102,6 +102,7 @@ abstract class BBCodeController {
 		
 		//handle list tags last, they're weird
 		$text = self::handle_list_tags($text);
+		$text = self::handle_table_tags($text);
 		
 		$text = censor($text);
 		return $text;
@@ -147,6 +148,60 @@ abstract class BBCodeController {
 					error('List parsing error: expected ' . $matches[1] . ' but had ' . $last_tag, __FILE__, __LINE__);
 				}
 			} else if (preg_match('%^\[/list\]%', $val)) {
+			}
+			$output .= $val;
+		}
+		return $output;
+	}
+	
+	static function handle_table_tags($text) {
+		//all other tags have been already parsed, so we can just look at [list] tags
+		$table_tags = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
+		//split the message into [table], [tr], [td], [th] tags and start parsing
+		$open_tags = array();
+		$output = '';
+		foreach ($table_tags as $val) {
+			if (sizeof($open_tags) != 0) {
+				//no line breaks inside tables
+				$val = str_replace('<br />', '', $val);
+			}
+			//first do tag openings
+			//here's the deal: the order MUST be: [table][tr][th/td]
+			if (sizeof($open_tags) == 0) {
+				//is it a table tag?
+				if (preg_match('%^\[table\]%', $val)) {
+					$open_tags[] = 'table';
+					$val = preg_replace('%^\[table\]%', '<table>', $val);
+				}
+			} else if (sizeof($open_tags) == 1) {
+				//is it a tr tag?
+				if (preg_match('%^\[tr\]%', $val)) {
+					$open_tags[] = 'tr';
+					$val = preg_replace('%^\[tr\]%', '<tr>', $val);
+				} else if (preg_match('%^\[/table\]%', $val)) {
+					//it might also be [/table]
+					$last_tag = array_pop($open_tags);
+					$val = preg_replace('%^\[/table\]%', '</table>', $val);
+				}
+			} else if (sizeof($open_tags) == 2) {
+				if (preg_match('%^\[(td|th)\]%', $val, $matches)) {
+					$open_tags[] = $matches[1];
+					$val = preg_replace('%^\[(td|th)\]%', '<$1>', $val);
+				} else if (preg_match('%^\[/tr\]%', $val)) {
+					//it might also be [/tr]
+					$val = preg_replace('%^\[/tr\]%', '</tr>', $val);
+					$last_tag = array_pop($open_tags);
+				}
+				
+			} else if (sizeof($open_tags) == 3) {
+				//it must be [/tr] or [/th]
+				if (preg_match('%^\[/(td|th)\]%', $val, $matches)) {
+					$last_tag = array_pop($open_tags);
+					if ($matches[1] != $last_tag) {
+						error('Tag mismatch: expected [/' . $last_tag . '] found [/' . $matches[1] . ']');
+					}
+					$val = preg_replace('%^\[/(td|th)\]%', '</$1>', $val);
+				}
 			}
 			$output .= $val;
 		}
@@ -293,7 +348,7 @@ abstract class BBCodeController {
 			}
 		}
 		if (empty(self::$tags)) {
-			self::$tags = array('b','i','u','s','color','colour','url','img','quote','code','list','\*', 'table', 'tr', 'td');
+			self::$tags = array('b','i','u','s','color','colour','url','img','quote','code','list','\*', 'table', 'tr', 'td', 'th');
 		}
 		if (preg_match_all('%\[(' . implode('|', self::$tags) . ')=(.*?)(\[|\])\]%', $text, $matches)) {
 			$errors[] = translate('bracketparam', $matches[1][0]);
@@ -303,8 +358,9 @@ abstract class BBCodeController {
 		//parsing rules
 		$no_nest_tags = array('img');
 		$block_tags = array('quote', 'code', 'list', 'table', 'tr');
-		$inline_tags = array('b', 'i', 'u', 's', 'color', 'colour', 'url', 'img', '\*');
+		$inline_tags = array('b', 'i', 'u', 's', 'color', 'colour', 'url', 'img', '\*', 'th', 'td');
 		$nest_only = array('table' => array('tr'), 'tr' => array('td', 'th')); //tags that can only have a specific set of subtags
+		$nest_forbid = array('td' => array('td', 'th'), 'th' => array('td', 'th'));
 		
 		$bbcode_parts = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY); //this regular expression was copied from FluxBB. However, everything used to parse it is completely original
 		//split the message into tags and check syntax
@@ -334,6 +390,9 @@ abstract class BBCodeController {
 				}
 				//check for the tags that only allow specific tags directly inside them
 				if ($last_key > 0 && array_key_exists($open_tags[$last_key - 1], $nest_only) && !in_array($open_tags[$last_key], $nest_only[$open_tags[$last_key - 1]])) {
+					$errors[] = translate('specificnestingerror', $matches[1], $open_tags[$last_key - 1]);
+				}
+				if ($last_key > 0 && array_key_exists($open_tags[$last_key - 1], $nest_forbid) && in_array($open_tags[$last_key], $nest_forbid[$open_tags[$last_key - 1]])) {
 					$errors[] = translate('specificnestingerror', $matches[1], $open_tags[$last_key - 1]);
 				}
 				//check if there is any bbcode inside a tag which can't nest
