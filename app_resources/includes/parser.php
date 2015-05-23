@@ -442,7 +442,7 @@ abstract class BBCodeController {
 		} else {
 			$len = 15;
 		}
-		return translate($special_notice = '' ? 'errorwaslocated' : $special_notice, $other_arg) . '<code>' . substr($text, max(array(0, $pos - 15)), $len) . '<b style="color:#A00">' . $problem . '</b>' . substr($text, $pos + strlen($problem), 15) . '</code>';
+		return translate($special_notice == '' ? 'errorwaslocated' : $special_notice, $other_arg) . '<code>' . substr($text, max(array(0, $pos - 15)), $len) . '<b style="color:#A00">' . $problem . '</b>' . substr($text, $pos + strlen($problem), 15) . '</code>';
 	}
 	
 	static function get_total_length($array, $key) {
