@@ -24,23 +24,23 @@ function check_flood(&$errors) {
 include_once FORUM_ROOT . '/app_resources/includes/parser.php';
 include_once FORUM_ROOT . '/app_resources/includes/search.php';
 if ($dirs[2] == 'forum') {
-	$result = $db->query('SELECT name,url,topic_groups FROM `#^forums` WHERE id=' . intval($dirs[3])) or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT name,url,topic_groups,archived FROM `#^forums` WHERE id=' . intval($dirs[3])) or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result)) {
 		httperror(404);
 	}
 	$forum_info = $db->fetch_assoc($result);
-	if (!strstr($forum_info['topic_groups'], '-' . $futurebb_user['group_id'] . '-')) {
+	if (!strstr($forum_info['topic_groups'], '-' . $futurebb_user['group_id'] . '-') || $cur_forum['archived']) {
 		httperror(403);
 	}
 	$page_title = translate('posttopic') . ' - ' . $forum_info['name'];
 	$breadcrumbs = array(translate('index') => '', $forum_info['name'] => $forum_info['url'], translate('posttopic') => '!nourl!');
 } else if ($dirs[2] == 'topic') {
-	$result = $db->query('SELECT t.subject,t.url,t.closed,t.deleted,f.name AS forum_name,f.url AS forum_url,f.id AS f_id,f.reply_groups FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . intval($dirs[3]) . ($futurebb_user['g_admin_privs'] ? '' : ' AND t.deleted IS NULL')) or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT t.subject,t.url,t.closed,t.deleted,f.name AS forum_name,f.url AS forum_url,f.id AS f_id,f.reply_groups,f.archived AS forum_archived FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . intval($dirs[3]) . ($futurebb_user['g_admin_privs'] ? '' : ' AND t.deleted IS NULL')) or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result)) {
 		httperror(404);
 	}
 	$cur_topic = $db->fetch_assoc($result);
-	if (!strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') || ($cur_topic['closed'] && !$futurebb_user['g_mod_privs'])) {
+	if (!strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') || ($cur_topic['closed'] && !$futurebb_user['g_mod_privs']) || ($cur_topic['forum_archived'] && !$futurebb_user['g_mod_privs'])) {
 		httperror(403);
 	}
 	$page_title = translate('postreply') . ' - ' . $cur_topic['subject'];
