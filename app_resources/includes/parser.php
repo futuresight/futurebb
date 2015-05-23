@@ -417,21 +417,32 @@ abstract class BBCodeController {
 			}
 		}
 		if (sizeof($open_tags) > 0) {
+			$location_notices = array();
 			foreach ($open_tags as &$val) {
+				//find the last occurrence of this tag
+				$reverse_parts = array_reverse($bbcode_parts);
+				foreach ($reverse_parts as $partkey => $part) {
+					if (strpos($part, '[' . $val) === 0) {
+						$location_notices[] = self::highlight_error($text, $part, $bbcode_parts, sizeof($bbcode_parts) - $partkey - 1, 'tagwasopened', $val);
+						break;
+					}
+				}
+				//bold this so it goes on the error list
 				$val = '<b>[' . $val . ']</b>';
 			}
 			$errors[] = translate('tagsnotclosed', implode(', ', $open_tags));
+			$errors = array_merge($errors, $location_notices);
 		}
 	}
 	
-	static private function highlight_error($text, $problem, $bbcode_parts, $key) {
+	static private function highlight_error($text, $problem, $bbcode_parts, $key, $special_notice = '', $other_arg = '') {
 		$pos = self::get_total_length($bbcode_parts, $key);
 		if ($pos < 15) {
 			$len = $pos;
 		} else {
 			$len = 15;
 		}
-		return translate('errorwaslocated') . '<code>' . substr($text, max(array(0, $pos - 15)), $len) . '<b style="color:#A00">' . $problem . '</b>' . substr($text, $pos + strlen($problem), 15) . '</code>';
+		return translate($special_notice = '' ? 'errorwaslocated' : $special_notice, $other_arg) . '<code>' . substr($text, max(array(0, $pos - 15)), $len) . '<b style="color:#A00">' . $problem . '</b>' . substr($text, $pos + strlen($problem), 15) . '</code>';
 	}
 	
 	static function get_total_length($array, $key) {

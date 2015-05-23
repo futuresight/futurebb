@@ -316,4 +316,5 @@ $lang = array (
   'unknown error' => 'An unknown error occurred',
   'specificnestingerror' => 'The tag <b>[$1]</b> cannot be placed directly inside <b>[$2]</b>.',
   'errorwaslocated' => 'The above error was located at: ',
+  'tagwasopened' => 'The <b>[$1]</b> tag was opened at the following location: ',
 );
