@@ -255,7 +255,8 @@ abstract class LoginController {
 				self::Guest(); return;
 			}
 			$futurebb_user = $user_info;
-			self::LoadNotifications();
+			$futurebb_user['notifications_count'] = $db->num_rows($db->query('SELECT type, send_time, contents FROM `#^notifications` WHERE user=' . $futurebb_user['id'] . ' AND read_time = 0'));
+			//self::LoadNotifications();
 			self::CheckPromotion();
 		} else {
 			self::Guest(); return;
