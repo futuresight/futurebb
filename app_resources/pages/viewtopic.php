@@ -1,6 +1,6 @@
 <?php
 //$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,rt.id AS tracker_id,rtf.id AS ftracker_id FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^read_tracker` AS rtf ON rtf.forum_id=f.id AND rtf.user_id=' . $futurebb_user['id'] . ' AND rtf.topic_id IS NULL WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.deleted IS NULL') or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
-$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,t.deleted,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,rt.id AS tracker_id,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.forum_id=f.id ' . ($futurebb_user['g_mod_privs'] ? '' : ' AND t.deleted IS NULL')) or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,t.deleted,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,f.archived AS forum_archived,rt.id AS tracker_id,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.forum_id=f.id ' . ($futurebb_user['g_mod_privs'] ? '' : ' AND t.deleted IS NULL')) or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result)) {
 	httperror(404);
 }
@@ -178,7 +178,7 @@ while ($cur_post = $db->fetch_assoc($result)) {
 				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_delete_posts'])) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/delete/' . $cur_post['id'] . '">' . translate('delete') . '</a>';
 				}
-				if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && (!$cur_topic['closed'] || $futurebb_user['g_mod_privs'])) {
+				if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && ((!$cur_topic['closed'] && !$cur_topic['forum_archived']) || $futurebb_user['g_mod_privs'])) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/post/topic/' . $cur_topic['id'] . '?quote=' . $cur_post['id'] . '">' . translate('quote') . '</a>';
 				}
 				if ($futurebb_user['g_mod_privs'] && $cur_post['deleted']) {
@@ -221,14 +221,14 @@ while ($cur_post = $db->fetch_assoc($result)) {
 echo paginate('<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '?page=$page$" $bold$>$page$</a>', $page, ceil($num_posts / $futurebb_config['posts_per_page']));
 ?></p>
 <?php
-if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && (!$cur_topic['closed'] || $futurebb_user['g_mod_privs'])) {
+if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && ((!$cur_topic['closed'] && !$cur_topic['forum_archived']) || $futurebb_user['g_mod_privs'])) {
 	?>
 	<div class="cat_wrap">
 		<h2 class="cat_header"><?php echo translate('postreply'); ?></h2>
 		<div class="cat_body">
 			<form action="<?php echo $base_config['baseurl']; ?>/post/topic/<?php echo $cur_topic['id']; ?>" method="post" enctype="multipart/form-data">
-				<p><?php if ($cur_topic['closed']) echo '<span class="closedlabel">' . translate('topicisclosed') . '</span><br />'; ?>
-				<textarea name="message" rows="10" cols="70"<?php if ($cur_topic['closed']) echo ' style="background-color: #DDD; border-color: #AAA;"'; ?>></textarea></p>
+				<p><?php if ($cur_topic['closed'] || $cur_topic['forum_archived']) echo '<span class="closedlabel">' . translate('topicisclosed') . '</span><br />'; ?>
+				<textarea name="message" rows="10" cols="70"<?php if ($cur_topic['closed'] || $cur_topic['forum_archived']) echo ' style="background-color: #DDD; border-color: #AAA;"'; ?>></textarea></p>
                 <p><a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp"><?php echo translate('bbcode'); ?></a>: <?php if ($futurebb_config['enable_bbcode']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#smilies"><?php echo translate('smilies'); ?></a>: <?php if ($futurebb_config['enable_smilies']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('imgtag'); ?></a>: <?php if ($futurebb_user['g_post_links']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('urltag'); ?></a>: <?php if ($futurebb_user['g_post_images']) echo translate('on'); else echo translate('off'); ?></p>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('post'); ?>" /> <input type="submit" name="preview" value="Preview" /> <input name="hidesmilies" type="checkbox" value="1" id="disablesmilies" /> <label for="disablesmilies"><?php echo translate('disablesmilies'); ?></label></p>
 			</form>
