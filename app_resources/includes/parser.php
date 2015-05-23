@@ -155,7 +155,7 @@ abstract class BBCodeController {
 	}
 	
 	static function handle_table_tags($text) {
-		//all other tags have been already parsed, so we can just look at [list] tags
+		//all other tags have been already parsed, so we can just look at [table] tags
 		$table_tags = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY);
 		//split the message into [table], [tr], [td], [th] tags and start parsing
 		$open_tags = array();
@@ -367,14 +367,16 @@ abstract class BBCodeController {
 		$open_tags = array();
 		$last_key = 0;
 		$quotes = 0;
-		foreach ($bbcode_parts as $val) {
+		foreach ($bbcode_parts as $key => $val) {
 			if (preg_match('%^\[/(' . implode('|', self::$tags) . ')\]$%', $val, $matches)) {
 				if ($last_key == 0) {
 					$errors[] = translate('closenoopen', $matches[1]);
+					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 					return;
 				}
 				if ($matches[1] != $open_tags[$last_key - 1]) {
 					$errors[] = translate('expectedfound', $open_tags[$last_key - 1], $matches[1]);
+					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 					return;
 				}
 				if ($open_tags[$last_key - 1] == 'quote') {
@@ -387,22 +389,27 @@ abstract class BBCodeController {
 				//check if there are any block tags inside inline tags
 				if ($last_key > 0 && in_array($open_tags[$last_key - 1], $inline_tags) && in_array($matches[1], $block_tags)) {
 					$errors[] = translate('blockininline', $matches[1], $open_tags[$last_key - 1]);
+					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 				}
 				//check for the tags that only allow specific tags directly inside them
 				if ($last_key > 0 && array_key_exists($open_tags[$last_key - 1], $nest_only) && !in_array($open_tags[$last_key], $nest_only[$open_tags[$last_key - 1]])) {
 					$errors[] = translate('specificnestingerror', $matches[1], $open_tags[$last_key - 1]);
+					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 				}
 				if ($last_key > 0 && array_key_exists($open_tags[$last_key - 1], $nest_forbid) && in_array($open_tags[$last_key], $nest_forbid[$open_tags[$last_key - 1]])) {
 					$errors[] = translate('specificnestingerror', $matches[1], $open_tags[$last_key - 1]);
+					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 				}
 				//check if there is any bbcode inside a tag which can't nest
 				if ($last_key > 0 && in_array($open_tags[$last_key - 1], $no_nest_tags)) {
 					$errors[] = translate('nonesting', $open_tags[$last_key - 1]);
+					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 				}
 				if ($open_tags[$last_key] == 'quote') {
 					$quotes++;
 					if ($quotes > $futurebb_config['max_quote_depth']) {
 						$errors[] = translate('toomanynestedquotes', $futurebb_config['max_quote_depth']);
+						$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 					}
 				}
 				
@@ -415,5 +422,23 @@ abstract class BBCodeController {
 			}
 			$errors[] = translate('tagsnotclosed', implode(', ', $open_tags));
 		}
+	}
+	
+	static private function highlight_error($text, $problem, $bbcode_parts, $key) {
+		$pos = self::get_total_length($bbcode_parts, $key);
+		if ($pos < 15) {
+			$len = $pos;
+		} else {
+			$len = 15;
+		}
+		return translate('errorwaslocated') . '<code>' . substr($text, max(array(0, $pos - 15)), $len) . '<b style="color:#A00">' . $problem . '</b>' . substr($text, $pos + strlen($problem), 15) . '</code>';
+	}
+	
+	static function get_total_length($array, $key) {
+		$len = 0;
+		for ($i = 0; $i < $key; $i++) {
+			$len += strlen($array[$i]);
+		}
+		return $len;
 	}
 }
