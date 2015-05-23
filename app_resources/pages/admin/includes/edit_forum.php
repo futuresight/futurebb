@@ -1,6 +1,6 @@
 <?php
 $fid = intval($dirs[4]);
-$result = $db->query('SELECT name,cat_id,description,view_groups,topic_groups,reply_groups FROM `#^forums` WHERE id=' . $fid) or error('Failed to find forum', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT name,cat_id,description,view_groups,topic_groups,reply_groups,archived FROM `#^forums` WHERE id=' . $fid) or error('Failed to find forum', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result)) {
 	httperror(404);
 }
@@ -17,7 +17,7 @@ if (isset($_POST['update_forum'])) {
 	foreach ($_POST['reply'] as $key => $val) {
 		$replies .= $key . '-';
 	}
-	$db->query('UPDATE `#^forums` SET description=\'' . $db->escape($_POST['desc']) . '\',view_groups=\'' . $view . '\',topic_groups=\'' . $topics . '\',reply_groups=\'' . $replies . '\',cat_id=' . intval($_POST['category']) . ' WHERE id=' . $fid) or error('Failed to update forum', __FILE__, __LINE__, $db->error());
+	$db->query('UPDATE `#^forums` SET description=\'' . $db->escape($_POST['desc']) . '\',view_groups=\'' . $view . '\',topic_groups=\'' . $topics . '\',reply_groups=\'' . $replies . '\',cat_id=' . intval($_POST['category']) . ',archived=' . intval($_POST['archive']) . ' WHERE id=' . $fid) or error('Failed to update forum', __FILE__, __LINE__, $db->error());
 	if (isset($_POST['popup'])) {
 		?>
 <script type="text/javascript">
@@ -77,6 +77,10 @@ if (isset($_GET['popup'])) {
                 <td><?php echo translate('description'); ?></td>
                 <td><textarea name="desc" rows="5" cols="40"><?php echo htmlspecialchars($cur_forum['description']); ?></textarea></td>
             </tr>
+			<tr>
+				<td>Archive forum</td>
+				<td><input type="radio" name="archive" value="1" id="archive1"<?php if ($cur_forum['archived']) echo ' checked="checked"'; ?> /><label for="archive1"><?php echo translate('yes'); ?></label> <input type="radio" name="archive" value="0" id="archive0"<?php if (!$cur_forum['archived']) echo ' checked="checked"'; ?> /><label for="archive0"><?php echo translate('no'); ?></label></td>
+			</tr>
         </table>
         <h3><?php echo translate('permissions'); ?></h3>
         <table border="0">

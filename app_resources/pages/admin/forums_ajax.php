@@ -423,6 +423,9 @@ if (isset($_POST['form_sent'])) {
 			window.onunload = function() {
 				newWin.close();
 			}
+			newWin.onbeforeunload = function() {
+				newWin = null;
+			}
 			newWin.onsubmit = function() {
 				//edits were made in that window, so reload the page
 				if (document.getElementById('submitBox').style.display == 'none') {
