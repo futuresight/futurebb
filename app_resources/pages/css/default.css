@@ -287,6 +287,10 @@ div.leftmenu {
 	text-align:center;
 }
 
+#futurebb a.archived {
+	color:#555;
+}
+
 /* menu-box pages */
 
 #futurebb .container {
@@ -491,4 +495,8 @@ div.leftmenu {
 
 #futurebb .indentleft {
 	padding-left:5px;
+}
+
+#futurebb h2.archived {
+	color:#666;
 }

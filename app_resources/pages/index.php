@@ -4,7 +4,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'markread') {
 	$db->query('UPDATE `#^users` SET last_visit=' . time() . ' WHERE id=' . $futurebb_user['id']) or error('Failed to mark all topics as read', __FILE__, __LINE__, $db->error());
 	header('Location: ' . $base_config['baseurl']); die;
 }
-$result = $db->query('SELECT c.id AS cat_id,c.name AS cat_name,f.name AS forum_name,f.id AS fid,f.url,f.last_post,f.description,f.last_post,f.last_post_id,f.num_topics,f.num_posts,rt.id AS tracker_id,lpa.username AS last_poster FROM `#^forums` AS f LEFT JOIN `#^categories` AS c ON c.id=f.cat_id LEFT JOIN `#^read_tracker` AS rt ON rt.forum_id=f.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.topic_id IS NULL LEFT JOIN `#^posts` AS lp ON lp.id=f.last_post_id LEFT JOIN `#^users` AS lpa ON lpa.id=lp.poster WHERE c.id IS NOT NULL AND view_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\' ORDER BY c.sort_position ASC,f.sort_position ASC') or error('Failed to get categories', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT c.id AS cat_id,c.name AS cat_name,f.name AS forum_name,f.id AS fid,f.url,f.last_post,f.description,f.last_post,f.last_post_id,f.num_topics,f.num_posts,rt.id AS tracker_id,lpa.username AS last_poster,f.archived FROM `#^forums` AS f LEFT JOIN `#^categories` AS c ON c.id=f.cat_id LEFT JOIN `#^read_tracker` AS rt ON rt.forum_id=f.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.topic_id IS NULL LEFT JOIN `#^posts` AS lp ON lp.id=f.last_post_id LEFT JOIN `#^users` AS lpa ON lpa.id=lp.poster WHERE c.id IS NOT NULL AND view_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\' ORDER BY c.sort_position ASC,f.sort_position ASC') or error('Failed to get categories', __FILE__, __LINE__, $db->error());
 $ids = array();
 if ($db->num_rows($result)) {
 	$last_cid = 0;
@@ -21,10 +21,21 @@ if ($db->num_rows($result)) {
 			$ids[] = $cur_forum['fid'];
 			echo '<tr class="table-row"><td class="forum_info"><div class="relative"><a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($cur_forum['url']) . '"';
 			//$cur_forum['last_post'] > $futurebb_user['last_visit'] #old tracker
+			$class = array();
 			if ($futurebb_user['id'] != 0 && $futurebb_user['last_visit'] < $cur_forum['last_post'] && $cur_forum['tracker_id'] == null) {
-				echo ' class="unread"';
+				$class[] = 'unread';
 			}
-			echo '>' . htmlspecialchars($cur_forum['forum_name']) . '</a><br />' . $cur_forum['description'] . '</div></td><td class="forum_number">' . $cur_forum['num_topics'] . '</td><td class="forum_number">' . $cur_forum['num_posts'] . '</td><td class="forum_last_post">';
+			if ($cur_forum['archived']) {
+				$class[] = 'archived';
+			}
+			if (!empty($class)) {
+				echo ' class="' . implode(' ', $class) . '"';
+			}
+			echo '>' . htmlspecialchars($cur_forum['forum_name']) . '</a>';
+			if ($cur_forum['archived']) {
+				echo ' ' . translate('archived');
+			}
+			echo '<br />' . $cur_forum['description'] . '</div></td><td class="forum_number">' . $cur_forum['num_topics'] . '</td><td class="forum_number">' . $cur_forum['num_posts'] . '</td><td class="forum_last_post">';
 			if ($cur_forum['last_post_id']) {
 				echo '<a href="' . $base_config['baseurl'] . '/posts/' . $cur_forum['last_post_id'] . '">' . user_date($cur_forum['last_post']) . ' by ' . htmlspecialchars($cur_forum['last_poster']) . '</a>';
 			} else {

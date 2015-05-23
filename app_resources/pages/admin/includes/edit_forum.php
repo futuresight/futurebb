@@ -78,7 +78,7 @@ if (isset($_GET['popup'])) {
                 <td><textarea name="desc" rows="5" cols="40"><?php echo htmlspecialchars($cur_forum['description']); ?></textarea></td>
             </tr>
 			<tr>
-				<td>Archive forum</td>
+				<td><?php echo translate('archiveforum'); ?></td>
 				<td><input type="radio" name="archive" value="1" id="archive1"<?php if ($cur_forum['archived']) echo ' checked="checked"'; ?> /><label for="archive1"><?php echo translate('yes'); ?></label> <input type="radio" name="archive" value="0" id="archive0"<?php if (!$cur_forum['archived']) echo ' checked="checked"'; ?> /><label for="archive0"><?php echo translate('no'); ?></label></td>
 			</tr>
         </table>

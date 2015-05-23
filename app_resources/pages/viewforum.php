@@ -1,7 +1,7 @@
 <?php
 $forum_title = $dirs[1];
 //get the forum
-$result = $db->query('SELECT f.id,f.name,f.view_groups,f.topic_groups,rt.id AS tracker_id FROM `#^forums` AS f LEFT JOIN `#^read_tracker` AS rt ON rt.forum_id=f.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.topic_id IS NULL WHERE url=\'' . $db->escape($forum_title) . '\'') or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT f.id,f.name,f.view_groups,f.topic_groups,f.archived,rt.id AS tracker_id FROM `#^forums` AS f LEFT JOIN `#^read_tracker` AS rt ON rt.forum_id=f.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.topic_id IS NULL WHERE url=\'' . $db->escape($forum_title) . '\'') or error('Failed to get forum info', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result)) {
 	httperror(404);
 }
@@ -28,7 +28,10 @@ list($num_topics) = $db->fetch_row($result);
 $result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.closed,t.sticky,t.redirect_id,t.num_replies,t.deleted,lpa.username AS last_post_author,rt.id AS tracker_id,fpa.username AS author,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^posts` AS lp ON lp.id=t.last_post_id LEFT JOIN `#^users` AS lpa ON lpa.id=lp.poster LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^posts` AS fp ON fp.id=t.first_post_id LEFT JOIN `#^users` AS fpa ON fpa.id=fp.poster LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE t.forum_id=' . $cur_forum['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND t.deleted IS NULL') . ' AND (t.redirect_id IS NULL OR t.show_redirect=1) ORDER BY t.sticky DESC,t.last_post DESC LIMIT ' . (($page - 1) * intval($futurebb_config['topics_per_page'])) . ',' . intval($futurebb_config['topics_per_page'])) or error('Failed to get topics', __FILE__, __LINE__, $db->error());
 ?>
 <div class="forum_content noleftmargin">
-	<h2 class="cat_header"><?php echo htmlspecialchars($cur_forum['name']); ?></h2>
+	<h2 class="cat_header<?php if ($cur_forum['archived']) echo ' archived"'; ?>"><?php echo htmlspecialchars($cur_forum['name']);
+	if ($cur_forum['archived']) {
+		echo ' ' . translate('archived');
+	} ?></h2>
 	<div class="indentleft">
 		<?php if ($futurebb_user['id'] != 0 && strstr($cur_forum['topic_groups'], '-' . $futurebb_user['group_id'] . '-')) { ?><p><a href="<?php echo $base_config['baseurl']; ?>/post/forum/<?php echo $cur_forum['id']; ?>">Post new topic</a></p><?php } 
 		if ($num_topics) {

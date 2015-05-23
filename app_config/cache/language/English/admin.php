@@ -199,4 +199,5 @@ $lang_addl = array (
   'existingwords' => 'Existing words',
   'bbcodeinPM' => 'BBCode in private messages',
   'otherforumeditsconfirmrefresh' => 'Edits to a forum have been submitted in another window. Do you want to refresh this page to reflect those changes?',
+  'archiveforum' => 'Archive forum',
 );
