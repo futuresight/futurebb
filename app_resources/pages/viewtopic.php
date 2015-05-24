@@ -172,10 +172,10 @@ while ($cur_post = $db->fetch_assoc($result)) {
 				if ($futurebb_user['id'] != 0) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/report/' . $cur_post['id'] . '">' . translate('report') . '</a>';
 				}
-				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_edit_posts'])) {
+				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_edit_posts'] && !$cur_topic['closed'] && !$cur_topic['forum_archived'])) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/edit/' . $cur_post['id'] . '">' . translate('edit') . '</a>';
 				}
-				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_delete_posts'])) {
+				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_delete_posts'] && !$cur_topic['closed'] && !$cur_topic['forum_archived'])) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/delete/' . $cur_post['id'] . '">' . translate('delete') . '</a>';
 				}
 				if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && ((!$cur_topic['closed'] && !$cur_topic['forum_archived']) || $futurebb_user['g_mod_privs'])) {

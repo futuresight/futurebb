@@ -9,6 +9,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 if (isset($_POST['form_sent']) && isset($_FILES['extension_file'])) {
 	switch (pathinfo($_FILES['extension_file']['name'], PATHINFO_EXTENSION)) {
 		case 'css':
+			//basic CSS stylesheet
 			$fname = basename($_FILES['extension_file']['name']);
 			if (file_exists(FORUM_ROOT . '/app_resources/pages/css/' . $fname)) {
 				echo '<div class="forum_content"><p>' . translate('styleconflict') . '</p></div>'; return;
@@ -16,6 +17,25 @@ if (isset($_POST['form_sent']) && isset($_FILES['extension_file'])) {
 			move_uploaded_file($_FILES['extension_file']['tmp_name'], FORUM_ROOT . '/app_resources/pages/css/' . $fname);
 			if (!file_exists(FORUM_ROOT . '/app_resources/pages/css/' . $fname)) {
 				echo '<div class="forum_content"><p>' . translate('uploadfailed') . '</p></div>'; return;
+			}
+			break;
+		case 'zip':
+			//full template set
+			$fname = basename($_FILES['extension_file']['name'], '.zip');
+			if (file_exists(FORUM_ROOT . '/app_config/templates/' . $fname)) {
+				echo '<div class="forum_content"><p>' . translate('styleconflict') . '</p></div>'; return;
+			}
+			mkdir(FORUM_ROOT . '/app_config/templates/' . $fname);
+			//unzip
+			$zip = new ZipArchive();
+			if ($zip->open($_FILES['extension_file']['tmp_name'])) {
+				$zip->extractTo(FORUM_ROOT . '/app_config/templates/' . $fname);
+				$zip->close();
+				if (file_exists(FORUM_ROOT . '/app_config/templates/' . $fname . '/style.css')) {
+					rename(FORUM_ROOT . '/app_resources/pages/css/' . $fname . '.css');
+				}
+			} else {
+				echo '<div class="forum_content"><p>' . translate('unzipfailed') . '<br /><a href="' . $base_config['baseurl'] . '/admin/style">' . translate('tryagain') . '</a></p></div>';
 			}
 			break;
 		case 'png':
@@ -32,6 +52,16 @@ if (isset($_GET['delete_css'])) {
 	$fname = basename($_GET['delete_css']);
 	if (file_exists(FORUM_ROOT . '/app_resources/pages/css/' . $fname . '.css')) {
 		unlink(FORUM_ROOT . '/app_resources/pages/css/' . $fname . '.css');
+	}
+	if (file_exists(FORUM_ROOT . '/app_config/templates/' . $fname)) {
+		//remove the directory and all contents
+		$handle = opendir(FORUM_ROOT . '/app_config/templates/' . $fname);
+		while ($file = readdir($handle)) {
+			if ($file != '.' && $file != '..') {
+				unlink(FORUM_ROOT . '/app_config/templates/' . $fname . '/' . $file);
+			}
+		}
+		rmdir(FORUM_ROOT . '/app_config/templates/' . $fname);
 	}
 }
 if (isset($_FILES['icon_file']) && is_uploaded_file($_FILES['icon_file']['tmp_name']) && pathinfo($_FILES['extension_file']['name'], PATHINFO_EXTENSION) == 'ico') {
