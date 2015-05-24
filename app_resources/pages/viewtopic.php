@@ -241,7 +241,7 @@ if ($futurebb_user['id'] != 0) { ?>
 	<h2 class="cat_header"><?php echo translate('actions'); ?></h2>
 	<div class="cat_body">
 		<ul>
-			<?php if ($cur_topic['closed'] && !$futurebb_user['g_mod_privs']) { ?>
+			<?php if (($cur_topic['closed'] || $cur_topic['forum_archived']) && !$futurebb_user['g_mod_privs']) { ?>
 			<li><?php echo translate('closednoreply'); ?></li>
 			<?php } else if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-')) { ?>
 			<li><a href="<?php echo $base_config['baseurl']; ?>/post/topic/<?php echo $cur_topic['id']; ?>"><?php echo translate('postreply'); ?></a></li>
