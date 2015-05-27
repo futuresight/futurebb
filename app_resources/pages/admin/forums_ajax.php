@@ -151,6 +151,8 @@ if (isset($_POST['form_sent'])) {
 		}
 	}
 	
+	print_r($_POST); die;
+	
 	header('Refresh: 0');
 	return;
 }
@@ -193,6 +195,8 @@ if (isset($_POST['form_sent'])) {
 		var deleteTd = document.createElement('td');
 		var editTd = document.createElement('td');
 		editTd.innerHTML = '';
+		var changeCatTd = document.createElement('td');
+		changeCatTd.innerHTML = '';
 		var cancelTd = document.createElement('td');
 		cancelTd.style.cursor = 'pointer';
 		cancelTd.innerHTML = '&#10060;';
@@ -203,6 +207,7 @@ if (isset($_POST['form_sent'])) {
 		newTr.appendChild(moveTd);
 		newTr.appendChild(deleteTd);
 		newTr.appendChild(editTd);
+		newTr.appendChild(changeCatTd);
 		newTr.appendChild(cancelTd);
 		document.getElementById('table_cat_' + cat_id).appendChild(newTr);
 		
@@ -248,7 +253,14 @@ if (isset($_POST['form_sent'])) {
 		//set sort positions
 		var allRows = parentTable.getElementsByTagName('tr');
 		for (var i = 1; i < allRows.length; i++) {
-			allRows[i].getElementsByTagName('td')[0].getElementsByTagName('input')[0].value = i;
+			var inputs = allRows[i].getElementsByTagName('td')[0].getElementsByTagName('input');
+			for (index in inputs) {
+				//find the first element that looks like the one that stores the sort order
+				if (inputs[index].id != null && inputs[index].id.startsWith('sort_order_')) {
+					inputs[index].value = i;
+					break;
+				}
+			}
 		}
 		
 		unlockSubmit();
@@ -423,9 +435,9 @@ if (isset($_POST['form_sent'])) {
 		var th2 = document.createElement('th');
 		th2.innerHTML = '<?php echo translate('move'); ?>';
 		topRow.appendChild(th2);
-		/*var th3 = document.createElement('th');
-		th3.innerHTML = '&nbsp;';
-		topRow.appendChild(th3);*/
+		var th3 = document.createElement('th');
+		th3.innerHTML = '<?php echo translate('changecategory'); ?>';
+		topRow.appendChild(th3);
 		var th4 = document.createElement('th');
 		th4.innerHTML = '<?php echo translate('cancel'); ?>';
 		topRow.appendChild(th4);
@@ -552,7 +564,7 @@ if (isset($_POST['form_sent'])) {
 						echo '<div id="cat_' . $forum['cat_id'] . '"><h4><input type="hidden" name="cat_sort_order[' . $forum['cat_id'] . ']" value="' . $forum['cat_sort_position'] . '" /><input type="text" name="cat_title[' . $forum['cat_id'] . ']" value="' . htmlspecialchars($forum['cat_name']) . '" oninput="unlockSubmit();" /> <a onclick="moveCat(' . $forum['cat_id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="moveCat(' . $forum['cat_id'] . ',\'down\');" style="cursor:pointer">&darr;</a> (<a onClick="addForum(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10010 ' . translate('addforum') . '</a>) (<a onclick="prepareDeleteCat(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10060;</a>)</h4><hr /><table border="0" id="table_cat_' . $forum['cat_id'] . '"><tr><th>' . translate('forumname') . '</th><th>Move</th><th>' . translate('delete') . '</th><th>' . translate('edit') . '</th><th>' . translate('changecategory') . '</th><th>' . translate('cancel') . '</th></tr>' . "\n";
 					}
 					if ($forum['id'] != '') {
-						echo '<tr id="tr_' . $forum['id'] . '"><td><input type="hidden" name="cat[' . $forum['id'] . ']" id="catof_' . $forum['id'] . '" value="' . $forum['cat_id'] . '" /><input type="hidden" name="sort_order[' . $forum['id'] . ']" id="sort_order_' . $forum['id'] . '" value="' . $forum['sort_position'] . '" /><input type="text" name="title[' . $forum['id'] . ']" value="' . htmlspecialchars($forum['forum_name']) . '" oninput="unlockSubmit();" /></td><td><a onclick="move(' . $forum['id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="move(' . $forum['id'] . ',\'down\');" style="cursor:pointer">&darr;</a></td><td><a onclick="prepareDelete(' . $forum['id'] . ');" style="cursor:pointer">&#10060;</a></td><td><a href="' . $base_config['baseurl'] . '/admin/forums/edit/' . $forum['id'] . '?popup=true" onclick="editForum(' . $forum['id'] . '); return false;" style="text-decoration:none" target="_BLANK">&#9998;</a></td><td><select name="category[' . $forum['id'] . ']" id="changecat_' . $forum['id'] . '" onchange="changeCat(' . $forum['id'] . ', this.value);">' . $catlist_html . '</select></td><td></td></tr>' . "\n";
+						echo '<tr id="tr_' . $forum['id'] . '"><td><input type="hidden" name="cat[' . $forum['id'] . ']" id="catof_' . $forum['id'] . '" value="' . $forum['cat_id'] . '" /><input type="hidden" name="sort_order[' . $forum['id'] . ']" id="sort_order_' . $forum['id'] . '" value="' . $forum['sort_position'] . '" /><input type="text" name="title[' . $forum['id'] . ']" value="' . htmlspecialchars($forum['forum_name']) . '" oninput="unlockSubmit();" /></td><td><a onclick="move(' . $forum['id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="move(' . $forum['id'] . ',\'down\');" style="cursor:pointer">&darr;</a></td><td><a onclick="prepareDelete(' . $forum['id'] . ');" style="cursor:pointer">&#10060;</a></td><td><a href="' . $base_config['baseurl'] . '/admin/forums/edit/' . $forum['id'] . '?popup=true" onclick="editForum(' . $forum['id'] . '); return false;" style="text-decoration:none" target="_BLANK">&#9998;</a></td><td><select id="changecat_' . $forum['id'] . '" onchange="changeCat(' . $forum['id'] . ', this.value);">' . $catlist_html . '</select></td><td></td></tr>' . "\n";
 						if (!isset($highest_sort_orders[$forum['cat_id']]) || $forum['sort_position'] > $highest_sort_orders[$forum['cat_id']]) {
 							$highest_sort_orders[$forum['cat_id']] = $forum['sort_position'];
 						}
