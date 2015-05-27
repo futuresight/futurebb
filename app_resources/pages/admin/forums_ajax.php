@@ -265,7 +265,7 @@ if (isset($_POST['form_sent'])) {
 			cancelDelete(forum_id);
 			this.parentNode.removeChild(this);
 		}
-		tr.getElementsByTagName('td')[4].appendChild(cancelTd);
+		tr.getElementsByTagName('td')[5].appendChild(cancelTd);
 		unlockSubmit();
 	}
 	
@@ -368,6 +368,20 @@ if (isset($_POST['form_sent'])) {
 	echo 'var maxCatSortOrder = ' . $maxpos . ';';
 	?>
 	var maxCatId = -1; //new categories start temporary IDs at -1 and work downwards (existing categories use existing IDs)
+	
+	var max_sort_orders = [];
+	<?php
+	$result = $db->query('SELECT cat_id,sort_position FROM `#^forums` WHERE cat_id IS NOT NULL') or enhanced_error('Failed to get highest sort orders', true);
+	$max_sort_orders = array();
+	while (list($cat, $pos) = $db->fetch_row($result)) {
+		if (!isset($max_sort_orders[$cat]) || $pos > $max_sort_orders[$cat]) {
+			$max_sort_orders[$cat] = $pos;
+		}
+	}
+	foreach ($max_sort_orders as $cat => $val) {
+		echo "\n\t" . 'max_sort_orders[' . $cat . '] = ' . $val;
+	}
+	?>
 	
 	function addCat() {
 		maxCatId--;
@@ -484,8 +498,24 @@ if (isset($_POST['form_sent'])) {
 		}
 		return result;
 	}
+	
+	function changeCat(forum_id, new_cat_id) {
+		document.getElementById('changecat_' + forum_id).childNodes[0].selected = true;
+		var forumRow = document.getElementById('tr_' + forum_id);
+		document.getElementById('table_cat_' + new_cat_id).appendChild(forumRow);
+		document.getElementById('sort_order_' + forum_id).value = max_sort_orders[new_cat_id] + 1;
+		max_sort_orders[new_cat_id]++;
+	}
 	//]]>
 	</script>
+	<?php
+	//get the plain list of categories
+	$result = $db->query('SELECT id,name FROM `#^categories` ORDER BY name ASC') or enhanced_error('Failed to get categories', true);
+	$catlist_html = '<option value="-1">' . translate('changecategory') . '</option>';
+	while (list($id, $name) = $db->fetch_row($result)) {
+		$catlist_html .= '<option value="' . $id . '">' . htmlspecialchars($name) . '</option>';
+	}
+	?>
 	<div class="forum_content rightbox admin">
     	<form action="<?php echo $base_config['baseurl']; ?>/admin/forums/enhanced" method="post" enctype="multipart/form-data" id="theform">
             <h3><?php echo translate('editforums'); ?></h3>
@@ -505,10 +535,10 @@ if (isset($_POST['form_sent'])) {
 							echo '</table></div>';
 						}
 						$last_cat_id = $forum['cat_id'];
-						echo '<div id="cat_' . $forum['cat_id'] . '"><h4><input type="hidden" name="cat_sort_order[' . $forum['cat_id'] . ']" value="' . $forum['cat_sort_position'] . '" /><input type="text" name="cat_title[' . $forum['cat_id'] . ']" value="' . htmlspecialchars($forum['cat_name']) . '" oninput="unlockSubmit();" /> <a onclick="moveCat(' . $forum['cat_id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="moveCat(' . $forum['cat_id'] . ',\'down\');" style="cursor:pointer">&darr;</a> (<a onClick="addForum(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10010 ' . translate('addforum') . '</a>) (<a onclick="prepareDeleteCat(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10060;</a>)</h4><hr /><table border="0" id="table_cat_' . $forum['cat_id'] . '"><tr><th>' . translate('forumname') . '</th><th>Move</th><th>' . translate('delete') . '</th><th>' . translate('edit') . '</th><th>' . translate('cancel') . '</th></tr>' . "\n";
+						echo '<div id="cat_' . $forum['cat_id'] . '"><h4><input type="hidden" name="cat_sort_order[' . $forum['cat_id'] . ']" value="' . $forum['cat_sort_position'] . '" /><input type="text" name="cat_title[' . $forum['cat_id'] . ']" value="' . htmlspecialchars($forum['cat_name']) . '" oninput="unlockSubmit();" /> <a onclick="moveCat(' . $forum['cat_id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="moveCat(' . $forum['cat_id'] . ',\'down\');" style="cursor:pointer">&darr;</a> (<a onClick="addForum(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10010 ' . translate('addforum') . '</a>) (<a onclick="prepareDeleteCat(' . $forum['cat_id'] . ');" style="cursor:pointer">&#10060;</a>)</h4><hr /><table border="0" id="table_cat_' . $forum['cat_id'] . '"><tr><th>' . translate('forumname') . '</th><th>Move</th><th>' . translate('delete') . '</th><th>' . translate('edit') . '</th><th>' . translate('changecategory') . '</th><th>' . translate('cancel') . '</th></tr>' . "\n";
 					}
 					if ($forum['id'] != '') {
-						echo '<tr id="tr_' . $forum['id'] . '"><td><input type="hidden" name="sort_order[' . $forum['id'] . ']" id="sort_order_' . $forum['id'] . '" value="' . $forum['sort_position'] . '" /><input type="text" name="title[' . $forum['id'] . ']" value="' . htmlspecialchars($forum['forum_name']) . '" oninput="unlockSubmit();" /></td><td><a onclick="move(' . $forum['id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="move(' . $forum['id'] . ',\'down\');" style="cursor:pointer">&darr;</a></td><td><a onclick="prepareDelete(' . $forum['id'] . ');" style="cursor:pointer">&#10060;</a></td><td><a href="' . $base_config['baseurl'] . '/admin/forums/edit/' . $forum['id'] . '?popup=true" onclick="editForum(' . $forum['id'] . '); return false;" style="text-decoration:none" target="_BLANK">&#9998;</a></td><td></td></tr>' . "\n";
+						echo '<tr id="tr_' . $forum['id'] . '"><td><input type="hidden" name="sort_order[' . $forum['id'] . ']" id="sort_order_' . $forum['id'] . '" value="' . $forum['sort_position'] . '" /><input type="text" name="title[' . $forum['id'] . ']" value="' . htmlspecialchars($forum['forum_name']) . '" oninput="unlockSubmit();" /></td><td><a onclick="move(' . $forum['id'] . ',\'up\');" style="cursor:pointer">&uarr;</a> <a onclick="move(' . $forum['id'] . ',\'down\');" style="cursor:pointer">&darr;</a></td><td><a onclick="prepareDelete(' . $forum['id'] . ');" style="cursor:pointer">&#10060;</a></td><td><a href="' . $base_config['baseurl'] . '/admin/forums/edit/' . $forum['id'] . '?popup=true" onclick="editForum(' . $forum['id'] . '); return false;" style="text-decoration:none" target="_BLANK">&#9998;</a></td><td><select name="category[' . $forum['id'] . ']" id="changecat_' . $forum['id'] . '" onchange="changeCat(' . $forum['id'] . ', this.value);">' . $catlist_html . '</select></td><td></td></tr>' . "\n";
 						if (!isset($highest_sort_orders[$forum['cat_id']]) || $forum['sort_position'] > $highest_sort_orders[$forum['cat_id']]) {
 							$highest_sort_orders[$forum['cat_id']] = $forum['sort_position'];
 						}

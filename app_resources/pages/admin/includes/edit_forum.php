@@ -60,19 +60,25 @@ if (isset($_GET['popup'])) {
                 <td><?php echo translate('forumname'); ?></td>
                 <td><?php echo htmlspecialchars($cur_forum['name']); ?></td>
             </tr>
-            <tr>
-                <td><?php echo translate('category'); ?></td>
-                <td><select name="category"><?php
-                $result = $db->query('SELECT id,name FROM `#^categories` ORDER BY sort_position ASC') or error('Failed to get categories', __FILE__, __LINE__, $db->error());
-                while (list($id,$name) = $db->fetch_row($result)) {
-                    echo '<option value="' . $id . '"';
-                    if ($id == $cur_forum['cat_id']) {
-                        echo ' selected="selected"';
-                    }
-                    echo '>' . htmlspecialchars($name) . '</option>';
-                }
-                ?></select></td>
-            </tr>
+			<?php
+			if (!isset($_GET['popup'])) {
+				?>
+				<tr>
+					<td><?php echo translate('category'); ?></td>
+					<td><select name="category"><?php
+					$result = $db->query('SELECT id,name FROM `#^categories` ORDER BY sort_position ASC') or error('Failed to get categories', __FILE__, __LINE__, $db->error());
+					while (list($id,$name) = $db->fetch_row($result)) {
+						echo '<option value="' . $id . '"';
+						if ($id == $cur_forum['cat_id']) {
+							echo ' selected="selected"';
+						}
+						echo '>' . htmlspecialchars($name) . '</option>';
+					}
+					?></select></td>
+				</tr>
+				<?php
+			}
+			?>
             <tr>
                 <td><?php echo translate('description'); ?></td>
                 <td><textarea name="desc" rows="5" cols="40"><?php echo htmlspecialchars($cur_forum['description']); ?></textarea></td>
