@@ -29,7 +29,7 @@ if ($dirs[2] == 'forum') {
 		httperror(404);
 	}
 	$forum_info = $db->fetch_assoc($result);
-	if (!strstr($forum_info['topic_groups'], '-' . $futurebb_user['group_id'] . '-') || $cur_forum['archived']) {
+	if (!strstr($forum_info['topic_groups'], '-' . $futurebb_user['group_id'] . '-') || $forum_info['archived']) {
 		httperror(403);
 	}
 	$page_title = translate('posttopic') . ' - ' . $forum_info['name'];
