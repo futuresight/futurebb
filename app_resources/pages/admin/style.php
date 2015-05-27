@@ -32,7 +32,7 @@ if (isset($_POST['form_sent']) && isset($_FILES['extension_file'])) {
 				$zip->extractTo(FORUM_ROOT . '/app_config/templates/' . $fname);
 				$zip->close();
 				if (file_exists(FORUM_ROOT . '/app_config/templates/' . $fname . '/style.css')) {
-					rename(FORUM_ROOT . '/app_resources/pages/css/' . $fname . '.css');
+					rename(FORUM_ROOT . '/app_config/templates/' . $fname . '/style.css', FORUM_ROOT . '/app_resources/pages/css/' . $fname . '.css');
 				}
 			} else {
 				echo '<div class="forum_content"><p>' . translate('unzipfailed') . '<br /><a href="' . $base_config['baseurl'] . '/admin/style">' . translate('tryagain') . '</a></p></div>';
@@ -92,7 +92,7 @@ if (isset($_FILES['icon_file']) && is_uploaded_file($_FILES['icon_file']['tmp_na
 			?>
 			<h3><?php echo translate('installnewcss'); ?></h3>
 			<form action="<?php echo $base_config['baseurl']; ?>/admin/style" method="post" enctype="multipart/form-data">
-				<p><?php echo translate('cssfile') ?> <input type="file" name="extension_file" accept="text/css" /></p>
+				<p><?php echo translate('cssfile') ?> <input type="file" name="extension_file" /></p>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('install'); ?>" /></p>
 			</form>
 			<h3><?php echo translate('favicon'); ?></h3>
