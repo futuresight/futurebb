@@ -63,6 +63,7 @@ if (isset($_GET['delete_css'])) {
 		}
 		rmdir(FORUM_ROOT . '/app_config/templates/' . $fname);
 	}
+	header('Refresh: 0');
 }
 if (isset($_FILES['icon_file']) && is_uploaded_file($_FILES['icon_file']['tmp_name']) && pathinfo($_FILES['extension_file']['name'], PATHINFO_EXTENSION) == 'ico') {
 	move_uploaded_file($_FILES['icon_file']['tmp_name'], FORUM_ROOT . '/static/favicon.ico');
