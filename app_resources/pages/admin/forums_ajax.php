@@ -522,11 +522,12 @@ if (isset($_POST['form_sent'])) {
 	function changeCat(forum_id, new_cat_id) {
 		document.getElementById('changecat_' + forum_id).childNodes[0].selected = true;
 		var forumRow = document.getElementById('tr_' + forum_id);
-		document.getElementById('table_cat_' + new_cat_id).appendChild(forumRow);
+		document.getElementById('table_cat_' + new_cat_id).childNodes[0].appendChild(forumRow);
 		document.getElementById('sort_order_' + forum_id).value = max_sort_orders[new_cat_id] + 1;
 		max_sort_orders[new_cat_id]++;
 		
 		var oldCat = document.getElementById('catof_' + forum_id).value;
+		document.getElementById('table_cat_' + oldCat).childNodes[0].removeChild(oldCat);
 		max_sort_orders[oldCat]--;
 		document.getElementById('catof_' + forum_id).value = new_cat_id;
 		
