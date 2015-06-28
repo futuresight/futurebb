@@ -36,14 +36,14 @@ abstract class BBCodeController {
 			self::add_bbcode('%\[i\](.*?)\[/i\]%ms', '<em>$1</em>');
 			self::add_bbcode('%\[u\](.*?)\[/u\]%ms', '<u>$1</u>');
 			self::add_bbcode('%\[s\](.*?)\[/s\]%ms', '<del>$1</del>');
-			self::add_bbcode('%\[quote\](.*?)\[/quote\]%ms', '</p><div class="quotebox">$1</div><p>');
-			self::add_bbcode('%\[quote=(.*?)\](.*?)\[/quote\]%ms', '</p><div class="quotebox"><p><b>$1 ' . translate('wrote') . '</b><br />$2</p></div><p>');
 			self::add_bbcode('%\[colou?r=(white|black|red|green|blue|orange|yellow|pink|gray|magenta|#[0-9a-fA-F]{6}|\#[0-9a-fA-F]{3})\](.*?)\[/colou?r\]%m', '<span style="color:$1">$2</span>');
 		}
 		
 		$text = htmlspecialchars($text); //clear out any funny business
 		
 		$text = preg_replace_callback('%\s?\[code\](.*?)\[/code\]\s?%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
+		$text = preg_replace_callback('%\[quote\](.*?)\[/quote\]%ms', 'self::handle_quote_tag', $text);
+		$text = preg_replace_callback('%\[quote=(.*?)\](.*?)\[/quote\]%ms', 'self::handle_quote_tag', $text);
 		
 		//links and images (these can't be grouped with the rest because they use a different function
 		$text = preg_replace_callback('%\[url=?(.*?)\](.*?)\[/url\]%s', 'self::handle_url_tag', $text);
@@ -106,6 +106,15 @@ abstract class BBCodeController {
 		
 		$text = censor($text);
 		return $text;
+	}
+	
+	static function handle_quote_tag($matches) {
+		if (sizeof($matches) == 2) {
+			$body = trim($matches[1]); //just [quote]text[/quote]
+		} else {
+			$body = '<b> ' . $matches[1] . translate('wrote') . '</b><br />' . trim($matches[2]); //with author: [quote=someone]text[/quote]
+		}
+		return '</p><div class="quotebox">' . $body . '</div><p>';
 	}
 	
 	static function handle_list_tags($text) {

@@ -17,9 +17,9 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	$errors = array();
 	BBCodeController::error_check($_POST['content'], $errors);
 	
-	if ($can_edit_subject && $_POST['subject'] == '')
+	if ($can_edit_subject && trim($_POST['subject']) == '')
 		$errors[] = translate('blanksubject');
-	if ($_POST['content'] == '')
+	if (trim($_POST['content']) == '')
 		$errors[] = translate('blankcontent');
 		
 	if (empty($errors) && !isset($_POST['preview'])) {

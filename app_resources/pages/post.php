@@ -59,9 +59,9 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	}
 	
 	check_flood($errors);
-	if ($dirs[2] == 'forum' && $_POST['subject'] == '')
+	if ($dirs[2] == 'forum' && trim($_POST['subject']) == '')
 		$errors[] = translate('blanksubject');
-	if ($_POST['message'] == '')
+	if (trim($_POST['message']) == '')
 		$errors[] = translate('blankmsg');
 	
 	$continue_posting = ExtensionConfig::run_hooks('check-post', 
