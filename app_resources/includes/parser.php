@@ -42,8 +42,10 @@ abstract class BBCodeController {
 		$text = htmlspecialchars($text); //clear out any funny business
 		
 		$text = preg_replace_callback('%\s?\[code\](.*?)\[/code\]\s?%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
-		$text = preg_replace_callback('%\[quote\](.*?)\[/quote\]%ms', 'self::handle_quote_tag', $text);
-		$text = preg_replace_callback('%\[quote=(.*?)\](.*?)\[/quote\]%ms', 'self::handle_quote_tag', $text);
+		while (preg_match('%\[quote(=.*?)?\](.*?)\[/quote\]%ms', $text)) {
+			$text = preg_replace_callback('%\[quote\](.*?)\[/quote\]%ms', 'self::handle_quote_tag', $text);
+			$text = preg_replace_callback('%\[quote=(.*?)\](.*?)\[/quote\]%ms', 'self::handle_quote_tag', $text);
+		}
 		
 		//links and images (these can't be grouped with the rest because they use a different function
 		$text = preg_replace_callback('%\[url=?(.*?)\](.*?)\[/url\]%s', 'self::handle_url_tag', $text);
@@ -112,7 +114,7 @@ abstract class BBCodeController {
 		if (sizeof($matches) == 2) {
 			$body = trim($matches[1]); //just [quote]text[/quote]
 		} else {
-			$body = '<b> ' . $matches[1] . translate('wrote') . '</b><br />' . trim($matches[2]); //with author: [quote=someone]text[/quote]
+			$body = '<b> ' . $matches[1] . ' ' . translate('wrote') . '</b><br />' . trim($matches[2]); //with author: [quote=someone]text[/quote]
 		}
 		return '</p><div class="quotebox">' . $body . '</div><p>';
 	}
