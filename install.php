@@ -848,7 +848,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		set_config('new_version', 0);
 		set_config('max_quote_depth', 4);
 		set_config('disable_registrations', 0);
-		set_config('db_version', 2);
+		set_config('db_version', 3);
 		set_config('enable_bbcode', 1);
 		set_config('enable_smilies', 1);
 		set_config('avatar_max_filesize', 1024);
