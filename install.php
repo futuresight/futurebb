@@ -307,6 +307,10 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('0');
 		$tables['forums']->add_field($new_fld);
+		$new_fld = new DBField('archived','TINYINT(1)');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('0');
+		$tables['forums']->add_field($new_fld);
 		$tables['forums']->commit();
 		
 		$tables['interface_history'] = new DBTable('interface_history');
@@ -674,11 +678,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld = new DBField('last_visit','INT');
 		$new_fld->add_extra('NOT NULL');
 		$tables['users']->add_field($new_fld);
-		$new_fld = new DBField('timezone','TINYINT(3)');
-		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('0');
-		$tables['users']->add_field($new_fld);
-		$new_fld = new DBField('dst','TINYINT(1)');
+		$new_fld = new DBField('timezone','INT(3)');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('0');
 		$tables['users']->add_field($new_fld);
@@ -815,6 +815,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['user_groups']->add_field($new_fld);
 		$tables['user_groups']->commit();
 		unset($tables);
+		unset($new_fld);
 		
 		//add database data
 		set_config('board_title', get_cookie_data('board_title'));
@@ -866,6 +867,8 @@ if (isset($_GET['downloadconfigxml'])) {
 </linkset>');
 		set_config('admin_pages', 'PT5pbmRleApiYW5zPT5iYW5zCnJlcG9ydHM9PnJlcG9ydHMKY2Vuc29yaW5nPT5jZW5zb3JpbmcKZm9ydW1zPT5mb3J1bXMKaXBfdHJhY2tlcj0+aXB0cmFja2VyCnVzZXJfZ3JvdXBzPT51c2VyZ3JvdXBzCnRyYXNoX2Jpbj0+dHJhc2hiaW4KbWFpbnRlbmFuY2U9Pm1haW50ZW5hbmNlCnN0eWxlPT5zdHlsZQpleHRlbnNpb25zPT5leHRlbnNpb25zCmludGVyZmFjZT0+aW50ZXJmYWNl');
 		set_config('mod_pages', 'YmFucz0+YmFucwpyZXBvcnRzPT5yZXBvcnRzCnRyYXNoX2Jpbj0+dHJhc2hiaW4KaXBfdHJhY2tlcj0+aXB0cmFja2Vy');
+		set_config('date_format', 'd M Y');
+		set_config('time_format', 'H:i');
 		
 		//create guest user
 		$insert = new DBInsert('users', array(
