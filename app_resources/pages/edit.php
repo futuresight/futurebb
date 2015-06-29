@@ -1,12 +1,15 @@
 <?php
 $page_title = translate('editpost');
 $pid = intval($dirs[2]);
-$result = $db->query('SELECT p.poster,p.content,p.disable_smilies,t.url AS turl,t.subject,t.id AS tid,f.url AS furl,f.name AS forum_name,t.first_post_id FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE p.id=' . $pid) or error('Failed to get post', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT p.poster,p.content,p.disable_smilies,t.url AS turl,t.subject,t.id AS tid,f.url AS furl,t.closed,f.name AS forum_name,f.archived,t.first_post_id FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE p.id=' . $pid) or error('Failed to get post', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result)) {
 	httperror(404);
 }
 $cur_post = $db->fetch_assoc($result);
 if (!$futurebb_user['g_admin_privs'] && !$futurebb_user['g_mod_privs'] && ($cur_post['poster'] != $futurebb_user['id'] || !$futurebb_user['g_edit_posts']) || strstr($futurebb_user['restricted_privs'], 'edit')) {
+	httperror(403);
+}
+if (($cur_post['closed'] || $cur_post['archived']) && (!$futurebb_user['g_mod_privs'] && !$futurebb_user['g_admin_privs'])) {
 	httperror(403);
 }
 $can_edit_subject = ($cur_post['first_post_id'] == $pid); //only allow subject editing if the first post
