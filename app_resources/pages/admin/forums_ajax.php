@@ -336,17 +336,6 @@ if (isset($_POST['form_sent'])) {
 		}
 	}
 	
-	function cancelDeleteCat(cat_id) {
-		var tr = document.getElementById('tr_' + forum_id);
-		tr.style.backgroundColor = '';
-		var deleteFormItem = document.getElementById('delete_forum_' + forum_id);
-		deleteFormItem.parentNode.removeChild(deleteFormItem);
-		var index = cats_to_delete.indexOf(cat_id);
-		if (index != -1) {
-			cats_to_delete.splice(index, 1);
-		}
-	}
-	
 	function moveCat(cat_id,dir) {
 		//mvoe categories
 		var origRow = document.getElementById('cat_' + cat_id);
