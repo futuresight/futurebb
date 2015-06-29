@@ -47,7 +47,10 @@ $mappings = array(
 	12 => 385,
 	13 => 213,
 );
-//TODO: add query to map old timezones to new timezones
+//I hate mass queries as much as anyone, but they have to be done
+foreach ($mappings as $oldtime => $newtime) {
+	$db->query('UPDATE `#^users` SET timezone=' . $newtime . ' WHERE timezone=' . $oldtime) or enhanced_error('Failed to update timezone', true);
+}
 echo '<li>RV3: Converting timezones... success</li>';
 
 set_config('db_version', 2);
