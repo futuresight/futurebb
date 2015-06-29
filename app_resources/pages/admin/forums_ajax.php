@@ -112,7 +112,11 @@ if (isset($_POST['form_sent'])) {
 			}
 		}
 		foreach ($_POST['new_forum'] as $key => $forum_name) {
-			create_forum(intval($_POST['new_forum_cat'][$key]), $forum_name, $view, $topics, $replies, intval($_POST['sort_order'][$key]));
+			$cat_id = intval($_POST['new_forum_cat'][$key]);
+			if (isset($cat_mappings[$cat_id])) {
+				$cat_id = $cat_mappings[$cat_id];
+			}
+			create_forum($cat_id, $forum_name, $view, $topics, $replies, intval($_POST['sort_order'][$key]));
 			/*
 			//make new forum
 			$base_name = URLEngine::make_friendly($forum_name);
