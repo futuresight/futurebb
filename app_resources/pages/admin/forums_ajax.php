@@ -436,11 +436,17 @@ if (isset($_POST['form_sent'])) {
 		th2.innerHTML = '<?php echo translate('move'); ?>';
 		topRow.appendChild(th2);
 		var th3 = document.createElement('th');
-		th3.innerHTML = '<?php echo translate('changecategory'); ?>';
+		th3.innerHTML = '<?php echo translate('delete'); ?>';
 		topRow.appendChild(th3);
 		var th4 = document.createElement('th');
-		th4.innerHTML = '<?php echo translate('cancel'); ?>';
+		th4.innerHTML = '<?php echo translate('edit'); ?>';
 		topRow.appendChild(th4);
+		var th5 = document.createElement('th');
+		th5.innerHTML = '<?php echo translate('changecategory'); ?>';
+		topRow.appendChild(th5);
+		var th6 = document.createElement('th');
+		th6.innerHTML = '<?php echo translate('cancel'); ?>';
+		topRow.appendChild(th6);
 		
 		catTable.appendChild(topRow);
 		catDiv.appendChild(document.createElement('hr'));
