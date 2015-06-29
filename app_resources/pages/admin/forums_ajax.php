@@ -117,33 +117,6 @@ if (isset($_POST['form_sent'])) {
 				$cat_id = $cat_mappings[$cat_id];
 			}
 			create_forum($cat_id, $forum_name, $view, $topics, $replies, intval($_POST['sort_order'][$key]));
-			/*
-			//make new forum
-			$base_name = URLEngine::make_friendly($forum_name);
-			$name = $base_name;
-			$add_num = 0;
-			
-			//check for forums with the same URL
-			$result = $db->query('SELECT url FROM `#^forums` WHERE url LIKE \'' . $db->escape($name) . '%\'') or error('Failed to check for similar URLs', __FILE__, __LINE__, $db->error());
-			$urllist = array();
-			while (list($url) = $db->fetch_row($result)) {
-				$urllist[] = $url;
-			}
-			$ok = false;
-			$add_num = 0;
-			while (!$ok) {
-				$ok = true;
-				if (in_array($name, $urllist)) {
-					$add_num++;
-					$name = $base_name . $add_num;
-					$ok = false;
-				}
-			}
-			$cat_id = intval($_POST['new_forum_cat'][$key]);
-			if (isset($cat_mappings[$cat_id])) {
-				$cat_id = $cat_mappings[$cat_id];
-			}
-			$db->query('INSERT INTO `#^forums`(url,name,cat_id,sort_position,view_groups,topic_groups,reply_groups) VALUES(\'' . $db->escape($name) . '\',\'' . $db->escape($forum_name) . '\',' . $cat_id . ',' . intval($_POST['sort_order'][$key]) . ',\'-' . implode('-', $view) . '-\',\'-' . implode('-', $topics) . '-\',\'-' . implode('-', $replies) . '-\')') or error('Failed to create new forum', __FILE__, __LINE__, $db->error());*/
 		}
 	}
 	
