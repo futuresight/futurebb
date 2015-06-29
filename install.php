@@ -854,6 +854,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		set_config('avatar_max_filesize', 1024);
 		set_config('avatar_max_width', 64);
 		set_config('avatar_max_height', 64);
+		set_config('bbcode_privatemsg', 1);
 		set_config('header_links', '<?xml version="1.0" ?>
 <linkset>
     <link path="">index</link>
