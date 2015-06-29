@@ -17,7 +17,7 @@ if (isset($_POST['update_forum'])) {
 	foreach ($_POST['reply'] as $key => $val) {
 		$replies .= $key . '-';
 	}
-	$db->query('UPDATE `#^forums` SET description=\'' . $db->escape($_POST['desc']) . '\',view_groups=\'' . $view . '\',topic_groups=\'' . $topics . '\',reply_groups=\'' . $replies . '\',cat_id=' . intval($_POST['category']) . ',archived=' . intval($_POST['archive']) . ' WHERE id=' . $fid) or error('Failed to update forum', __FILE__, __LINE__, $db->error());
+	$db->query('UPDATE `#^forums` SET description=\'' . $db->escape($_POST['desc']) . '\',view_groups=\'' . $view . '\',topic_groups=\'' . $topics . '\',reply_groups=\'' . $replies . '\'' . (isset($_POST['cat_id']) ? ',cat_id=' . intval($_POST['category']) : '') . ',archived=' . intval($_POST['archive']) . ' WHERE id=' . $fid) or error('Failed to update forum', __FILE__, __LINE__, $db->error());
 	if (isset($_POST['popup'])) {
 		?>
 <script type="text/javascript">
