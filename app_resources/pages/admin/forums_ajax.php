@@ -162,6 +162,7 @@ if (isset($_POST['form_sent'])) {
     <script type="text/javascript">
 	//<![CDATA[
 	var numNewForums = 9999;
+	var needRefresh = false;
 	function addForum(cat_id) {
 		//add a new forum to a category
 		numNewForums++; //this is the temporary id, the database will set the real one
@@ -211,6 +212,7 @@ if (isset($_POST['form_sent'])) {
 		newTr.appendChild(cancelTd);
 		document.getElementById('table_cat_' + cat_id).appendChild(newTr);
 		
+		needRefresh = true;
 		unlockSubmit();
 	}
 	
@@ -266,6 +268,8 @@ if (isset($_POST['form_sent'])) {
 		unlockSubmit();
 	}
 	
+	var forums_to_delete = [];
+	
 	function prepareDelete(forum_id) {
 		if (!confirm('Are you sure you want to delete that forum?')) {
 			return;
@@ -285,6 +289,7 @@ if (isset($_POST['form_sent'])) {
 			cancelDelete(forum_id);
 			this.parentNode.removeChild(this);
 		}
+		forums_to_delete.push(forum_id);
 		tr.getElementsByTagName('td')[5].appendChild(cancelTd);
 		unlockSubmit();
 	}
@@ -294,6 +299,10 @@ if (isset($_POST['form_sent'])) {
 		tr.style.backgroundColor = '';
 		var deleteFormItem = document.getElementById('delete_forum_' + forum_id);
 		deleteFormItem.parentNode.removeChild(deleteFormItem);
+		var index = forums_to_delete.indexOf(forum_id);
+		if (index != -1) {
+			forums_to_delete.splice(index, 1);
+		}
 	}
 	
 	function prepareDeleteCat(cat_id) {
@@ -452,6 +461,8 @@ if (isset($_POST['form_sent'])) {
 		catDiv.appendChild(document.createElement('hr'));
 		catDiv.appendChild(catTable);
 		
+		needRefresh = true;
+		
 		document.getElementById('cat_container').appendChild(catDiv);
 		unlockSubmit();
 	}
@@ -500,8 +511,17 @@ if (isset($_POST['form_sent'])) {
 		req.onreadystatechange = function() {
 			if (req.readyState==4 && req.status==200) {
 				window.onbeforeunload = function() {};
-				alert('Saved!');
 				document.getElementById('submitBox').style.display = 'none';
+				
+				//hide any forums or categories marked for deletion
+				for (var forum_id in forums_to_delete) {
+					document.getElementById('tr_' + forums_to_delete[forum_id]).parentNode.removeChild(document.getElementById('tr_' + forums_to_delete[forum_id]));
+				}
+				alert('Saved!');
+				
+				if (needRefresh) {
+					window.location.reload();
+				}
 			} else {
 				//failure
 			}
