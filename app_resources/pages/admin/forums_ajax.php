@@ -305,6 +305,7 @@ if (isset($_POST['form_sent'])) {
 		}
 	}
 	
+	var cats_to_delete = [];
 	function prepareDeleteCat(cat_id) {
 		var tr = document.getElementById('cat_' + cat_id);
 		if (document.getElementById('delete_cat_' + cat_id)) {
@@ -313,6 +314,10 @@ if (isset($_POST['form_sent'])) {
 			tr.getElementsByTagName('a')[3].innerHTML = '&#10060;';
 			var deleteFormItem = document.getElementById('delete_cat_' + cat_id);
 			deleteFormItem.parentNode.removeChild(deleteFormItem);
+			var index = cats_to_delete.indexOf(cat_id);
+			if (index != -1) {
+				cats_to_delete.splice(index, 1);
+			}
 		} else {
 			//not marked for deletion, so mark it
 			if (!confirm('Are you sure you want to delete that category?')) {
@@ -326,6 +331,7 @@ if (isset($_POST['form_sent'])) {
 			newHiddenInput.value = cat_id;
 			document.getElementById('submitBox').appendChild(newHiddenInput);
 			tr.getElementsByTagName('a')[3].innerHTML = '<?php echo translate('cancel'); ?>';
+			cats_to_delete.push(cat_id);
 			unlockSubmit();
 		}
 	}
@@ -335,6 +341,10 @@ if (isset($_POST['form_sent'])) {
 		tr.style.backgroundColor = '';
 		var deleteFormItem = document.getElementById('delete_forum_' + forum_id);
 		deleteFormItem.parentNode.removeChild(deleteFormItem);
+		var index = cats_to_delete.indexOf(cat_id);
+		if (index != -1) {
+			cats_to_delete.splice(index, 1);
+		}
 	}
 	
 	function moveCat(cat_id,dir) {
@@ -516,6 +526,9 @@ if (isset($_POST['form_sent'])) {
 				//hide any forums or categories marked for deletion
 				for (var forum_id in forums_to_delete) {
 					document.getElementById('tr_' + forums_to_delete[forum_id]).parentNode.removeChild(document.getElementById('tr_' + forums_to_delete[forum_id]));
+				}
+				for (var cat_id in cats_to_delete) {
+					document.getElementById('cat_' + cats_to_delete[cat_id]).parentNode.removeChild(document.getElementById('cat_' + cats_to_delete[cat_id]));
 				}
 				alert('Saved!');
 				
