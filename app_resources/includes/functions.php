@@ -824,8 +824,8 @@ function create_forum($category, $fname, $view, $topics, $replies, $sort = 0) {
 
 function check_username($username) {
 	//returns whether the username is considered "valid" or not (does NOT check for duplicates, just checks the characters)
-	for ($i = 0; $i < strlen($_POST['username']); $i++) {
-		$char = $_POST['username']{$i};
+	for ($i = 0; $i < strlen($username); $i++) {
+		$char = $username{$i};
 		$allowed_chars = array('-','_');
 		if (!ctype_alnum($char) && !in_array($char, $allowed_chars)) {
 			return false;
