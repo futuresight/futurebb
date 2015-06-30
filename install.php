@@ -160,6 +160,15 @@ if (isset($_GET['downloadconfigxml'])) {
 	echo 'RewriteRule ^static/(.*?)$ static/$1 [L]' . "\n";
 	echo 'RewriteRule ^(.*)$ dispatcher.php';
 	die;
+} else if (isset($_POST['language_done'])) {
+	$page = 'complete';
+} else if (isset($_GET['language_insert'])) {
+	include 'app_resources/database/db_resources.php';
+	if (test_db()) {
+		$page = 'language_insert';
+	} else {
+		$page = '';
+	}
 } else if (isset($_POST['install'])) {
 	include 'app_resources/database/db_resources.php';
 	if (test_db()) {
@@ -983,32 +992,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		unset($pages);
 		unset($pagessubdirs);
 		
-		//insert the language keys
-		$handle = opendir(FORUM_ROOT . '/app_config/cache/language');
-		while ($language = readdir($handle)) {
-			if ($language != '.' && $language != '..') {
-				$subhandle = opendir(FORUM_ROOT . '/app_config/cache/language/' . $language);
-				while ($langfile = readdir($subhandle)) {
-					if ($langfile != '.' && $langfile != '..') {
-						include FORUM_ROOT . '/app_config/cache/language/' . $language . '/' . $langfile;
-						if ($langfile != 'main.php') {
-							$lang = $lang_addl;
-							unset($lang_addl);
-						}
-						$q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
-						$lang_insert_data = array();
-						foreach ($lang as $key => $val) {
-							$lang_insert_data[] = '(\'' . $db->escape($language) . '\',\'' . $db->escape($key) . '\',\'' . $db->escape($val) . '\',\'' . $db->escape(basename($langfile, '.php')) . '\')';
-						}
-						$q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
-						$q->commit();
-					}
-				}
-			}
-		}
-		unset($lang);
-		
-		$page = 'complete';
+		redirect('install.php?language_insert=1');
 	} else {
 		db_fail();
 	}
@@ -1176,6 +1160,7 @@ if (isset($_GET['downloadconfigxml'])) {
 	$install_pages['welcome'] = true;
 	$page = 'welcome';
 }
+ob_start();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -1530,6 +1515,9 @@ location @futurebb_rewrite {
                             <?php
 						}
 						break;
+					case 'language_insert':
+						include FORUM_ROOT . '/app_resources/includes/language_insert.php';
+						break;
 					default:
 						echo '<p>' . translate('weirderror') . '</p>';
 				}
@@ -1538,3 +1526,7 @@ location @futurebb_rewrite {
 		</div>
 	</body>
 </html>
+<?php
+$content = ob_get_contents();
+ob_end_clean();
+echo $content;

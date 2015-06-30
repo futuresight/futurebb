@@ -64,4 +64,5 @@ $lang_addl = array (
   'passtooshort' => 'Your password was too short (< 8 characters)',
   'invalidbaseurl' => 'Your base URL was invalid. It needs to be consistent with the base path and have the format of a valid URL.',
   'invalidbasepath' => 'Your base path was invalid - it must start with a slash and can not end with a slash',
+  'continuetocompleteinstall' => 'Press the "Continue" button below to complete the installation of FutureBB.',
 );
