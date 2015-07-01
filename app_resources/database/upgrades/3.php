@@ -3,6 +3,7 @@
 //add new config values
 set_config('date_format', 'd M Y');
 set_config('time_format', 'H:i');
+set_config('bbcode_privatemsg', 1);
 echo '<li>RV3: Adding new config values... success</li>';
 
 //update database structure
@@ -53,4 +54,4 @@ foreach ($mappings as $oldtime => $newtime) {
 }
 echo '<li>RV3: Converting timezones... success</li>';
 
-set_config('db_version', 2);
+set_config('db_version', 3);
