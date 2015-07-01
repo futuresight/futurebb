@@ -58,7 +58,7 @@ class DBMassInsert implements DBQuery {
 		$start = 'INSERT INTO `' . $db->prefix . $this->table . '`(' . implode(',', $this->fields) . ') VALUES';
 		if (strpos($db_info['type'], 'mysql') === 0) {
 			$db->query($start . implode(',', $this->data)) or enhanced_error($this->error, true);
-		} else if (strpos($db_info['type'], 'sqlite') === 0) {
+		/*} else if (strpos($db_info['type'], 'sqlite') === 0) {
 			$row1 = $this->data[0];
 			unset($this->data[0]);
 			$firstinsertparts = array();
@@ -68,7 +68,7 @@ class DBMassInsert implements DBQuery {
 			foreach ($this->data as &$val) {
 				$val = 'UNION SELECT ' . substr($val, 1, strlen($val) - 2);
 			}
-			$db->query('INSERT INTO `'.  $db->prefix . '` SELECT ' . implode(',', $firstinsertparts) . implode(' ', $this->data)) or enhanced_error($this->error, true);
+			$db->query('INSERT INTO `'.  $db->prefix . '` SELECT ' . implode(',', $firstinsertparts) . implode(' ', $this->data)) or enhanced_error($this->error, true);*/
 		} else {
 			foreach ($this->data as $entry) {
 				$db->query($start . $entry) or enhanced_error($this->error, true);
