@@ -443,21 +443,10 @@ if (isset($_POST['form_sent'])) {
 		unlockSubmit();
 	}
 	
-	var newWin = null;
 	function editForum(forum_id) {
-		if (newWin == null && document.getElementById('submitBox').style.display == 'none') {
-			newWin = window.open('<?php echo $base_config['baseurl']; ?>/admin/forums/edit/' + forum_id + '?popup=true', 'Edit forum', 'width=500, height=600');
-			window.onunload = function() {
-				newWin.close();
-			}
-			newWin.onbeforeunload = function() {
-				newWin = null;
-			}
-			newWin.onsubmit = function() {
-				newWin = null;
-			}
-		} else {
-			alert('<?php echo translate('forumalreadyopen'); ?>');
+		var newWin = window.open('<?php echo $base_config['baseurl']; ?>/admin/forums/edit/' + forum_id + '?popup=true', 'Edit forum', 'width=500, height=600');
+		window.onunload = function() {
+			newWin.close();
 		}
 	}
 	
