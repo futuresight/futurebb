@@ -48,9 +48,9 @@ if (isset($_POST['form_sent_update'])) {
 				case 'bool':
 					$sql .= ',' . (isset($_POST['config'][$name]) ? '1' : '0'); break;
 				case 'string':
-					$sql .= ',\'' . $db->escape($_POST['config'][$name]) . '\''; break;
+					$sql .= ',\'' . $db->escape(isset($_POST['config'][$name]) ? $_POST['config'][$name] : '') . '\''; break;
 				case 'int':
-					$sql .= ',' . intval($_POST['config'][$name]) . ''; break;
+					$sql .= ',' . (isset($_POST['config'][$name]) ? intval($_POST['config'][$name]) : 0) . ''; break;
 			}
 		}
 		$sql = substr($sql, 1);
@@ -109,7 +109,7 @@ while (list($id,$name,$perm,$guest) = $db->fetch_row($result)) {
 			<h4><?php echo translate('newusergroup'); ?></h4>
 			<p><?php echo translate('basegroupon'); ?> <select name="baseon"><?php
 			foreach ($user_groups as $id => $name) {
-				if (!$group_info[$id]['guest']) {
+				if (!$group_info[$id]['guest'] && $id != 1) {
 					echo '<option value="' . $id . '">' . htmlspecialchars($name) . '</option>';
 				}
 			}
