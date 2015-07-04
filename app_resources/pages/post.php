@@ -89,7 +89,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 				'poster' => $futurebb_user['username'],
 				'forum_url' => $forum_info['url'],
 				'forum' => $forum_info['name'],
-				'topic_url' => $topic_url
+				'topic_url' => $topic_url,
 			)
 		);
 		redirect($base_config['baseurl'] . '/' . $forum_info['url'] . '/' . $topic_url);
@@ -131,7 +131,9 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 				'topic' => $cur_topic['subject'],
 				'topic_url' => $cur_topic['url'],
 				'poster' => $futurebb_user['username'],
-				'message' => $_POST['message']
+				'message' => $_POST['message'],
+				'forum_url' => $cur_topic['forum_url'],
+				'forum' => $cur_topic['forum_name']
 			)
 		);
 		
@@ -157,8 +159,8 @@ if (isset($_GET['quote'])) {
 ?>
 
 <form action="<?php echo $base_config['baseurl']; ?>/post/<?php echo htmlspecialchars($dirs[2]); ?>/<?php echo htmlspecialchars($dirs[3]); ?>" method="post" enctype="multipart/form-data">
-	<?php ExtensionConfig::run_hooks('bbcode_toolbar'); ?>
 	<?php if ($dirs[2] == 'forum') { ?><p><?php echo translate('subject'); ?> <input type="text" name="subject" size="50"<?php if (isset($_POST['subject'])) echo ' value="' . htmlspecialchars($_POST['subject']) . '"'; ?> /></p><?php } ?>
+	<?php ExtensionConfig::run_hooks('bbcode_toolbar'); ?>
 	<p><?php echo translate('message'); ?><br /><textarea name="message" rows="20" cols="70"><?php if (isset($_POST['message'])) echo htmlspecialchars($_POST['message']); else if (isset($post)) echo '[quote=' . htmlspecialchars($poster) . ']' . htmlspecialchars($post) . '[/quote]' . "\n"; ?></textarea></p>
     <?php //the bar at the bottom indicating which features are available ?>
     <p><a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp"><?php echo translate('bbcode'); ?></a>: <?php if ($futurebb_config['enable_bbcode']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#smilies"><?php echo translate('smilies'); ?></a>: <?php if ($futurebb_config['enable_smilies']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('imgtag'); ?></a>: <?php if ($futurebb_user['g_post_links']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('urltag'); ?></a>: <?php if ($futurebb_user['g_post_images']) echo translate('on'); else echo translate('off'); ?></p>
