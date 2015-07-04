@@ -123,6 +123,7 @@ if (isset($_GET['uninstall'])) {
 				rrmdir(FORUM_ROOT . '/' . $dir);
 			}
 		}
+		rrmdir(FORUM_ROOT . '/app_config/extensions/' . $ext_id);
 		$q = new DBDelete('extensions', 'id=' . $ext_id, 'Failed to remove extension info from database');
 		$q->commit();
 		?>
