@@ -117,5 +117,8 @@ $_SESSION['verified'] = 0;
 			</select></td>
 		</tr>
 	</table>
+	<?php
+	ExtensionConfig::run_hooks('show_captcha');
+	?>
 	<p><input type="submit" name="form_sent" value="<?php echo translate('submit'); ?>" /></p>
 </form>
