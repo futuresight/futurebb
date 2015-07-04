@@ -303,12 +303,15 @@ if (isset($_POST['form_sent'])) {
 		$ext_id = $db->insert_id();
 		
 		//store uninstaller
+		mkdir(FORUM_ROOT . '/app_config/extensions/' . $ext_id);
 		if (file_exists($ext_test_dir . '/uninstall.php') && $ext_info['uninstallable']) {
-			mkdir(FORUM_ROOT . '/app_config/extensions/' . $ext_id);
 			rename($ext_test_dir . '/uninstall.php', FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/uninstall.php');
 			if (!file_exists(FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/uninstall.php')) {
 				error('Failed to copy uninstall file. Please check file permissions in app_config directory.');
 			}
+		}
+		if (file_exists($ext_test_dir . '/hooks.php')) {
+			copy($ext_test_dir . '/hooks.php', FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/hooks.php');
 		}
 		
 		//finish up
