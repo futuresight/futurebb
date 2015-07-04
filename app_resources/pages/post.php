@@ -82,10 +82,19 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	if ($dirs[2] == 'forum' && empty($errors) && !isset($_POST['preview'])) {
 		$fid = intval($dirs[3]);
 		$topic_url = create_topic($_POST['subject'], $_POST['message'], $futurebb_user['id'], $fid, isset($_POST['hidesmilies']));
+		ExtensionConfig::run_hooks('new_topic',
+			array(
+				'subject' => $_POST['subject'],
+				'message' => $_POST['message'],
+				'poster' => $futurebb_user['username'],
+				'forum_url' => $forum_info['url'],
+				'forum' => $forum_info['name'],
+				'topic_url' => $topic_url
+			)
+		);
 		redirect($base_config['baseurl'] . '/' . $forum_info['url'] . '/' . $topic_url);
-		
-		// New post
 	} else if ($dirs[2] == 'topic' && empty($errors) && !isset($_POST['preview'])) {
+		//new post
 		$tid = intval($dirs[3]);
 		$parsedtext = BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), $futurebb_config['enable_bbcode']);
 		$db->query('INSERT INTO `#^posts`(poster,poster_ip,content,parsed_content,posted,topic_id,disable_smilies) VALUES(' . $futurebb_user['id'] . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',\'' . $db->escape($_POST['message']) . '\',\'' . $db->escape($parsedtext) . '\',' . time() . ',' . $tid . ',' . intval(isset($_POST['hidesmilies'])) . ')') or error('Failed to make first post', __FILE__, __LINE__, $db->error());
@@ -116,6 +125,16 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		
 		update_search_index($pid,$_POST['message']);
 		
+		ExtensionConfig::run_hooks('new_post',
+			array(
+				'id' => $pid,
+				'topic' => $cur_topic['subject'],
+				'topic_url' => $cur_topic['url'],
+				'poster' => $futurebb_user['username'],
+				'message' => $_POST['message']
+			)
+		);
+		
 		redirect($base_config['baseurl'] . '/posts/' . $pid); return;
 	} else if (isset($_POST['preview']) && empty($errors)) {
 		echo '<div class="quotebox preview">' . BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), true, $futurebb_config['enable_bbcode']) . '</div>';
@@ -138,6 +157,7 @@ if (isset($_GET['quote'])) {
 ?>
 
 <form action="<?php echo $base_config['baseurl']; ?>/post/<?php echo htmlspecialchars($dirs[2]); ?>/<?php echo htmlspecialchars($dirs[3]); ?>" method="post" enctype="multipart/form-data">
+	<?php ExtensionConfig::run_hooks('bbcode_toolbar'); ?>
 	<?php if ($dirs[2] == 'forum') { ?><p><?php echo translate('subject'); ?> <input type="text" name="subject" size="50"<?php if (isset($_POST['subject'])) echo ' value="' . htmlspecialchars($_POST['subject']) . '"'; ?> /></p><?php } ?>
 	<p><?php echo translate('message'); ?><br /><textarea name="message" rows="20" cols="70"><?php if (isset($_POST['message'])) echo htmlspecialchars($_POST['message']); else if (isset($post)) echo '[quote=' . htmlspecialchars($poster) . ']' . htmlspecialchars($post) . '[/quote]' . "\n"; ?></textarea></p>
     <?php //the bar at the bottom indicating which features are available ?>
