@@ -54,7 +54,10 @@ foreach ($mappings as $oldtime => $newtime) {
 }
 echo '<li>RV3: Converting timezones... success</li>';
 
-ExtensionConfig::add_page('/styles', array('file' => 'style.php', 'template' => false, 'admin' => false, 'mod' => false));
+ExtensionConfig::add_page('/styles', array('file' => 'style.php', 'template' => false, 'admin' => false, 'mod' => false, 'subdirs' => true));
+ExtensionConfig::remove_page('/styles/default.css');
+ExtensionConfig::remove_page('/styles/default.css/');
+ExtensionConfig::remove_page('/styles/embed.css');
 echo '<li>RV3: Adding missing pages... success</li>';
 
 ExtensionConfig::add_language_key('showallposts', 'Show all posts', 'English');
