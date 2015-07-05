@@ -197,7 +197,6 @@ ul#navlist li {
 #futurebb .forum_footer {
 	background-color: #EEE;
 	border: 1px solid #000;
-	margin-top: 12px;
 	padding-left:3px;
 }
 
@@ -209,8 +208,8 @@ ul#navlist li {
 	background-color: #EEE;
 }
 
-.forum_content_nobox {
-	padding-bottom:5px;
+.admin {
+	margin-top:0px;
 }
 
 div.leftmenu {
@@ -218,6 +217,10 @@ div.leftmenu {
 }
 
 /* index */
+
+#futurebb #users_online {
+	margin-bottom: 6px;
+}
 
 #futurebb .cat_body {
 	background-color: #EEE;
@@ -235,6 +238,7 @@ div.leftmenu {
 	margin-bottom: 0px;
 	margin-top: 2px;
 	padding-left: 4px;
+
 	font-size: 18px;
 }
 
@@ -298,7 +302,7 @@ div.leftmenu {
 /* menu-box pages */
 
 #futurebb .container {
-	display: block;
+	display: inline-block;
 	width: 100%;
 }
 

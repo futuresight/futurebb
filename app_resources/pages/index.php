@@ -52,7 +52,7 @@ if ($db->num_rows($result)) {
 	echo '<p>' . translate('noforums') . '</p>';
 }
 ?>
-<div class="cat_wrap">
+<div class="cat_wrap" id="users_online">
 	<h2 class="cat_header"><?php echo translate('usersonline'); ?></h2>
 	<div class="cat_body" style="text-align:center">
 		<?php
