@@ -272,6 +272,9 @@ if (isset($_POST['form_sent'])) {
 							moveDir($src . '/' . $file, $dst . '/' . $file);
 						} else {
 							rename($src . '/' . $file, $dst . '/' . $file);
+							if (!file_exists($dst . '/' . $file)) {
+								error('Failed to copy <code>' . str_replace(FORUM_ROOT, '[ROOT]', $dst) . '/' . $file . '</code>. Please check file permissions in app_config directory.');
+							}
 						}
 					}
 				}
@@ -311,7 +314,10 @@ if (isset($_POST['form_sent'])) {
 			}
 		}
 		if (file_exists($ext_test_dir . '/hooks.php')) {
-			copy($ext_test_dir . '/hooks.php', FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/hooks.php');
+			rename($ext_test_dir . '/hooks.php', FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/hooks.php');
+			if (!file_exists(FORUM_ROOT . '/app_config/extensions/' . $ext_id . '/hooks.php')) {
+				error('Failed to copy hooks file. Please check file permissions in app_config directory.');
+			}
 		}
 		
 		//finish up
