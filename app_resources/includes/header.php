@@ -33,6 +33,9 @@
 	//]]>
 	</script>
 	<$other_head_stuff/>
+	<?php
+	ExtensionConfig::run_hooks('load_header', array());
+	?>
 </head>
 
 <body>

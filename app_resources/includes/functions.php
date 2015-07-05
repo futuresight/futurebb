@@ -533,7 +533,8 @@ abstract class ExtensionConfig {
 			foreach ($hook_list[$event] as $function) {
 				//run each function associated with the event; stop if any of them return false
 				//the args are sent in one array
-				if (!$function($args)) {
+				$return = $function($args);
+				if ($return === false) {
 					return false;
 				}
 			}
