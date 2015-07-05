@@ -106,6 +106,8 @@
 		</div>
 	</div>
 	<$breadcrumbs/>
-	<?php if (!isset($page_info['nocontentbox'])) { ?>
+	<?php if (isset($page_info['nocontentbox'])) { ?>
+	<div class="forum_content_nobox">
+	<?php } else { ?>
 	<div class="forum_content">
 	<?php } ?>

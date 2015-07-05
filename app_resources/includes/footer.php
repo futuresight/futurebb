@@ -1,6 +1,4 @@
-		<?php if (!isset($page_info['nocontentbox'])) { ?>
 		</div>
-		<?php } ?>
 		<?php if ($page_info['file'] != 'viewtopic.php') { ?>
 		<$breadcrumbs/>
 		<?php } ?>
