@@ -201,4 +201,5 @@ $lang_addl = array (
   'otherforumeditsconfirmrefresh' => 'Edits to a forum have been submitted in another window. Do you want to refresh this page to reflect those changes?',
   'archiveforum' => 'Archive forum',
   'changecategory' => 'Change category',
+  'noextdir' => 'The directory "app_config/extensions" does not exist or is not writable. Please create it and change the file permissions appropriately to fix this (if in doubt, chmod to 0777).',
 );

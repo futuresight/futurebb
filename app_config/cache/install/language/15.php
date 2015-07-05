@@ -1,0 +1,47 @@
+<?php
+$q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
+$lang_insert_data = array();
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('installdetails') . '\',\'' . $db->escape('The installation details are listed below. Please review them before you finalize the installation.') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('completed') . '\',\'' . $db->escape('Installation complete!') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('clickhere') . '\',\'' . $db->escape('here') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('testout1') . '\',\'' . $db->escape('Please follow the steps below to finish setting up your forum. When done, click ') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('downloadxml') . '\',\'' . $db->escape('Download the config.xml file from the link below and place it in your forum root directory') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('testout2') . '\',\'' . $db->escape(' to test it out') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('apachemsg') . '\',\'' . $db->escape('<li>Make sure AllowOverride is set to ON for your forum directory. If it is not, then you need to enable it.</li><li>Download the .htaccess file below and place it in your forum root directory</li>') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('noapachemsg') . '\',\'' . $db->escape('<li>Rewrite all HTTP requests to the root directory of your forum to dispatcher.php</li>') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('xmllink') . '\',\'' . $db->escape('Download config.xml') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('htalink') . '\',\'' . $db->escape('Download .htaccess') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('weirderror') . '\',\'' . $db->escape('Installation error of some sort. We don&apos;t know why. Sorry!') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('selectdbtype') . '\',\'' . $db->escape('Select a database type: ') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('baddbtype') . '\',\'' . $db->escape('Your server does not support the database type selected. Please try again.') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('adminemail') . '\',\'' . $db->escape('Administrator email') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('dbfile') . '\',\'' . $db->escape('File to store SQLite') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('installcomplete') . '\',\'' . $db->escape('Installation complete!') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('addtonginx') . '\',\'' . $db->escape('The code below is a sample of what you probably need to add to your nginx configuration file (item #2 above). Please note that it needs to be put in the proper location and may not work in all configurations. See <a href=\"http://nginx.org/en/docs/http/ngx_http_rewrite_module.html\" target=\"_BLANK\">the nginx website</a> for more information.') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('titletooshort') . '\',\'' . $db->escape('The title you entered must be at least 4 characters.') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('pwdmismatch') . '\',\'' . $db->escape('The passwords did not match. Please try again.') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('usernameinvalid') . '\',\'' . $db->escape('The username you entered had an illegal character (only alphanumerics, hyphens, underscores, and periods, please) or was too short (< 4 characters)') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('bademail') . '\',\'' . $db->escape('The email you entered was invalid.') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('passtooshort') . '\',\'' . $db->escape('Your password was too short (< 8 characters)') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('invalidbaseurl') . '\',\'' . $db->escape('Your base URL was invalid. It needs to be consistent with the base path and have the format of a valid URL.') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('invalidbasepath') . '\',\'' . $db->escape('Your base path was invalid - it must start with a slash and can not end with a slash') . '\',\'' . $db->escape('install') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('security') . '\',\'' . $db->escape('Account security') . '\',\'' . $db->escape('profile') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('sendPM') . '\',\'' . $db->escape('Send the user a private message') . '\',\'' . $db->escape('profile') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('sendas_admin') . '\',\'' . $db->escape('Send as admin-issued warning') . '\',\'' . $db->escape('profile') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('pm_reply_header') . '\',\'' . $db->escape('Replying to message at $1:') . '\',\'' . $db->escape('profile') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('showallposts') . '\',\'' . $db->escape('Show all posts') . '\',\'' . $db->escape('profile') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('bademail') . '\',\'' . $db->escape('You entered an invalid email address.') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('duplicateuser') . '\',\'' . $db->escape('Username already exists') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('badusername') . '\',\'' . $db->escape('Username must only contain letters, numbers, periods, hyphens, and underscores. The first invalid character is: $1') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('dupeipreg') . '\',\'' . $db->escape('A user from your IP address has already registered within the past two hours. Please come back later and try again.') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('verifyemail') . '\',\'' . $db->escape('Someone has registered using your email address as the user $1. If this is you, go to the login page ($2/login?activate) and log in, and when it asks you for an access code, please use the following:
+$3
+If this is not you, then please disregard this message.') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('botchallenge') . '\',\'' . $db->escape('You failed the anti-bot challenge.') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('shortusername') . '\',\'' . $db->escape('Your username must be longer than 4 characters.') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('regsdisabled') . '\',\'' . $db->escape('Registrations are disabled.') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('regsdisableddesc') . '\',\'' . $db->escape('The administrator of this forum has disabled registrations.') . '\',\'' . $db->escape('register') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('latestpostsin') . '\',\'' . $db->escape('Latest posts in $1') . '\',\'' . $db->escape('rss') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('notifsfor') . '\',\'' . $db->escape('Notifications for $1') . '\',\'' . $db->escape('rss') . '\')';
+$q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
+$q->commit();

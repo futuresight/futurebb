@@ -448,6 +448,7 @@ abstract class ExtensionConfig {
 		if (file_exists(FORUM_ROOT . '/cache/admin_pages.php')) { //clear the cache
 			unlink(FORUM_ROOT . '/cache/admin_pages.php');
 		}
+		CacheEngine::CacheAdminPages();
 	}
 	static function remove_admin_menu($url) {
 		global $futurebb_config;
@@ -469,6 +470,7 @@ abstract class ExtensionConfig {
 		if (file_exists(FORUM_ROOT . '/cache/admin_pages.php')) { //clear the cache
 			unlink(FORUM_ROOT . '/cache/admin_pages.php');
 		}
+		CacheEngine::CacheAdminPages();
 	}
 	static function add_language_key($key, $text, $language = 'English') {
 		$q = new DBInsert('language', array('language' => $language, 'langkey' => $key, 'value' => $text, 'category' => 'main'), 'Failed to insert language key');

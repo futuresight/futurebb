@@ -338,6 +338,10 @@ if (isset($_POST['form_sent'])) {
 				$writable = false;
 				echo '<p style="color:#A00; font-weight:bold">' . translate('forumnotwritable') . '</p>';
 			}
+			if (!file_exists(FORUM_ROOT . '/app_config/extensions') || !writable(FORUM_ROOT . '/app_config/extensions')) {
+				$writable = false;
+				echo '<p style="color:#A00; font-weight:bold">' . translate('noextdir') . '</p>';
+			}
 			?>
 			<form action="<?php echo $base_config['baseurl']; ?>/admin/extensions" method="post" enctype="multipart/form-data">
 				<p><input type="file" name="ext_file" accept="application/x-zip-compressed" /><br /><input type="submit" name="form_sent" value="<?php echo translate('install'); ?>"<?php if (!$writable) echo ' disabled="disabled"'; ?> /></p>
