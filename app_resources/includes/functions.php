@@ -488,6 +488,7 @@ abstract class ExtensionConfig {
 		}
 	}
 	static function remove_language_key($key, $language = 'English') {
+		global $db;
 		$q = new DBDelete('language', 'language=\'' . $db->escape($language) . '\' AND langkey=\'' . $db->escape($key) . '\'', 'Failed to delete langauge key');
 		$q->commit();
 		
