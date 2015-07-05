@@ -210,22 +210,6 @@ if(isset($_POST['pm_sent'])) {
 						}
 						?></select></td>
 					</tr>
-					<tr>
-						<td><?php echo translate('style'); ?></td>
-						<td><select name="style"><?php
-						$handle = opendir(FORUM_ROOT . '/app_resources/pages/css');
-						while ($f = readdir($handle)) {
-							if ($f != '.' && $f != '..' && $f != 'basic.css' && $f != 'embed.css') {
-								$f = htmlspecialchars(basename($f, '.css'));
-								echo '<option value="' . $f . '"';
-								if ($f == $cur_user['style']) {
-									echo ' selected="selected"';
-								}
-								echo '>' . $f . '</option>';
-							}
-						}
-						?></select></td>
-					</tr>
                     <tr>
 						<td><?php echo translate('rsstoken'); ?></td>
 						<td><input type="text" name="rss_token" value="<?php echo htmlspecialchars($cur_user['rss_token']); ?>" size="50" /></td>

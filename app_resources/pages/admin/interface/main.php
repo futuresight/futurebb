@@ -40,7 +40,7 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/pages">Page list (URL mapping)</a></li>
 				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/language">Translation keys (nearly all text)</a></li>
 				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/admin_pages">Administration sidebar links</a></li>
-				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/history">Editing history</a></li>
+				<?php /*<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/history">Editing history</a></li> */ ?>
 				<li><a href="<?php echo $base_config['baseurl']; ?>/admin/interface/clearcache">Clear entire cache</a></a>
 			</ul>
 			<?php

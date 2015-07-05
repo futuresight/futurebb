@@ -102,3 +102,5 @@ if (ini_get('allow_url_fopen')) {
 		set_config('last_update_check', time());
 	}
 }
+
+ExtensionConfig::run_hooks('startup', array());

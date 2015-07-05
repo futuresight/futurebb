@@ -404,10 +404,10 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld = new DBField('arguments','MEDIUMTEXT');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
-		$new_fld->set_default('\'\'');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('read_time','INT');
-		$new_fld->add_extra('NOT NULL');
+		$new_fld->add_extra('NULL');
+		$new_fld->set_default('NULL');
 		$tables['notifications']->add_field($new_fld);
 		$new_fld = new DBField('read_ip','VARCHAR(50)');
 		$new_fld->add_extra('NOT NULL');
