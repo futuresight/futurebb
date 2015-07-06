@@ -512,7 +512,7 @@ if (isset($_POST['form_sent'])) {
 		max_sort_orders[new_cat_id]++;
 		
 		var oldCat = document.getElementById('catof_' + forum_id).value;
-		document.getElementById('table_cat_' + oldCat).childNodes[0].removeChild(oldCat);
+		//document.getElementById('table_cat_' + oldCat).childNodes[0].removeChild(forumRow);
 		max_sort_orders[oldCat]--;
 		document.getElementById('catof_' + forum_id).value = new_cat_id;
 		
