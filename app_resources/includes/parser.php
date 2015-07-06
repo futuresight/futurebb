@@ -53,7 +53,7 @@ abstract class BBCodeController {
 		
 		// Format @username into tags
 		if($futurebb_config['allow_notifications'] == 1) {
-			$text = preg_replace('%(\s|^)@([a-zA-Z0-9_\-]+)%', '<span class="usertag">@$2</span>', $text);
+			$text = preg_replace('%(\s|^)@([a-zA-Z0-9_\-]+)%', '$1<span class="usertag">@$2</span>', $text);
 		}
 		
 		//run the bbcode parser with the items entered into the array at the beginning of this function
