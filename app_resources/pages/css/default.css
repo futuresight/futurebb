@@ -335,7 +335,8 @@ div.leftmenu {
 #futurebb .rightbox {
 	margin-left: 14em;
 	min-height: 200px;
-	padding: 5px
+	padding: 5px;
+	margin-top:0px;
 }
 
 #futurebb .active {
