@@ -74,7 +74,8 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	<?php if ($can_edit_subject) { ?>
 	<p><?php echo translate('subject'); ?><br /><input type="text" name="subject" value="<?php echo htmlspecialchars($cur_post['subject']); ?>" size="50" /></p>
 	<?php } ?>
-	<p><textarea name="content" rows="20" cols="70"><?php echo htmlspecialchars($content); ?></textarea></p>
+	<?php ExtensionConfig::run_hooks('bbcode_toolbar'); ?>
+	<p><textarea name="content" id="message" rows="20" cols="70"><?php echo htmlspecialchars($content); ?></textarea></p>
 	<?php
 	if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
 		?>

@@ -227,8 +227,9 @@ if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') &
 		<h2 class="cat_header"><?php echo translate('postreply'); ?></h2>
 		<div class="cat_body">
 			<form action="<?php echo $base_config['baseurl']; ?>/post/topic/<?php echo $cur_topic['id']; ?>" method="post" enctype="multipart/form-data">
+				<?php ExtensionConfig::run_hooks('bbcode_toolbar'); ?>
 				<p><?php if ($cur_topic['closed'] || $cur_topic['forum_archived']) echo '<span class="closedlabel">' . translate('topicisclosed') . '</span><br />'; ?>
-				<textarea name="message" rows="10" cols="70"<?php if ($cur_topic['closed'] || $cur_topic['forum_archived']) echo ' style="background-color: #DDD; border-color: #AAA;"'; ?>></textarea></p>
+				<textarea name="message" id="message" rows="10" cols="70"<?php if ($cur_topic['closed'] || $cur_topic['forum_archived']) echo ' style="background-color: #DDD; border-color: #AAA;"'; ?>></textarea></p>
                 <p><a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp"><?php echo translate('bbcode'); ?></a>: <?php if ($futurebb_config['enable_bbcode']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#smilies"><?php echo translate('smilies'); ?></a>: <?php if ($futurebb_config['enable_smilies']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('imgtag'); ?></a>: <?php if ($futurebb_user['g_post_links']) echo translate('on'); else echo translate('off'); ?>, <a href="<?php echo $base_config['baseurl']; ?>/bbcodehelp#linksimages"><?php echo translate('urltag'); ?></a>: <?php if ($futurebb_user['g_post_images']) echo translate('on'); else echo translate('off'); ?></p>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('post'); ?>" /> <input type="submit" name="preview" value="Preview" /> <input name="hidesmilies" type="checkbox" value="1" id="disablesmilies" /> <label for="disablesmilies"><?php echo translate('disablesmilies'); ?></label></p>
 			</form>
