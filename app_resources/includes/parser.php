@@ -28,7 +28,7 @@ abstract class BBCodeController {
 	
 	static function parse_msg($text, $show_smilies = true, $preview = false, $bbcode = true) {
 		global $db, $futurebb_user, $futurebb_config;
-				
+						
 		if ($bbcode && empty(self::$pattern)) {
 			self::$pattern = array();
 			self::$replace = array();
