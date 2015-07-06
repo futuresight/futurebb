@@ -594,10 +594,10 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('NULL');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('last_post','INT');
-		$new_fld->add_extra('NOT NULL');
+		$new_fld->add_extra('NULL');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('last_post_id','INT');
-		$new_fld->add_extra('NOT NULL');
+		$new_fld->add_extra('NULL');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('first_post_id','INT');
 		$new_fld->add_extra('NOT NULL');
@@ -611,6 +611,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('0');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('redirect_id','INT');
+		$new_fld->add_extra('NULL');
 		$new_fld->set_default('NULL');
 		$tables['topics']->add_field($new_fld);
 		$new_fld = new DBField('show_redirect','TINYINT(1)');
