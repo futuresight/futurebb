@@ -6,7 +6,7 @@ if (file_exists(FORUM_ROOT . '/app_config/cache/install/language/' . $page . '.p
 	redirect('install.php?language_insert=' . ($page + 1));
 } else {
 	//clear the cache
-	$maindir = FORUM_ROOT . '/app_config/cache/language/' . $language;
+	$maindir = FORUM_ROOT . '/app_config/cache/language/English';
 	if (file_exists($maindir) && is_dir($maindir)) {
 		$handle = opendir($maindir);
 		while ($file = readdir($handle)) {
