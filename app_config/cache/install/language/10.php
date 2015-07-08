@@ -41,5 +41,7 @@ $lang_insert_data[] = '(\'English\',\'' . $db->escape('modprivs') . '\',\'' . $d
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('modprivsdesc') . '\',\'' . $db->escape('This option gives users access to the moderator tools, which include being able to edit and delete everybody&apos;s posts, ban users, and view deleted posts.') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('adminprivs') . '\',\'' . $db->escape('Administrator privileges') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('adminprivsdesc') . '\',\'' . $db->escape('This option gives users access to the complete admin panel.') . '\',\'' . $db->escape('admin') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('noextdir') . '\',\'' . $db->escape('The directory app_config/extensions does not exist or is not writable. Please fix this to enable installing extensions.') . '\',\'' . $db->escape('admin') . '\')';
+
 $q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
 $q->commit();
