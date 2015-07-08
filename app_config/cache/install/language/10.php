@@ -1,7 +1,7 @@
 <?php
 $q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
 $lang_insert_data = array();
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('redirmsg') . '\',\'' . $db->escape('If you are not redirected within a few seconds, <a href=\"$1\">click here</a> to continue.') . '\',\'' . $db->escape('admin') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('redirmsg') . '\',\'' . $db->escape('If you are not redirected within a few seconds, <a href="$1">click here</a> to continue.') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('updatingtopic') . '\',\'' . $db->escape('Updating topic #$1') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('updatingforum') . '\',\'' . $db->escape('Updating forum #$1') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('reparsingposts') . '\',\'' . $db->escape('Reparsing posts - now is a good time to get off the computer for a little while. :)') . '\',\'' . $db->escape('admin') . '\')';

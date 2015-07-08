@@ -18,7 +18,7 @@ $lang_insert_data[] = '(\'English\',\'' . $db->escape('serverinfo') . '\',\'' . 
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('fbbversion') . '\',\'' . $db->escape('FutureBB Version') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('database') . '\',\'' . $db->escape('Database') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('os') . '\',\'' . $db->escape('Operating system') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newversionmsg') . '\',\'' . $db->escape('A new version of FutureBB is available! You can download it on <a href=\"http://futuresight.org/products/futurebb\">the FutureSight Technologies website</a>.') . '\',\'' . $db->escape('admin') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('newversionmsg') . '\',\'' . $db->escape('A new version of FutureBB is available! You can download it on <a href="http://futuresight.org/products/futurebb">the FutureSight Technologies website</a>.') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('maxquotedepth') . '\',\'' . $db->escape('Maximum quote depth') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('quotedepth>1') . '\',\'' . $db->escape('The maximum quote depth must be greater than 1') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('fixerrors') . '\',\'' . $db->escape('The following errors must be fixed before continuing:') . '\',\'' . $db->escape('admin') . '\')';
