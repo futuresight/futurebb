@@ -13,7 +13,7 @@ $lang_insert_data[] = '(\'English\',\'' . $db->escape('expires') . '\',\'' . $db
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('never') . '\',\'' . $db->escape('Never') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('deletebanconfirm') . '\',\'' . $db->escape('Are you sure you want to delete this ban?') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('jk') . '\',\'' . $db->escape('Just kidding') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('censorintro') . '\',\'' . $db->escape('You may use this page to set inappropriate words to censor.<br />This will not affect old posts unless the reparse posts function is used (available on the <a href=\"https://testserver.int/futurebb/admin/maintenance\">maintenance page</a>).') . '\',\'' . $db->escape('admin') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('censorintro') . '\',\'' . $db->escape('You may use this page to set inappropriate words to censor.<br />This will not affect old posts unless the reparse posts function is used (available on the <a href=\"$baseurl$/admin/maintenance\">maintenance page</a>).') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('newword') . '\',\'' . $db->escape('Add new word') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('find') . '\',\'' . $db->escape('Find') . '\',\'' . $db->escape('admin') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('replacewith') . '\',\'' . $db->escape('Replace with') . '\',\'' . $db->escape('admin') . '\')';

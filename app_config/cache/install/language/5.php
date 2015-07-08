@@ -17,7 +17,7 @@ $lang_insert_data[] = '(\'English\',\'' . $db->escape('accessdenied') . '\',\'' 
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('noguests') . '\',\'' . $db->escape('You must log in to view this forum.') . '\',\'' . $db->escape('main') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('nogroupview') . '\',\'' . $db->escape('You do not have permission to view these forums.') . '\',\'' . $db->escape('main') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('maintintro') . '\',\'' . $db->escape('This forum is down for maintenance. The forum administrator said this:') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('maintintro2') . '\',\'' . $db->escape('If you are an administrator and need to log in, you may do so <a href=\"https://testserver.int/futurebb/login\">here</a>.') . '\',\'' . $db->escape('main') . '\')';
+$lang_insert_data[] = '(\'English\',\'' . $db->escape('maintintro2') . '\',\'' . $db->escape('If you are an administrator and need to log in, you may do so <a href=\"$baseurl$/login\">here</a>.') . '\',\'' . $db->escape('main') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('profile') . '\',\'' . $db->escape('Profile') . '\',\'' . $db->escape('main') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('userlist') . '\',\'' . $db->escape('User list') . '\',\'' . $db->escape('main') . '\')';
 $lang_insert_data[] = '(\'English\',\'' . $db->escape('register') . '\',\'' . $db->escape('Register') . '\',\'' . $db->escape('main') . '\')';
