@@ -370,8 +370,9 @@ abstract class BBCodeController {
 		$no_nest_tags = array('img');
 		$block_tags = array('quote', 'code', 'list', 'table', 'tr');
 		$inline_tags = array('b', 'i', 'u', 's', 'color', 'colour', 'url', 'img', '\*', 'th', 'td');
-		$nest_only = array('table' => array('tr'), 'tr' => array('td', 'th')); //tags that can only have a specific set of subtags
+		$nest_only = array('table' => array('tr'), 'tr' => array('td', 'th'), 'list' => array('*')); //tags that can only have a specific set of subtags
 		$nest_forbid = array('td' => array('td', 'th'), 'th' => array('td', 'th'));
+		$no_body = array('table', 'tr', 'list'); //tags that can't have text inside them
 		
 		$bbcode_parts = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY); //this regular expression was copied from FluxBB. However, everything used to parse it is completely original
 		//split the message into tags and check syntax
@@ -380,6 +381,7 @@ abstract class BBCodeController {
 		$quotes = 0;
 		foreach ($bbcode_parts as $key => $val) {
 			if (preg_match('%^\[/(' . implode('|', self::$tags) . ')\]$%', $val, $matches)) {
+				//closing tag of some sort
 				if ($last_key == 0) {
 					$errors[] = translate('closenoopen', $matches[1]);
 					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
@@ -396,6 +398,7 @@ abstract class BBCodeController {
 				unset($open_tags[$last_key - 1]);
 				$last_key--;
 			} else if (preg_match('%^\[(' . implode('|', self::$tags) . ')(=.*?)?\]$%', $val, $matches)) {
+				//opening tag of some sort
 				$open_tags[$last_key] = $matches[1];
 				//check if there are any block tags inside inline tags
 				if ($last_key > 0 && in_array($open_tags[$last_key - 1], $inline_tags) && in_array($matches[1], $block_tags)) {
@@ -425,6 +428,12 @@ abstract class BBCodeController {
 				}
 				
 				$last_key++;
+			} else if ($last_key > 0) {
+				//no tag, just text
+				if (in_array($open_tags[$last_key - 1], $no_body)) {
+					$errors[] = translate('notextinsidetag', $open_tags[$last_key - 1]);
+					$errors[] = self::highlight_error($text, $val, $bbcode_parts, $key);
+				}
 			}
 		}
 		if (sizeof($open_tags) > 0) {
