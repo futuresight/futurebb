@@ -118,16 +118,13 @@ if(isset($_POST['form_sent'])) {
 			<tr>
 				<th>Default language</th>
 				<td><select name="config[default_language]"><?php
-				$handle = opendir(FORUM_ROOT . '/app_config/langs');
-				while ($f = readdir($handle)) {
-					if ($f != '.' && $f != '..') {
-						$f = htmlspecialchars($f);
-						echo '<option value="' . $f . '"';
-						if ($f == $futurebb_config['default_language']) {
-							echo ' selected="selected"';
-						}
-						echo '>' . $f . '</option>';
+				$result = $db->query('SELECT DISTINCT(language) FROM `#^language` ORDER BY language ASC') or enhanced_error('Failed to find language information', true);
+				while (list($language) = $db->fetch_row($result)) {
+					echo '<option value="' . htmlspecialchars($language) . '"';
+					if ($language == $futurebb_config['default_language']) {
+						echo ' selected="selected"';
 					}
+					echo '>' . htmlspecialchars($language) . '</option>';
 				}
 				?></select></td>
 			</tr>
