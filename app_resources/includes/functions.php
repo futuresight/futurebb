@@ -472,8 +472,8 @@ abstract class ExtensionConfig {
 		}
 		CacheEngine::CacheAdminPages();
 	}
-	static function add_language_key($key, $text, $language = 'English') {
-		$q = new DBInsert('language', array('language' => $language, 'langkey' => $key, 'value' => $text, 'category' => 'main'), 'Failed to insert language key');
+	static function add_language_key($key, $text, $language = 'English', $category = 'main') {
+		$q = new DBInsert('language', array('language' => $language, 'langkey' => $key, 'value' => $text, 'category' => $category), 'Failed to insert language key');
 		$q->commit();
 		
 		//clear the cache
