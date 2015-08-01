@@ -64,8 +64,6 @@ abstract class BBCodeController {
 			self::parse_smilies($text);
 		}
 		
-		$text = preg_replace_callback('%\s?\[code\](.*?)\[/code\]\s?%msi', 'self::handle_code_tag_replace', $text); //put [code] tags back
-		
 		$text = self::add_line_breaks($text);
 		
 		//make the @username into links where applicable
@@ -105,6 +103,8 @@ abstract class BBCodeController {
 		//handle list tags last, they're weird
 		$text = self::handle_list_tags($text);
 		$text = self::handle_table_tags($text);
+		
+		$text = preg_replace_callback('%\s?\[code\](.*?)\[/code\]\s?%msi', 'self::handle_code_tag_replace', $text); //put [code] tags back
 		
 		$text = censor($text);
 		return $text;
@@ -430,7 +430,7 @@ abstract class BBCodeController {
 				$last_key++;
 			} else if ($last_key > 0) {
 				//no tag, just text
-				if (in_array($open_tags[$last_key - 1], $no_body)) {
+				if (!preg_match('%^\s$%ms', $val) && in_array($open_tags[$last_key - 1], $no_body)) {
 					$errors[] = translate('notextinsidetag', $open_tags[$last_key - 1]);
 					$errors[] = self::highlight_error($text, $val, $bbcode_parts, $key);
 				}
