@@ -100,7 +100,7 @@ abstract class BBCodeController {
 			}, $text);
 		}
 		
-		//handle list tags last, they're weird
+		//handle list and table tags last, they're weird
 		$text = self::handle_list_tags($text);
 		$text = self::handle_table_tags($text);
 		
@@ -158,7 +158,8 @@ abstract class BBCodeController {
 				} else {
 					error('List parsing error: expected ' . $matches[1] . ' but had ' . $last_tag, __FILE__, __LINE__);
 				}
-			} else if (preg_match('%^\[/list\]%', $val)) {
+			} else if (preg_match('%^\s+$%ms', $val)) {
+				$val = '';
 			}
 			$output .= $val;
 		}
