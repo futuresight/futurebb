@@ -76,6 +76,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	<?php } ?>
 	<?php ExtensionConfig::run_hooks('bbcode_toolbar'); ?>
 	<p><textarea name="content" id="message" rows="20" cols="70"><?php echo htmlspecialchars($content); ?></textarea></p>
+	<?php ExtensionConfig::run_hooks('bbcode_toolbar_bottom'); ?>
 	<?php
 	if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
 		?>
