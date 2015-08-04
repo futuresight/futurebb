@@ -159,6 +159,7 @@ abstract class BBCodeController {
 					error('List parsing error: expected ' . $matches[1] . ' but had ' . $last_tag, __FILE__, __LINE__);
 				}
 			} else if (preg_match('%^\s+$%ms', $val)) {
+				//if it's just whitespace between two tags, remove it completely
 				$val = '';
 			}
 			$output .= $val;
@@ -388,17 +389,21 @@ abstract class BBCodeController {
 					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 					return;
 				}
-				if ($matches[1] != $open_tags[$last_key - 1]) {
+				if ($open_tags[$last_key - 1] != 'code' && $matches[1] != $open_tags[$last_key - 1]) {
+					//if it's not a [code] tag, ignore it
 					$errors[] = translate('expectedfound', $open_tags[$last_key - 1], $matches[1]);
 					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 					return;
 				}
-				if ($open_tags[$last_key - 1] == 'quote') {
-					$quotes--;
+				if (!($open_tags[$last_key - 1] == 'code' && $matches[1] != $open_tags[$last_key - 1])) {
+					//close the tag in the tag stack if it's not a mismatch inside a [code] tag (like [code][/tr][/code])
+					if ($open_tags[$last_key - 1] == 'quote') {
+						$quotes--;
+					}
+					unset($open_tags[$last_key - 1]);
+					$last_key--;
 				}
-				unset($open_tags[$last_key - 1]);
-				$last_key--;
-			} else if (preg_match('%^\[(' . implode('|', self::$tags) . ')(=.*?)?\]$%', $val, $matches)) {
+			} else if (!($last_key > 0 && $open_tags[$last_key - 1] == 'code') && preg_match('%^\[(' . implode('|', self::$tags) . ')(=.*?)?\]$%', $val, $matches)) {
 				//opening tag of some sort
 				$open_tags[$last_key] = $matches[1];
 				//check if there are any block tags inside inline tags
