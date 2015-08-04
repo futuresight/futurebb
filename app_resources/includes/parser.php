@@ -255,7 +255,7 @@ abstract class BBCodeController {
 				$i2 = 0;
 			}
 			$i2++;
-			return '</p><div class="quotebox" style="font-family:Courier">' . $code_matches[$i2] . '</div><p>';
+			return '</p><pre class="quotebox" style="font-family:Courier">' . $code_matches[$i2] . '</pre><p>';
 		} else {
 			return '';
 		}
