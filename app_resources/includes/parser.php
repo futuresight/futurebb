@@ -99,7 +99,7 @@ abstract class BBCodeController {
 				return '<span class="usertag">' . $return . '</span>';
 			}, $text);
 		}
-		
+				
 		//handle list and table tags last, they're weird
 		$text = self::handle_list_tags($text);
 		$text = self::handle_table_tags($text);
@@ -126,8 +126,8 @@ abstract class BBCodeController {
 		$open_tags = array();
 		$output = '';
 		foreach ($list_tags as $val) {
-			if (sizeof($open_tags) != 0) {
-				//no line breaks inside lists
+			if (strpos(end($open_tags), 'list') === 0) {
+				//no line breaks inside the list tags themselves
 				$val = str_replace('<br />', '', $val);
 			}
 			//go inside each list
@@ -174,7 +174,7 @@ abstract class BBCodeController {
 		$open_tags = array();
 		$output = '';
 		foreach ($table_tags as $val) {
-			if (sizeof($open_tags) != 0) {
+			if (end($open_tags) == 'table' || end($open_tags) == 'tr') {
 				//no line breaks inside tables
 				$val = str_replace('<br />', '', $val);
 			}
@@ -436,7 +436,7 @@ abstract class BBCodeController {
 				$last_key++;
 			} else if ($last_key > 0) {
 				//no tag, just text
-				if (!preg_match('%^\s$%ms', $val) && in_array($open_tags[$last_key - 1], $no_body)) {
+				if (!preg_match('%^\s+$%ms', $val) && in_array($open_tags[$last_key - 1], $no_body)) {
 					$errors[] = translate('notextinsidetag', $open_tags[$last_key - 1]);
 					$errors[] = self::highlight_error($text, $val, $bbcode_parts, $key);
 				}
