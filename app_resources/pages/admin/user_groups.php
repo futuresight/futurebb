@@ -40,6 +40,7 @@ if (isset($_POST['form_sent_update'])) {
 			'g_post_replies'		=> 'bool'
 		));
 	}
+	ExtensionConfig::run_hooks('group_options_submit', array('new' => isset($_POST['new_group'])));
 	$sql = '';
 	if (isset($_POST['new_group'])) {
 		$keys = implode(',', array_keys($cfg_list));
@@ -237,7 +238,10 @@ while (list($id,$name,$perm,$guest) = $db->fetch_row($result)) {
 					?><br /><?php echo translate('userlistvisgrpsdesc'); ?>
 					</td>
 				</tr>
-                <?php } ?>
+                <?php
+				}
+				ExtensionConfig::run_hooks('group_options_bottom');
+				?>
 			</table>
             <?php if ($group_id != 2 && $group_id != 1) { //hide for guests/admins ?>
 			<p><?php echo translate('promoteto'); ?> <select name="config[g_promote_group]"><option value="0"><?php echo translate('dontpromote'); ?></option><?php
