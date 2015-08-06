@@ -371,7 +371,9 @@ if(isset($_POST['pm_sent'])) {
 				if (isset($_POST['form_sent'])) {
 					$errors = array();
 					include FORUM_ROOT . '/app_resources/includes/parser.php';
-					BBCodeController::error_check($_POST['signature'], $errors);
+					if ($futurebb_config['enable_bbcode']) {
+						BBCodeController::error_check($_POST['signature'], $errors);
+					}
 					if ($futurebb_config['sig_max_length'] && strlen($_POST['signature']) > $futurebb_config['sig_max_length']) {
 						$errors[] = translate('sigtoolong', $futurebb_config['sig_max_length'], strlen($_POST['signature']));
 					}
