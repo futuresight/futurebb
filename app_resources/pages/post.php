@@ -53,7 +53,9 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		$_POST['hidesmilies'] = true;
 	}
 	$errors = array();
-	BBCodeController::error_check($_POST['message'], $errors);
+	if ($futurebb_config['enable_bbcode']) {
+		BBCodeController::error_check($_POST['message'], $errors);
+	}
 	if (strlen($_POST['message']) > 256000) {
 		$errors[] = translate('msgtoolong', 256000);
 	}

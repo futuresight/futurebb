@@ -18,7 +18,9 @@ include_once FORUM_ROOT . '/app_resources/includes/parser.php';
 include FORUM_ROOT . '/app_resources/includes/search.php';
 if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 	$errors = array();
-	BBCodeController::error_check($_POST['content'], $errors);
+	if ($futurebb_config['enable_bbcode']) {
+		BBCodeController::error_check($_POST['content'], $errors);
+	}
 	
 	if ($can_edit_subject && trim($_POST['subject']) == '')
 		$errors[] = translate('blanksubject');
