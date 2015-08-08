@@ -187,7 +187,8 @@ if (isset($_POST['form_sent'])) {
 			removetemp();
 			return;
 		}
-		$ext_info_req = array('title', 'uninstallable');
+		//check that the various required fields in the info.php file are there
+		$ext_info_req = array('title', 'uninstallable', 'minversion');
 		foreach ($ext_info_req as $val) {
 			if (!isset($ext_info[$val])) {
 				echo '<div class="forum_content"><p>' . translate('extinfomissingkey', $val) . '</b><br /><a href="' . $base_config['baseurl'] . '/admin/extensions">' . translate('tryagain') . '</a></p></div>';
@@ -195,7 +196,13 @@ if (isset($_POST['form_sent'])) {
 				return;
 			}
 		}
-		//before doing anything, check that everything is writable
+		//check the minimum software version
+		if ($ext_info['minversion'] > FUTUREBB_VERSION) {
+			echo '<div class="forum_content"><p>' . translate('exttoonew', $ext_info['minversion'], FUTUREBB_VERSION) . '</b><br /><a href="' . $base_config['baseurl'] . '/admin/extensions">' . translate('tryagain') . '</a></p></div>';
+			removetemp();
+			return;
+		}
+		//check that everything is writable
 		if (!writable(FORUM_ROOT)) {
 			echo '<div class="forum_content"><p>' . translate('forumnotwritable') . '</p></div>';
 			removetemp();
