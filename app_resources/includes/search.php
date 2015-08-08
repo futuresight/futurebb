@@ -33,7 +33,9 @@ function update_search_index($pid,$msg) {
 		}
 	}
 	foreach ($matches as $word => $count) {
-		$q[] = '(' . $pid . ',\'' . $db->escape($word) . '\',' . $count . ')';;
+		if (trim($word) != '') {
+			$q[] = '(' . $pid . ',\'' . $db->escape($word) . '\',' . $count . ')';
+		}
 	}
 	if (!empty($q)) {
 		$query = new DBMassInsert('search_index', array('post_id', 'word', 'num_matches'), $q, 'Failed to insert search engine data');

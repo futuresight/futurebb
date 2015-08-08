@@ -16,7 +16,7 @@ if (isset($_GET['query'])) {
 	if (isset($_GET['show']) && ($futurebb_user['g_admin_privs'] || $futurebb_user['g_mod_privs'])) {
 		switch ($_GET['show']) {
 			case 'deleted':
-				$addl_sql .= ' AND p.deleted IS NOT NULL OR t.deleted IS NOT NULL'; break;
+				$addl_sql .= ' AND (p.deleted IS NOT NULL OR t.deleted IS NOT NULL)'; break;
 			default:
 				$addl_sql .= ' AND p.deleted IS NULL AND t.deleted IS NULL'; break;
 		}
