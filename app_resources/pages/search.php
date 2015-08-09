@@ -1,127 +1,158 @@
 <?php
 $page_title = 'Search';
+define('BASE', 2); //the base number, like scoring 2^n
+
+class SearchItem {
+	private $mwords;
+	private $score = -1;
+	private $keywords = array();
+	private $time;
+	private $id;
+	function __construct($message, $time, $id) {
+		$this->mwords = split_into_words($message);
+		$this->time = $time;
+		$this->id = $id;
+	}
+	
+	function compareTo($other) {
+		if ($this->getScore() == $other->getScore()) {
+			return $this->getPosted() - $other->getPosted();
+		} else {
+			return $this->getScore() - $other->getScore();
+		}
+	}
+	
+	function addKeyword($keyword) {
+		//when adding a keyword, index its locations
+		$word = new SearchWord($keyword);
+		foreach ($this->mwords as $key => $mword) {
+			if ($keyword == $mword) {
+				$word->addLocation($key);
+			}
+		}
+		$this->keywords[$keyword] = $word;
+	}
+	
+	function getScore() {
+		global $keywords;
+		$longestmatch = 0;
+		if ($this->score == -1) {
+			$this->score = 0;
+			//the scores are calculated the first time anyone tries to see them
+			//for each location of a given keyword, see if there is anything for the keyword after it
+			foreach ($keywords as $keykey => $keyword) { //loop through the keywords
+				if (isset($this->keywords[$keyword])) {
+					$locations = $this->keywords[$keyword]->getLocations();
+					foreach ($locations as $location) { //loop through each location of the keyword
+						$subsequent = 1;
+						while ($keykey + $subsequent < sizeof($keywords) && array_key_exists($keywords[$keykey + $subsequent], $this->keywords) && $this->keywords[$keywords[$keykey + $subsequent]]->hasLocation($location + $subsequent)) {
+							$subsequent++;
+						}
+						$this->score += pow(BASE, $subsequent);
+					}
+				}
+			}
+		}
+		return $this->score;
+	}
+	
+	function getPosted() {
+		return $this->time;
+	}
+	
+	function getId() {
+		return $this->id;
+	}
+}
+class SearchWord {
+	private $word;
+	private $locations = array();
+	
+	function __construct($word) {
+		$this->word = $word;
+	}
+	
+	function addLocation($loc) {
+		$this->locations[] = $loc;
+	}
+	
+	function hasLocation($loc) {
+		return in_array($loc, $this->locations);
+	}
+	
+	function getLocations() {
+		return $this->locations;
+	}
+}
+
 if (isset($_GET['query'])) {
 	include FORUM_ROOT . '/app_resources/includes/search.php';
 	$terms = split_into_words($_GET['query']);
-	foreach ($terms as &$val) {
-		$val = '\'' . $db->escape(trim($val)) . '\'';
+	$keywords = $terms;
+	foreach ($terms as &$term) {
+		$term = '\'' . $db->escape($term) . '\'';
 	}
-	$addl_sql = '';
-	if (isset($_GET['author']) && $_GET['author'] != '') {
-		$addl_sql .= ' AND u.username LIKE \'' . $db->escape(str_replace('*', '%', $_GET['author'])) . '\'';
-	}
-	if (isset($_GET['forum']) && intval($_GET['forum']) != 0) {
-		$addl_sql .= ' AND f.id=' . intval($_GET['forum']);
-	}
-	if (isset($_GET['show']) && ($futurebb_user['g_admin_privs'] || $futurebb_user['g_mod_privs'])) {
-		switch ($_GET['show']) {
-			case 'deleted':
-				$addl_sql .= ' AND (p.deleted IS NOT NULL OR t.deleted IS NOT NULL)'; break;
-			default:
-				$addl_sql .= ' AND p.deleted IS NULL AND t.deleted IS NULL'; break;
-		}
-	} else {
-		$addl_sql .= ' AND p.deleted IS NULL AND t.deleted IS NULL';
-	}
-	if ($_GET['query'] != '') {
-		$where = 'LOWER(si.word) IN (' . strtolower(implode(',', $terms)) . ') AND';
-	} else {
-		$where = '';
-	}
-	$result = $db->query('SELECT g.g_title AS user_title,u.username AS author,p.poster AS author_id,u.parsed_signature AS signature,p.posted,p.id,p.parsed_content,p.last_edited,p.deleted AS post_deleted,leu.username AS last_edited_by,si.num_matches,f.name AS forum,f.url AS furl,c.name AS category,t.deleted AS topic_deleted FROM `#^search_index` AS si
-	LEFT JOIN `#^posts` AS p ON p.id=si.post_id
-	LEFT JOIN `#^users` AS u ON u.id=p.poster
-	LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id
-	LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by
-	LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id
-	LEFT JOIN `#^categories` AS c ON c.id=f.cat_id
-	WHERE ' . $where . ' f.view_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\' ' . $addl_sql) or error('Failed to execute search', __FILE__, __LINE__, $db->error());
-	$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-	$posts = array();
-	while ($cur_post = $db->fetch_assoc($result)) {
-		if (array_key_exists($cur_post['id'], $posts)) {
-			$posts[$cur_post['id']]['num_matches'] += $cur_post['num_matches'];
+	$result = $db->query('SELECT p.content,p.id AS post_id,p.posted,i.num_matches,i.word FROM `#^search_index` AS i LEFT JOIN `#^posts` AS p ON p.id=i.post_id WHERE i.word IN(' . implode(',', $terms) . ')') or enhanced_error('Failed to get search information', true);
+	$results = array();
+	while ($match = $db->fetch_assoc($result)) {
+		if (isset($results[$match['post_id']])) {
+			$results[$match['post_id']]->addKeyword($match['word']);
 		} else {
-			$posts[$cur_post['id']] = $cur_post;
+			$item = new SearchItem($match['content'], $match['posted'], $match['post_id']);
+			$item->addKeyword($match['word']);
+			$results[$match['post_id']] = $item;
 		}
 	}
-	function postsort($a1, $a2) {
-		if ($a1['num_matches'] > $a2['num_matches']) {
-			return -1;
-		} else if ($a1['num_matches'] < $a2['num_matches']) {
-			return 1;
-		} else if ($a1['num_matches'] == $a2['num_matches']) {
-			if ($a1['posted'] > $a2['posted']) {
-				return -1;
-			} else if ($a1['posted'] < $a2['posted']) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-	}
-	usort($posts, 'postsort');
-	
-	//take a quick break for pagination
-	$num_pages = ceil(sizeof($posts) / $futurebb_config['posts_per_page']);
-	if ($db->num_rows($result)) {
-	?>
-	<p><?php echo translate('pages');
-	$linktext = '<a href="' . $base_config['baseurl'] . '/search?query=' . htmlspecialchars($_GET['query']);
-	if (isset($_GET['author'])) {
-		$linktext .= '&author=' . htmlspecialchars($_GET['author']);
-	}
-	if (isset($_GET['forum'])) {
-		$linktext .= '&forum=' . intval($_GET['forum']);
-	}
-	$linktext .= '&page=$page$"$bold$>$page$</a>';
-	echo paginate($linktext, $page, $num_pages);
-	echo '</p>';
-	}
-	
-	$i = 0;
-	foreach ($posts as $cur_post) {
-		$i++;
-		if ($i > ($page - 1) * $futurebb_config['posts_per_page'] && $i <= $page * $futurebb_config['posts_per_page']) {
-			?>
-			<div class="catwrap" id="post<?php echo $cur_post['id']; ?>">
-				<h2 class="cat_header"><?php echo htmlspecialchars($cur_post['category']); ?> &raquo; <a href="<?php echo $base_config['baseurl']; ?>/<?php echo htmlspecialchars($cur_post['furl']); ?>"><?php echo htmlspecialchars($cur_post['forum']); ?></a> &raquo; <a href="<?php echo $base_config['baseurl'] . '/posts/' . $cur_post['id']; ?>"><?php echo user_date($cur_post['posted']); ?></a></h2>
-				<div class="cat_body">
-					<div class="postleft">
-						<p><a href="<?php echo $base_config['baseurl']; ?>/users/<?php echo htmlspecialchars($cur_post['author']); ?>"><?php echo htmlspecialchars($cur_post['author']); ?></a></p>
-						<p><b><?php echo $cur_post['user_title']; ?></b></p>
-						<?php
-						if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/avatars/' . $cur_post['author_id'] . '.png')) {
-							echo '<img src="' . $base_config['baseurl'] . '/static/avatars/' . $cur_post['author_id'] . '.png" class="avatar" />';
-						}
-						?>
-					</div>
-					<div class="postright">
-						<p><?php echo $cur_post['parsed_content']; ?></p>
-						<?php if ($cur_post['last_edited'] != null) {
-							echo '<p style="font-style:italic">' . translate('lastedited', htmlspecialchars($cur_post['last_edited_by']), user_date($cur_post['last_edited'])) . '.</p>';
-						} ?>
-						<?php
-						if ($cur_post['signature']) {
-							echo '<hr /><p>' . $cur_post['signature'] . '</p>';
-						}
-						?>
-					</div>
-				</div>
-			</div>
-			<?php
-		}
-	}
-	if ($db->num_rows($result)) {
+	usort($results, function($m1, $m2) {
+		return $m1->compareTo($m2);
+	});
+	$results = array_reverse($results);
+	//now that we have the results, choose the ones we want by page, and then get the rest of the information
+	$page = isset($_GET['p']) ? min(1, intval($_GET['p'])) : 1;
+	$num_pages = ceil(sizeof($results) / 25);
+	$results = array_slice($results, ($page - 1) * 25, 25);
+	if (empty($results)) {
+		//no results :(
+		echo '<div class="forum_content"><p>' . translate('noresults') . '</p></div>';
+	} else {
+		//before continuing, paginate
 		?>
 		<p><?php echo translate('pages');
-		echo paginate($linktext, $page, $num_pages); ;
-	} else {
+		$linktext = '<a href="' . $base_config['baseurl'] . '/search?query=' . htmlspecialchars($_GET['query']);
+		if (isset($_GET['author'])) {
+			$linktext .= '&author=' . htmlspecialchars($_GET['author']);
+		}
+		if (isset($_GET['forum'])) {
+			$linktext .= '&forum=' . intval($_GET['forum']);
+		}
+		$linktext .= '&page=$page$"$bold$>$page$</a>';
+		echo paginate($linktext, $page, $num_pages);
+		echo '</p>';
+		//get the list of post IDs
+		$ids = array();
+		foreach ($results as $post) {
+			$ids[] = $post->getId();
+		}
+		//now that we have the results, let's show this!
+		$result = $db->query('SELECT p.id,p.parsed_content,f.url AS furl,f.name AS forum,t.url AS turl,t.subject,u.username AS poster,u.avatar_extension,u.id AS user_id,g.g_title AS poster_title FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE p.id IN(' . implode(',', $ids) . ')') or enhanced_error('Failed to get post information', true);
+		$boxes = array(); //the boxes to show
+		while ($message = $db->fetch_assoc($result)) {
+			$box_content = '<div class="catwrap" id="post' . $message['id'] . '"><h2 class="cat_header"><a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '">' . htmlspecialchars($message['forum']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '/' . $message['turl'] . '">' . htmlspecialchars($message['subject']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/posts/' . $message['id'] . '">' . translate('post') . ' #' . $message['id'] . '</a></h2>';
+			$box_content .= '<div class="cat_body"><div class="postleft"><p><a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($message['poster']) . '">' . htmlspecialchars($message['poster']) . '</a></p><p><b>' . htmlspecialchars($message['poster_title']) . '</b></p>';
+			if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/img/avatars/' . $message['user_id'] . '.' . $message['avatar_extension'])) {
+				$box_content .= '<p><img src="' . $base_config['baseurl'] . '/img/avatars/' . $message['user_id'] . '.' . htmlspecialchars($message['avatar_extension']) . '" alt="avatar" class="avatar" /></p>';
+			}
+			$box_content .= '</div><div class="postright"><p>' . $message['parsed_content'] . '</p>';
+			$box_content .= '</div></div></div>';
+			$boxes[$message['id']] = $box_content;
+		}
+		foreach ($ids as $id) {
+			echo $boxes[$id];
+		}
 		?>
-		<div class="forum_content">
-			<p><?php echo translate('noresults'); ?></p>
-		</div>
-	<?php
+		<p><?php echo translate('pages');
+		echo paginate($linktext, $page, $num_pages);?></p>
+		<?php
 	}
 } else {
 	?>
