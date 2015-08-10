@@ -93,7 +93,7 @@ if (isset($_GET['query'])) {
 		$term = '\'' . $db->escape($term) . '\'';
 	}
 	$addl_where = array();
-	if (isset($_GET['show']) && $_GET['show'] == 'deleted') {
+	if (isset($_GET['show']) && $_GET['show'] == 'deleted' && ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs'])) {
 		$addl_where[] = '(p.deleted IS NOT NULL OR t.deleted IS NOT NULL)';
 	} else {
 		$addl_where[] = '(p.deleted IS NULL AND t.deleted IS NULL)';
