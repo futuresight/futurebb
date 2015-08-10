@@ -92,21 +92,55 @@ if (isset($_GET['query'])) {
 	foreach ($terms as &$term) {
 		$term = '\'' . $db->escape($term) . '\'';
 	}
-	$result = $db->query('SELECT p.content,p.id AS post_id,p.posted,i.num_matches,i.word FROM `#^search_index` AS i LEFT JOIN `#^posts` AS p ON p.id=i.post_id WHERE i.word IN(' . implode(',', $terms) . ')') or enhanced_error('Failed to get search information', true);
-	$results = array();
-	while ($match = $db->fetch_assoc($result)) {
-		if (isset($results[$match['post_id']])) {
-			$results[$match['post_id']]->addKeyword($match['word']);
-		} else {
-			$item = new SearchItem($match['content'], $match['posted'], $match['post_id']);
-			$item->addKeyword($match['word']);
-			$results[$match['post_id']] = $item;
+	$addl_where = array();
+	if (isset($_GET['show']) && $_GET['show'] == 'deleted') {
+		$addl_where[] = '(p.deleted IS NOT NULL OR t.deleted IS NOT NULL)';
+	} else {
+		$addl_where[] = '(p.deleted IS NULL AND t.deleted IS NULL)';
+	}
+	if (isset($_GET['author']) && $_GET['author'] != '') {
+		$addl_where[] = 'u.username LIKE \'' . $db->escape(str_replace('*', '%', $_GET['author'])) . '\'';
+	}
+	$sortby = isset($_GET['sortby']) ? $_GET['sortby'] : 'relevance';
+	if (!isset($_GET['query']) || $_GET['query'] == '') {
+		if ($sortby == 'relevance') {
+			$sortby = 'posttime';
 		}
 	}
-	usort($results, function($m1, $m2) {
-		return $m1->compareTo($m2);
-	});
-	$results = array_reverse($results);
+	$results = array();
+	$plain = false;
+	switch ($sortby) {
+		case 'relevance':
+			//sort by relevance
+			$result = $db->query('SELECT p.content,p.id AS post_id,p.posted,i.num_matches,i.word FROM `#^search_index` AS i LEFT JOIN `#^posts` AS p ON p.id=i.post_id LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE i.word IN(' . implode(',', $terms) . ') AND ' . implode(' AND ', $addl_where)) or enhanced_error('Failed to get search information', true);
+			while ($match = $db->fetch_assoc($result)) {
+				if (isset($results[$match['post_id']])) {
+					$results[$match['post_id']]->addKeyword($match['word']);
+				} else {
+					$item = new SearchItem($match['content'], $match['posted'], $match['post_id']);
+					$item->addKeyword($match['word']);
+					$results[$match['post_id']] = $item;
+				}
+			}
+			usort($results, function($m1, $m2) {
+				return $m1->compareTo($m2);
+			});
+			$results = array_reverse($results);
+			break;
+		case 'posttime':
+			$plain = true;
+			$order = 'p.posted';
+			break;
+		
+	}
+	if ($plain) {
+		//we're just doing a basic SQL query to retrieve IDs, so don't do any of the fancy stuff (and the code is reusable)
+		$direction = (isset($_GET['direction']) && in_array($_GET['direction'], array('asc', 'desc'))) ? strtoupper($_GET['direction']) : 'ASC';
+		$result = $db->query('SELECT DISTINCT(p.id) FROM `#^search_index` AS i LEFT JOIN `#^posts` AS p ON p.id=i.post_id LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE ' . (isset($_GET['query']) && $_GET['query'] != '' ? 'i.word IN(' . implode(',', $terms) . ')' : '') . implode(' AND ', $addl_where) . ' ORDER BY ' . $order . ' ' . $direction) or enhanced_error('Failed to get search information', true);
+		while (list($id) = $db->fetch_row($result)) {
+			$results[] = $id;
+		}
+	}
 	//now that we have the results, choose the ones we want by page, and then get the rest of the information
 	$page = isset($_GET['p']) ? min(1, intval($_GET['p'])) : 1;
 	$num_pages = ceil(sizeof($results) / 25);
@@ -130,8 +164,12 @@ if (isset($_GET['query'])) {
 		echo '</p>';
 		//get the list of post IDs
 		$ids = array();
-		foreach ($results as $post) {
-			$ids[] = $post->getId();
+		if (is_object($results[0])) {
+			foreach ($results as $post) {
+				$ids[] = $post->getId();
+			}
+		} else {
+			$ids = $results;
 		}
 		//now that we have the results, let's show this!
 		$result = $db->query('SELECT p.id,p.parsed_content,f.url AS furl,f.name AS forum,t.url AS turl,t.subject,u.username AS poster,u.avatar_extension,u.id AS user_id,g.g_title AS poster_title FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE p.id IN(' . implode(',', $ids) . ')') or enhanced_error('Failed to get post information', true);
@@ -187,6 +225,10 @@ if (isset($_GET['query'])) {
 						echo '</optgroup>';
 					}
 					?></select></td>
+				</tr>
+				<tr>
+					<td><?php echo translate('sortby'); ?></td>
+					<td><select name="sortby"><option value="relevance"><?php echo translate('relevance'); ?></option><option value="posttime"><?php echo translate('posttime'); ?></option></select> <select name="direction"><option value="asc"><?php echo translate('ascending'); ?></option><option value="desc"><?php echo translate('descending'); ?></option></select></td>
 				</tr>
 				<?php if ($futurebb_user['g_admin_privs'] || $futurebb_user['g_mod_privs']) { ?>
 				<tr>

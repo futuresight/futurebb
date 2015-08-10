@@ -319,4 +319,6 @@ $lang = array (
   'tagwasopened' => 'The <b>[$1]</b> tag was opened at the following location: ',
   'archived' => '(Archived)',
   'notextinsidetag' => 'You are not allowed to place any text directly inside the <b>[$1]</b> tag.',
+  'posttime' => 'Post time',
+  'relevance' => 'Relevance',
 );
