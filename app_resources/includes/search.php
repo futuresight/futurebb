@@ -34,7 +34,7 @@ function update_search_index($pid,$msg) {
 	}
 	foreach ($matches as $word => $count) {
 		if (trim($word) != '') {
-			$q[] = '(' . $pid . ',\'' . $db->escape($word) . '\',' . $count . ')';
+			$q[] = '(' . $pid . ',\'' . $db->escape(strtolower($word)) . '\',' . $count . ')';
 		}
 	}
 	if (!empty($q)) {

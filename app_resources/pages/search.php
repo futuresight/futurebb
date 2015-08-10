@@ -1,6 +1,7 @@
 <?php
 $page_title = 'Search';
 define('BASE', 2); //the base number, like scoring 2^n
+//define('SHOW_SCORES', true); //uncomment to show the search scores when searching by relevance - this should only be used for debugging purposes
 
 class SearchItem {
 	private $mwords;
@@ -24,7 +25,7 @@ class SearchItem {
 	
 	function addKeyword($keyword) {
 		//when adding a keyword, index its locations
-		$word = new SearchWord($keyword);
+		$word = new SearchWord(strtolower($keyword));
 		foreach ($this->mwords as $key => $mword) {
 			if ($keyword == $mword) {
 				$word->addLocation($key);
@@ -87,7 +88,7 @@ class SearchWord {
 
 if (isset($_GET['query'])) {
 	include FORUM_ROOT . '/app_resources/includes/search.php';
-	$terms = split_into_words($_GET['query']);
+	$terms = split_into_words(strtolower($_GET['query']));
 	$keywords = $terms;
 	foreach ($terms as &$term) {
 		$term = '\'' . $db->escape($term) . '\'';
@@ -104,6 +105,7 @@ if (isset($_GET['query'])) {
 	if (isset($_GET['forum']) && $_GET['forum'] != 0) {
 		$addl_where[] = 't.forum_id=' . intval($_GET['forum']);
 	}
+	$addl_where[] = 'p.id IS NOT NULL'; //if a post is deleted but the index entry isn't removed
 	$sortby = isset($_GET['sortby']) ? $_GET['sortby'] : 'relevance';
 	if (!isset($_GET['query']) || $_GET['query'] == '') {
 		if ($sortby == 'relevance') {
@@ -128,7 +130,7 @@ if (isset($_GET['query'])) {
 			usort($results, function($m1, $m2) {
 				return $m1->compareTo($m2);
 			});
-			if (!isset($_GET['direction']) || $_GET['direction'] == 'descending') {
+			if (!isset($_GET['direction']) || $_GET['direction'] == 'desc') {
 				$results = array_reverse($results);
 			}
 			break;
@@ -174,15 +176,22 @@ if (isset($_GET['query'])) {
 		echo '</p>';
 		//get the list of post IDs
 		$ids = array();
+		if ($sortby == 'relevance' && defined('SHOW_SCORES')) {
+			//store the scores for debugging
+			$scores = array();
+		}
 		if (is_object($results[0])) {
 			foreach ($results as $post) {
 				$ids[] = $post->getId();
+				if ($sortby == 'relevance' && defined('SHOW_SCORES')) {
+					$scores[$post->getId()] = $post->getScore();
+				}
 			}
 		} else {
 			$ids = $results;
 		}
 		//now that we have the results, let's show this!
-		$result = $db->query('SELECT p.id,p.parsed_content,f.url AS furl,f.name AS forum,t.url AS turl,t.subject,u.username AS poster,u.avatar_extension,u.id AS user_id,g.g_title AS poster_title FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE p.id IN(' . implode(',', $ids) . ')') or enhanced_error('Failed to get post information', true);
+		$result = $db->query('SELECT p.id,p.parsed_content,f.url AS furl,f.name AS forum,t.url AS turl,t.subject,u.username AS poster,u.avatar_extension,u.id AS user_id,g.g_title AS poster_title FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE p.id IN(' . implode(',', $ids) . ')') or enhanced_error('Failed to get post information' . implode(',', $ids), true);
 		$boxes = array(); //the boxes to show
 		while ($message = $db->fetch_assoc($result)) {
 			$box_content = '<div class="catwrap" id="post' . $message['id'] . '"><h2 class="cat_header"><a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '">' . htmlspecialchars($message['forum']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '/' . $message['turl'] . '">' . htmlspecialchars($message['subject']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/posts/' . $message['id'] . '">' . translate('post') . ' #' . $message['id'] . '</a></h2>';
@@ -191,6 +200,9 @@ if (isset($_GET['query'])) {
 				$box_content .= '<p><img src="' . $base_config['baseurl'] . '/img/avatars/' . $message['user_id'] . '.' . htmlspecialchars($message['avatar_extension']) . '" alt="avatar" class="avatar" /></p>';
 			}
 			$box_content .= '</div><div class="postright"><p>' . $message['parsed_content'] . '</p>';
+			if ($sortby == 'relevance' && defined('SHOW_SCORES')) {
+				$box_content .= '<hr />Score: ' . $scores[$message['id']];
+			}
 			$box_content .= '</div></div></div>';
 			$boxes[$message['id']] = $box_content;
 		}
