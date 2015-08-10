@@ -384,6 +384,10 @@ abstract class URLEngine {
 			}
 		}
 		
+		if ($str == '') {
+			$str = '0';
+		}
+		
 		if ($str == 'static') {
 			$str = '0-static';
 		}

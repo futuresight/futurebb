@@ -163,6 +163,12 @@ if (isset($_GET['query'])) {
 		if (isset($_GET['forum'])) {
 			$linktext .= '&forum=' . intval($_GET['forum']);
 		}
+		if (isset($_GET['show'])) {
+			$linktext .= '&show=' . htmlspecialchars($_GET['show']);
+		}
+		if (isset($_GET['sortby'])) {
+			$linktext .= '&sortby=' . htmlspecialchars($_GET['sortby']);
+		}
 		$linktext .= '&page=$page$"$bold$>$page$</a>';
 		echo paginate($linktext, $page, $num_pages);
 		echo '</p>';
