@@ -191,11 +191,15 @@ if (isset($_GET['query'])) {
 			$ids = $results;
 		}
 		//now that we have the results, let's show this!
-		$result = $db->query('SELECT p.id,p.parsed_content,f.url AS furl,f.name AS forum,t.url AS turl,t.subject,u.username AS poster,u.avatar_extension,u.id AS user_id,g.g_title AS poster_title FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE p.id IN(' . implode(',', $ids) . ')') or enhanced_error('Failed to get post information' . implode(',', $ids), true);
+		$result = $db->query('SELECT p.deleted AS pdeleted,p.id,p.parsed_content,f.url AS furl,f.name AS forum,t.url AS turl,t.subject,t.deleted AS tdeleted,u.username AS poster,u.avatar_extension,u.id AS user_id,g.g_title AS poster_title FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE p.id IN(' . implode(',', $ids) . ')') or enhanced_error('Failed to get post information' . implode(',', $ids), true);
 		$boxes = array(); //the boxes to show
 		while ($message = $db->fetch_assoc($result)) {
-			$box_content = '<div class="catwrap" id="post' . $message['id'] . '"><h2 class="cat_header"><a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '">' . htmlspecialchars($message['forum']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '/' . $message['turl'] . '">' . htmlspecialchars($message['subject']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/posts/' . $message['id'] . '">' . translate('post') . ' #' . $message['id'] . '</a></h2>';
-			$box_content .= '<div class="cat_body"><div class="postleft"><p><a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($message['poster']) . '">' . htmlspecialchars($message['poster']) . '</a></p><p><b>' . htmlspecialchars($message['poster_title']) . '</b></p>';
+			$box_content = '<div class="catwrap" id="post' . $message['id'] . '"><h2 class="cat_header">';
+			if ($message['pdeleted'] || $message['tdeleted']) {
+				$box_content .= '&#10060; ';
+			}
+			$box_content .= '<a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '">' . htmlspecialchars($message['forum']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '/' . $message['turl'] . '">' . htmlspecialchars($message['subject']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/posts/' . $message['id'] . '">' . translate('post') . ' #' . $message['id'] . '</a></h2>';
+			$box_content .= '<div class="cat_body' . ($message['pdeleted'] || $message['tdeleted'] ? ' deleted_post' : '') . '"><div class="postleft"><p><a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($message['poster']) . '">' . htmlspecialchars($message['poster']) . '</a></p><p><b>' . htmlspecialchars($message['poster_title']) . '</b></p>';
 			if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/img/avatars/' . $message['user_id'] . '.' . $message['avatar_extension'])) {
 				$box_content .= '<p><img src="' . $base_config['baseurl'] . '/img/avatars/' . $message['user_id'] . '.' . htmlspecialchars($message['avatar_extension']) . '" alt="avatar" class="avatar" /></p>';
 			}
