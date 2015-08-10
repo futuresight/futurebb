@@ -101,6 +101,9 @@ if (isset($_GET['query'])) {
 	if (isset($_GET['author']) && $_GET['author'] != '') {
 		$addl_where[] = 'u.username LIKE \'' . $db->escape(str_replace('*', '%', $_GET['author'])) . '\'';
 	}
+	if (isset($_GET['forum']) && $_GET['forum'] != 0) {
+		$addl_where[] = 't.forum_id=' . intval($_GET['forum']);
+	}
 	$sortby = isset($_GET['sortby']) ? $_GET['sortby'] : 'relevance';
 	if (!isset($_GET['query']) || $_GET['query'] == '') {
 		if ($sortby == 'relevance') {
@@ -125,18 +128,19 @@ if (isset($_GET['query'])) {
 			usort($results, function($m1, $m2) {
 				return $m1->compareTo($m2);
 			});
-			$results = array_reverse($results);
+			if (!isset($_GET['direction']) || $_GET['direction'] == 'descending') {
+				$results = array_reverse($results);
+			}
 			break;
 		case 'posttime':
 			$plain = true;
 			$order = 'p.posted';
 			break;
-		
 	}
 	if ($plain) {
 		//we're just doing a basic SQL query to retrieve IDs, so don't do any of the fancy stuff (and the code is reusable)
 		$direction = (isset($_GET['direction']) && in_array($_GET['direction'], array('asc', 'desc'))) ? strtoupper($_GET['direction']) : 'ASC';
-		$result = $db->query('SELECT DISTINCT(p.id) FROM `#^search_index` AS i LEFT JOIN `#^posts` AS p ON p.id=i.post_id LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE ' . (isset($_GET['query']) && $_GET['query'] != '' ? 'i.word IN(' . implode(',', $terms) . ')' : '') . implode(' AND ', $addl_where) . ' ORDER BY ' . $order . ' ' . $direction) or enhanced_error('Failed to get search information', true);
+		$result = $db->query('SELECT DISTINCT(p.id) FROM `#^search_index` AS i LEFT JOIN `#^posts` AS p ON p.id=i.post_id LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE ' . (isset($_GET['query']) && $_GET['query'] != '' ? 'i.word IN(' . implode(',', $terms) . ') AND ' : '') . implode(' AND ', $addl_where) . ' ORDER BY ' . $order . ' ' . $direction) or enhanced_error('Failed to get search information', true);
 		while (list($id) = $db->fetch_row($result)) {
 			$results[] = $id;
 		}
@@ -228,7 +232,7 @@ if (isset($_GET['query'])) {
 				</tr>
 				<tr>
 					<td><?php echo translate('sortby'); ?></td>
-					<td><select name="sortby"><option value="relevance"><?php echo translate('relevance'); ?></option><option value="posttime"><?php echo translate('posttime'); ?></option></select> <select name="direction"><option value="asc"><?php echo translate('ascending'); ?></option><option value="desc"><?php echo translate('descending'); ?></option></select></td>
+					<td><select name="sortby"><option value="relevance"><?php echo translate('relevance'); ?></option><option value="posttime"><?php echo translate('posttime'); ?></option></select> <select name="direction"><option value="desc"><?php echo translate('descending'); ?></option><option value="asc"><?php echo translate('ascending'); ?></option></select></td>
 				</tr>
 				<?php if ($futurebb_user['g_admin_privs'] || $futurebb_user['g_mod_privs']) { ?>
 				<tr>
