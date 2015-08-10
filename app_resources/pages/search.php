@@ -1,6 +1,7 @@
 <?php
 $page_title = 'Search';
 define('BASE', 2); //the base number, like scoring 2^n
+define('PAGE_SIZE', 25);
 //define('SHOW_SCORES', true); //uncomment to show the search scores when searching by relevance - this should only be used for debugging purposes
 
 class SearchItem {
@@ -148,9 +149,9 @@ if (isset($_GET['query'])) {
 		}
 	}
 	//now that we have the results, choose the ones we want by page, and then get the rest of the information
-	$page = isset($_GET['p']) ? min(1, intval($_GET['p'])) : 1;
-	$num_pages = ceil(sizeof($results) / 25);
-	$results = array_slice($results, ($page - 1) * 25, 25);
+	$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+	$num_pages = ceil(sizeof($results) / PAGE_SIZE);
+	$results = array_slice($results, ($page - 1) * PAGE_SIZE, PAGE_SIZE);
 	if (empty($results)) {
 		//no results :(
 		echo '<div class="forum_content"><p>' . translate('noresults') . '</p></div>';
