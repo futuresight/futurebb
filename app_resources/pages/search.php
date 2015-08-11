@@ -11,7 +11,7 @@ class SearchItem {
 	private $time;
 	private $id;
 	function __construct($message, $time, $id) {
-		$this->mwords = split_into_words($message);
+		$this->mwords = split_into_words(strtolower($message));
 		$this->time = $time;
 		$this->id = $id;
 	}
@@ -26,7 +26,8 @@ class SearchItem {
 	
 	function addKeyword($keyword) {
 		//when adding a keyword, index its locations
-		$word = new SearchWord(strtolower($keyword));
+		$keyword = strtolower($keyword);
+		$word = new SearchWord($keyword);
 		foreach ($this->mwords as $key => $mword) {
 			if ($keyword == $mword) {
 				$word->addLocation($key);
