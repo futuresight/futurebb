@@ -282,9 +282,9 @@ abstract class LoginController {
 		$num_posts = $futurebb_user['num_posts'];
 		$days_registered = floor((time() - $futurebb_user['registered']) / 60 / 60 / 24);
 		if ($futurebb_user['g_promote_operator'] == 1) {
-			$promote = ($num_posts > $futurebb_user['g_promote_posts'] && $days_registered > $futurebb_user['g_promote_days']);
+			$promote = ($num_posts >= $futurebb_user['g_promote_posts'] && $days_registered >= $futurebb_user['g_promote_days']);
 		} else {
-			$promote = ($num_posts > $futurebb_user['g_promote_posts'] || $days_registered > $futurebb_user['g_promote_days']);
+			$promote = ($num_posts >= $futurebb_user['g_promote_posts'] || $days_registered >= $futurebb_user['g_promote_days']);
 		}
 		if ($promote) {
 			$db->query('UPDATE `#^users` SET group_id=' .  $futurebb_user['g_promote_group'] . ' WHERE id=' . $futurebb_user['id']) or error('Failed to update user group', __FILE__, __LINE__, $db->error());
