@@ -288,6 +288,7 @@ abstract class LoginController {
 		}
 		if ($promote) {
 			$db->query('UPDATE `#^users` SET group_id=' .  $futurebb_user['g_promote_group'] . ' WHERE id=' . $futurebb_user['id']) or error('Failed to update user group', __FILE__, __LINE__, $db->error());
+			ExtensionConfig::run_hooks('user_promoted', array());
 		}
 	}
 	
