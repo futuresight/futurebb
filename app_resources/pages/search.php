@@ -114,6 +114,12 @@ if (isset($_GET['query'])) {
 			$sortby = 'posttime';
 		}
 	}
+	$search_hash = md5('query=' . base64_encode(implode(',', $terms)) . '&sortby=' . $sortby . '&show=' . (isset($_GET['show']) && $_GET['show'] == 'deleted' ? 'deleted' : 'normal') . '&author=' . base64_encode(isset($_GET['username']) ? $_GET['username'] : '') . '&forum=' . (isset($_GET['forum']) ? intval($_GET['forum']) : '0')); //generate a hash that will be used to cache the results
+	$result = $db->query('SELECT results FROM `#^search_cache` WHERE hash=\'' . $db->escape($search_hash) . '\'') or enhanced_error('Failed to check cache', true);
+	if ($db->num_rows($result)) {
+		list($id_list) = $db->fetch_row($result);
+		$sortby = 'cache';
+	}
 	$results = array();
 	$plain = false;
 	switch ($sortby) {
@@ -140,6 +146,11 @@ if (isset($_GET['query'])) {
 			$plain = true;
 			$order = 'p.posted';
 			break;
+		case 'cache':
+			$results = explode(',', $id_list);
+			break;
+		default:
+			httperror(404);
 	}
 	if ($plain) {
 		//we're just doing a basic SQL query to retrieve IDs, so don't do any of the fancy stuff (and the code is reusable)
@@ -148,6 +159,22 @@ if (isset($_GET['query'])) {
 		while (list($id) = $db->fetch_row($result)) {
 			$results[] = $id;
 		}
+	}
+	//only keep the first 400 entries
+	$results = array_slice($results, 0, 400);
+	if ($sortby != 'cache') {
+		//cache the results
+		$db->query('DELETE FROM `#^search_cache` WHERE time<' . (time() - 60 * 15)) or enhanced_error('Failed to remove old cache items', true); //delete any cached searches older than 15 minutes
+		if (is_object($results[0])) {
+			$result_list = array();
+			foreach ($results as $searchitem) {
+				$result_list[] = $searchitem->getId();
+			}
+		} else {
+			$result_list = $results;
+		}
+		$db->query('INSERT INTO `#^search_cache`(hash,results,time) VALUES(\'' . $search_hash . '\',\'' . implode(',', $result_list) . '\',' . time() . ')') or enhanced_error('Failed to insert cache entry', true);
+		unset($result_list);
 	}
 	//now that we have the results, choose the ones we want by page, and then get the rest of the information
 	$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
