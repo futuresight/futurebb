@@ -1,7 +1,8 @@
 <?php
 $page_title = 'Search';
-define('BASE', 2); //the base number, like scoring 2^n
+define('BASE', 2); //the base number for scoring searches, like scoring 2^n
 define('PAGE_SIZE', 25);
+define('SEARCH_EXPIRY', 60 * 15); //minutes for searches to expire
 //define('SHOW_SCORES', true); //uncomment to show the search scores when searching by relevance - this should only be used for debugging purposes
 
 class SearchItem {
@@ -115,7 +116,7 @@ if (isset($_GET['query'])) {
 		}
 	}
 	$search_hash = md5('query=' . base64_encode(implode(',', $terms)) . '&sortby=' . $sortby . '&show=' . (isset($_GET['show']) && $_GET['show'] == 'deleted' ? 'deleted' : 'normal') . '&author=' . base64_encode(isset($_GET['username']) ? $_GET['username'] : '') . '&forum=' . (isset($_GET['forum']) ? intval($_GET['forum']) : '0')); //generate a hash that will be used to cache the results
-	$result = $db->query('SELECT results FROM `#^search_cache` WHERE hash=\'' . $db->escape($search_hash) . '\'') or enhanced_error('Failed to check cache', true);
+	$result = $db->query('SELECT results FROM `#^search_cache` WHERE hash=\'' . $db->escape($search_hash) . '\' AND time>' . (time() - SEARCH_EXPIRY)) or enhanced_error('Failed to check cache', true);
 	if ($db->num_rows($result)) {
 		list($id_list) = $db->fetch_row($result);
 		$sortby = 'cache';
@@ -164,7 +165,7 @@ if (isset($_GET['query'])) {
 	$results = array_slice($results, 0, 400);
 	if ($sortby != 'cache') {
 		//cache the results
-		$db->query('DELETE FROM `#^search_cache` WHERE time<' . (time() - 60 * 15)) or enhanced_error('Failed to remove old cache items', true); //delete any cached searches older than 15 minutes
+		$db->query('DELETE FROM `#^search_cache` WHERE time<' . (time() - SEARCH_EXPIRY)) or enhanced_error('Failed to remove old cache items', true); //delete any cached searches older than 15 minutes
 		if (is_object($results[0])) {
 			$result_list = array();
 			foreach ($results as $searchitem) {

@@ -60,4 +60,20 @@ include FORUM_ROOT . '/app_resources/includes/parser.php';
             <li><code>[img]https://www.google.com/images/srpr/logo11w.png[/img]</code> <?php echo translate('produces'); ?> <br /> <img src="https://www.google.com/images/srpr/logo11w.png" alt="forum image" /></li>
         </ul>
     </div>
+	<div class="forum_content" id="tables">
+		<h3><?php echo translate('tables'); ?></h3>
+		<p><?php echo translate('tableintro'); ?></p>
+		<p><code>[table][tr][td]<?php echo translate('colrow', 1, 1); ?>[/td][td]<?php echo translate('colrow', 2, 1); ?>[/td][/tr][tr][td]<?php echo translate('colrow', 1, 2); ?>[/td][td]<?php echo translate('colrow', 2, 2); ?>[/td][/tr][/table]</code><br /><?php echo translate('produces'); ?>
+		<table border="0">
+			<tr>
+				<td><?php echo translate('colrow', 1, 1); ?></td>
+				<td><?php echo translate('colrow', 2, 1); ?></td>
+			</tr>
+			<tr>
+				<td><?php echo translate('colrow', 1, 2); ?></td>
+				<td><?php echo translate('colrow', 2, 2); ?></td>
+			</tr>
+		</table>
+		</p>
+	</div>
 </div>
