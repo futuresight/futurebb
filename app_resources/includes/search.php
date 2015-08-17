@@ -24,21 +24,21 @@ function update_search_index($pid,$msg) {
 	$words = split_into_words($msg, true);
 	$db->query('DELETE FROM `#^search_index` WHERE post_id=' . $pid) or error('Failed to delete existing search stuff', __FILE__, __LINE__, $db->error());
 	$q = array();
-	$matches = array();
-	foreach ($words as $val) {
-		if (isset($matches[$val])) {
-			$matches[$val]++;
+	$locations = array();
+	foreach ($words as $key => $word) {
+		if (isset($locations[$word])) {
+			$locations[$word][] = $key;
 		} else {
-			$matches[$val] = 1;
+			$locations[$word] = array($key);
 		}
 	}
-	foreach ($matches as $word => $count) {
+	foreach ($locations as $word => $curlocs) {
 		if (trim($word) != '') {
-			$q[] = '(' . $pid . ',\'' . $db->escape(strtolower($word)) . '\',' . $count . ')';
+			$q[] = '(' . $pid . ',\'' . $db->escape(strtolower($word)) . '\',\'' . $db->escape(implode(',', $curlocs)) . '\')';
 		}
 	}
 	if (!empty($q)) {
-		$query = new DBMassInsert('search_index', array('post_id', 'word', 'num_matches'), $q, 'Failed to insert search engine data');
+		$query = new DBMassInsert('search_index', array('post_id', 'word', 'locations'), $q, 'Failed to insert search engine data');
 		$query->commit();
 	}
 }

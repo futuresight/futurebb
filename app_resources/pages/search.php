@@ -2,6 +2,7 @@
 $page_title = 'Search';
 define('BASE', 2); //the base number for scoring searches, like scoring 2^n
 define('PAGE_SIZE', 25);
+define('CACHE_SEARCHES', true); //comment to disable caching, should only be used for debugging
 define('SEARCH_EXPIRY', 60 * 15); //minutes for searches to expire
 //define('SHOW_SCORES', true); //uncomment to show the search scores when searching by relevance - this should only be used for debugging purposes
 
@@ -25,15 +26,11 @@ class SearchItem {
 		}
 	}
 	
-	function addKeyword($keyword) {
+	function addKeyword($keyword, $locations) {
 		//when adding a keyword, index its locations
 		$keyword = strtolower($keyword);
 		$word = new SearchWord($keyword);
-		foreach ($this->mwords as $key => $mword) {
-			if ($keyword == $mword) {
-				$word->addLocation($key);
-			}
-		}
+		$word->setLocations(explode(',', $locations));
 		$this->keywords[$keyword] = $word;
 	}
 	
@@ -76,8 +73,8 @@ class SearchWord {
 		$this->word = $word;
 	}
 	
-	function addLocation($loc) {
-		$this->locations[] = $loc;
+	function setLocations($loc) {
+		$this->locations = $loc;
 	}
 	
 	function hasLocation($loc) {
@@ -115,24 +112,26 @@ if (isset($_GET['query'])) {
 			$sortby = 'posttime';
 		}
 	}
-	$search_hash = md5('query=' . base64_encode(implode(',', $terms)) . '&sortby=' . $sortby . '&show=' . (isset($_GET['show']) && $_GET['show'] == 'deleted' ? 'deleted' : 'normal') . '&author=' . base64_encode(isset($_GET['username']) ? $_GET['username'] : '') . '&forum=' . (isset($_GET['forum']) ? intval($_GET['forum']) : '0')); //generate a hash that will be used to cache the results
-	$result = $db->query('SELECT results FROM `#^search_cache` WHERE hash=\'' . $db->escape($search_hash) . '\' AND time>' . (time() - SEARCH_EXPIRY)) or enhanced_error('Failed to check cache', true);
-	if ($db->num_rows($result)) {
-		list($id_list) = $db->fetch_row($result);
-		$sortby = 'cache';
+	if (defined('CACHE_SEARCHES')) {
+		$search_hash = md5('query=' . base64_encode(implode(',', $terms)) . '&sortby=' . $sortby . '&show=' . (isset($_GET['show']) && $_GET['show'] == 'deleted' ? 'deleted' : 'normal') . '&author=' . base64_encode(isset($_GET['username']) ? $_GET['username'] : '') . '&forum=' . (isset($_GET['forum']) ? intval($_GET['forum']) : '0')); //generate a hash that will be used to cache the results
+		$result = $db->query('SELECT results FROM `#^search_cache` WHERE hash=\'' . $db->escape($search_hash) . '\' AND time>' . (time() - SEARCH_EXPIRY)) or enhanced_error('Failed to check cache', true);
+		if ($db->num_rows($result)) {
+			list($id_list) = $db->fetch_row($result);
+			$sortby = 'cache';
+		}
 	}
 	$results = array();
 	$plain = false;
 	switch ($sortby) {
 		case 'relevance':
 			//sort by relevance
-			$result = $db->query('SELECT p.content,p.id AS post_id,p.posted,i.num_matches,i.word FROM `#^search_index` AS i LEFT JOIN `#^posts` AS p ON p.id=i.post_id LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE i.word IN(' . implode(',', $terms) . ') AND ' . implode(' AND ', $addl_where)) or enhanced_error('Failed to get search information', true);
+			$result = $db->query('SELECT p.content,p.id AS post_id,p.posted,i.locations,i.word FROM `#^search_index` AS i LEFT JOIN `#^posts` AS p ON p.id=i.post_id LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE i.word IN(' . implode(',', $terms) . ') AND ' . implode(' AND ', $addl_where)) or enhanced_error('Failed to get search information', true);
 			while ($match = $db->fetch_assoc($result)) {
 				if (isset($results[$match['post_id']])) {
-					$results[$match['post_id']]->addKeyword($match['word']);
+					$results[$match['post_id']]->addKeyword($match['word'], $match['locations']);
 				} else {
 					$item = new SearchItem($match['content'], $match['posted'], $match['post_id']);
-					$item->addKeyword($match['word']);
+					$item->addKeyword($match['word'], $match['locations']);
 					$results[$match['post_id']] = $item;
 				}
 			}
@@ -163,7 +162,7 @@ if (isset($_GET['query'])) {
 	}
 	//only keep the first 400 entries
 	$results = array_slice($results, 0, 400);
-	if ($sortby != 'cache') {
+	if ($sortby != 'cache' && defined('CACHE_SEARCHES')) {
 		//cache the results
 		$db->query('DELETE FROM `#^search_cache` WHERE time<' . (time() - SEARCH_EXPIRY)) or enhanced_error('Failed to remove old cache items', true); //delete any cached searches older than 15 minutes
 		if (is_object($results[0])) {
