@@ -17,7 +17,6 @@ function error($text, $file = null, $line = null, $db_error = null) {
 		<title>FutureBB Error</title>
 	</head>
 	<body>
-			
 		<p><?php echo $text; ?></p>
 		<?php if ($file != null) { ?><p>In file <i><?php echo str_replace(FORUM_ROOT, '[ROOT]', $file); ?></i> on line <b><?php echo $line; ?></b>.</p><?php } ?>
 		<?php if ($db_error != null) { ?><p>The database reported: <b><?php echo $db_error; ?></b>.</p><?php } ?>

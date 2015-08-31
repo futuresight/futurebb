@@ -1,5 +1,5 @@
 <?php
-//upgrade from v1.1 to v1.2 (DB 0 -> 1)
+//upgrade from v1.1 to v1.2 (DB 1 -> 2)
 //add new config values
 
 $new_fld = new DBField('load_extra','TINYINT(1)');

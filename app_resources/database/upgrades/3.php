@@ -1,5 +1,5 @@
 <?php
-//upgrade from v1.2 to v1.3 (DB 1 -> 2)
+//upgrade from v1.2 to v1.3 (DB 2 -> 3)
 //add new config values
 set_config('date_format', 'd M Y');
 set_config('time_format', 'H:i');
