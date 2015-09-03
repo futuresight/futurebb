@@ -27,3 +27,4 @@ $db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_re
 $db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_reported) VALUES(0, \'special\',\'' . $db->escape('Welcome to FutureBB 1.4! Once you follow the steps explained in the other automatic notifications, your upgrade will be complete. We hope you enjoy it!') . '\',0,' . time() . ')') or enhanced_error('Failed to alert admin to rebuild search index', true);
 
 set_config('db_version', 4);
+set_config('new_version', 0);
