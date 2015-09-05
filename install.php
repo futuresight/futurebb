@@ -563,10 +563,10 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld = new DBField('word','VARCHAR(255)');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
-		$new_fld->set_default('\'\'');
 		$tables['search_index']->add_field($new_fld);
-		$new_fld = new DBField('num_matches','INT');
+		$new_fld = new DBField('locations', 'TEXT');
 		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'\'');
 		$tables['search_index']->add_field($new_fld);
 		$tables['search_index']->commit();
 		

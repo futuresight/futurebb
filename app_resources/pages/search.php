@@ -160,92 +160,97 @@ if (isset($_GET['query'])) {
 			$results[] = $id;
 		}
 	}
-	//only keep the first 400 entries
-	$results = array_slice($results, 0, 400);
-	if ($sortby != 'cache' && defined('CACHE_SEARCHES')) {
-		//cache the results
-		$db->query('DELETE FROM `#^search_cache` WHERE time<' . (time() - SEARCH_EXPIRY)) or enhanced_error('Failed to remove old cache items', true); //delete any cached searches older than 15 minutes
-		if (is_object($results[0])) {
-			$result_list = array();
-			foreach ($results as $searchitem) {
-				$result_list[] = $searchitem->getId();
-			}
-		} else {
-			$result_list = $results;
-		}
-		$db->query('INSERT INTO `#^search_cache`(hash,results,time) VALUES(\'' . $search_hash . '\',\'' . implode(',', $result_list) . '\',' . time() . ')') or enhanced_error('Failed to insert cache entry', true);
-		unset($result_list);
-	}
-	//now that we have the results, choose the ones we want by page, and then get the rest of the information
-	$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-	$num_pages = ceil(sizeof($results) / PAGE_SIZE);
-	$results = array_slice($results, ($page - 1) * PAGE_SIZE, PAGE_SIZE);
-	if (empty($results)) {
+	if (empty($results) || empty($results[0])) {
 		//no results :(
 		echo '<div class="forum_content"><p>' . translate('noresults') . '</p></div>';
 	} else {
-		//before continuing, paginate
-		?>
-		<p><?php echo translate('pages');
-		$linktext = '<a href="' . $base_config['baseurl'] . '/search?query=' . htmlspecialchars($_GET['query']);
-		if (isset($_GET['author'])) {
-			$linktext .= '&author=' . htmlspecialchars($_GET['author']);
-		}
-		if (isset($_GET['forum'])) {
-			$linktext .= '&forum=' . intval($_GET['forum']);
-		}
-		if (isset($_GET['show'])) {
-			$linktext .= '&show=' . htmlspecialchars($_GET['show']);
-		}
-		if (isset($_GET['sortby'])) {
-			$linktext .= '&sortby=' . htmlspecialchars($_GET['sortby']);
-		}
-		$linktext .= '&page=$page$"$bold$>$page$</a>';
-		echo paginate($linktext, $page, $num_pages);
-		echo '</p>';
-		//get the list of post IDs
-		$ids = array();
-		if ($sortby == 'relevance' && defined('SHOW_SCORES')) {
-			//store the scores for debugging
-			$scores = array();
-		}
-		if (is_object($results[0])) {
-			foreach ($results as $post) {
-				$ids[] = $post->getId();
-				if ($sortby == 'relevance' && defined('SHOW_SCORES')) {
-					$scores[$post->getId()] = $post->getScore();
+		//only keep the first 400 entries
+		$results = array_slice($results, 0, 400);
+		if ($sortby != 'cache' && defined('CACHE_SEARCHES')) {
+			//cache the results
+			$db->query('DELETE FROM `#^search_cache` WHERE time<' . (time() - SEARCH_EXPIRY)) or enhanced_error('Failed to remove old cache items', true); //delete any cached searches older than 15 minutes
+			if (is_object($results[0])) {
+				$result_list = array();
+				foreach ($results as $searchitem) {
+					$result_list[] = $searchitem->getId();
 				}
+			} else {
+				$result_list = $results;
 			}
+			$db->query('INSERT INTO `#^search_cache`(hash,results,time) VALUES(\'' . $search_hash . '\',\'' . implode(',', $result_list) . '\',' . time() . ')') or enhanced_error('Failed to insert cache entry', true);
+			unset($result_list);
+		}
+		//now that we have the results, choose the ones we want by page, and then get the rest of the information
+		$page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+		$num_pages = ceil(sizeof($results) / PAGE_SIZE);
+		$results = array_slice($results, ($page - 1) * PAGE_SIZE, PAGE_SIZE);
+		if (empty($results)) {
+			//no results after pagination :(
+			echo '<div class="forum_content"><p>' . translate('noresults') . '</p></div>';
 		} else {
-			$ids = $results;
-		}
-		//now that we have the results, let's show this!
-		$result = $db->query('SELECT p.deleted AS pdeleted,p.id,p.parsed_content,f.url AS furl,f.name AS forum,t.url AS turl,t.subject,t.deleted AS tdeleted,u.username AS poster,u.avatar_extension,u.id AS user_id,g.g_title AS poster_title FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE p.id IN(' . implode(',', $ids) . ')') or enhanced_error('Failed to get post information' . implode(',', $ids), true);
-		$boxes = array(); //the boxes to show
-		while ($message = $db->fetch_assoc($result)) {
-			$box_content = '<div class="catwrap" id="post' . $message['id'] . '"><h2 class="cat_header">';
-			if ($message['pdeleted'] || $message['tdeleted']) {
-				$box_content .= '&#10060; ';
+			//before continuing, paginate
+			?>
+			<p><?php echo translate('pages');
+			$linktext = '<a href="' . $base_config['baseurl'] . '/search?query=' . htmlspecialchars($_GET['query']);
+			if (isset($_GET['author'])) {
+				$linktext .= '&author=' . htmlspecialchars($_GET['author']);
 			}
-			$box_content .= '<a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '">' . htmlspecialchars($message['forum']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '/' . $message['turl'] . '">' . htmlspecialchars($message['subject']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/posts/' . $message['id'] . '">' . translate('post') . ' #' . $message['id'] . '</a></h2>';
-			$box_content .= '<div class="cat_body' . ($message['pdeleted'] || $message['tdeleted'] ? ' deleted_post' : '') . '"><div class="postleft"><p><a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($message['poster']) . '">' . htmlspecialchars($message['poster']) . '</a></p><p><b>' . htmlspecialchars($message['poster_title']) . '</b></p>';
-			if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/img/avatars/' . $message['user_id'] . '.' . $message['avatar_extension'])) {
-				$box_content .= '<p><img src="' . $base_config['baseurl'] . '/img/avatars/' . $message['user_id'] . '.' . htmlspecialchars($message['avatar_extension']) . '" alt="avatar" class="avatar" /></p>';
+			if (isset($_GET['forum'])) {
+				$linktext .= '&forum=' . intval($_GET['forum']);
 			}
-			$box_content .= '</div><div class="postright"><p>' . $message['parsed_content'] . '</p>';
+			if (isset($_GET['show'])) {
+				$linktext .= '&show=' . htmlspecialchars($_GET['show']);
+			}
+			if (isset($_GET['sortby'])) {
+				$linktext .= '&sortby=' . htmlspecialchars($_GET['sortby']);
+			}
+			$linktext .= '&page=$page$"$bold$>$page$</a>';
+			echo paginate($linktext, $page, $num_pages);
+			echo '</p>';
+			//get the list of post IDs
+			$ids = array();
 			if ($sortby == 'relevance' && defined('SHOW_SCORES')) {
-				$box_content .= '<hr />Score: ' . $scores[$message['id']];
+				//store the scores for debugging
+				$scores = array();
 			}
-			$box_content .= '</div></div></div>';
-			$boxes[$message['id']] = $box_content;
+			if (is_object($results[0])) {
+				foreach ($results as $post) {
+					$ids[] = $post->getId();
+					if ($sortby == 'relevance' && defined('SHOW_SCORES')) {
+						$scores[$post->getId()] = $post->getScore();
+					}
+				}
+			} else {
+				$ids = $results;
+			}
+			//now that we have the results, let's show this!
+			$result = $db->query('SELECT p.deleted AS pdeleted,p.id,p.parsed_content,f.url AS furl,f.name AS forum,t.url AS turl,t.subject,t.deleted AS tdeleted,u.username AS poster,u.avatar_extension,u.id AS user_id,g.g_title AS poster_title FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE p.id IN(' . implode(',', $ids) . ')') or enhanced_error('Failed to get post information' . implode(',', $ids), true);
+			$boxes = array(); //the boxes to show
+			while ($message = $db->fetch_assoc($result)) {
+				$box_content = '<div class="catwrap" id="post' . $message['id'] . '"><h2 class="cat_header">';
+				if ($message['pdeleted'] || $message['tdeleted']) {
+					$box_content .= '&#10060; ';
+				}
+				$box_content .= '<a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '">' . htmlspecialchars($message['forum']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/' . $message['furl'] . '/' . $message['turl'] . '">' . htmlspecialchars($message['subject']) . '</a> &raquo; <a href="' . $base_config['baseurl'] . '/posts/' . $message['id'] . '">' . translate('post') . ' #' . $message['id'] . '</a></h2>';
+				$box_content .= '<div class="cat_body' . ($message['pdeleted'] || $message['tdeleted'] ? ' deleted_post' : '') . '"><div class="postleft"><p><a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($message['poster']) . '">' . htmlspecialchars($message['poster']) . '</a></p><p><b>' . htmlspecialchars($message['poster_title']) . '</b></p>';
+				if ($futurebb_config['avatars'] && file_exists(FORUM_ROOT . '/static/img/avatars/' . $message['user_id'] . '.' . $message['avatar_extension'])) {
+					$box_content .= '<p><img src="' . $base_config['baseurl'] . '/img/avatars/' . $message['user_id'] . '.' . htmlspecialchars($message['avatar_extension']) . '" alt="avatar" class="avatar" /></p>';
+				}
+				$box_content .= '</div><div class="postright"><p>' . $message['parsed_content'] . '</p>';
+				if ($sortby == 'relevance' && defined('SHOW_SCORES')) {
+					$box_content .= '<hr />Score: ' . $scores[$message['id']];
+				}
+				$box_content .= '</div></div></div>';
+				$boxes[$message['id']] = $box_content;
+			}
+			foreach ($ids as $id) {
+				echo $boxes[$id];
+			}
+			?>
+			<p><?php echo translate('pages');
+			echo paginate($linktext, $page, $num_pages);?></p>
+			<?php
 		}
-		foreach ($ids as $id) {
-			echo $boxes[$id];
-		}
-		?>
-		<p><?php echo translate('pages');
-		echo paginate($linktext, $page, $num_pages);?></p>
-		<?php
 	}
 } else {
 	?>
