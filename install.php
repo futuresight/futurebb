@@ -551,6 +551,25 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['reports']->add_field($new_fld);
 		$tables['reports']->commit();
 		
+		$tables['search_cache'] = new DBTable('search_cache');
+		$new_fld = new DBField('id','INT');
+		$new_fld->add_key('PRIMARY');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->add_extra('AUTO_INCREMENT');
+		$tables['search_cache']->add_field($new_fld);
+		$new_fld = new DBField('hash', 'VARCHAR(50)');
+		$new_fld->set_default('');
+		$new_fld->add_extra('NOT NULL');
+		$tables['search_cache']->add_field($new_fld);
+		$new_fld = new DBField('results', 'TEXT');
+		$new_fld->set_default('');
+		$new_fld->add_extra('NOT NULL');
+		$tables['search_cache']->add_field($new_fld);
+		$new_fld = new DBField('time','INT');
+		$new_fld->add_extra('NOT NULL');
+		$table->add_field($new_fld);
+		$tables['search_cache']->commit();
+		
 		$tables['search_index'] = new DBTable('search_index');
 		$new_fld = new DBField('id','INT');
 		$new_fld->add_key('PRIMARY');
