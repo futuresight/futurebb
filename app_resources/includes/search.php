@@ -1,6 +1,12 @@
 <?php
-function split_into_words($text, $idx = false) {
+function split_into_words($text, $idx = false) {	
 	//this function is copied from FluxBB
+	if (!file_exists(FORUM_ROOT . '/app_config/cache/commonwords.php')) {
+		include FORUM_ROOT . '/app_resources/includes/cacher.php';
+		cache_common_words();
+	}
+	include FORUM_ROOT . '/app_config/cache/commonwords.php';
+	
 	// Remove BBCode
 	$text = preg_replace('%\[/?(b|i|u|url)\]%', ' ', $text);
 
@@ -15,6 +21,12 @@ function split_into_words($text, $idx = false) {
 
 	// Fill an array with all the words
 	$words = explode(' ', $text);
+	
+	foreach ($words as $key => $word) {
+		if (in_array(strtolower($word), $common_words)) {
+			unset($words[$key]);
+		}
+	}
 
 	return $words;
 }

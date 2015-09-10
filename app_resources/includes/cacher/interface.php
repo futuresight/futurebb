@@ -92,3 +92,11 @@ function cache_language() {
 		}
 	}
 }
+
+function cache_common_words() {
+	if (!file_exists(FORUM_ROOT . '/app_config/commonwords.txt')) {
+		file_put_contents(FORUM_ROOT . '/app_config/commonwords.txt', '');
+	}
+	$word_list = explode(',', file_get_contents(FORUM_ROOT . '/app_config/commonwords.txt'));
+	file_put_contents(FORUM_ROOT . '/app_config/cache/commonwords.php', '<?php' . "\n" . '$common_words = ' . var_export($word_list, true) . ';');
+}
