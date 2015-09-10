@@ -2,8 +2,7 @@
 function split_into_words($text, $idx = false) {	
 	//this function is copied from FluxBB
 	if (!file_exists(FORUM_ROOT . '/app_config/cache/commonwords.php')) {
-		include FORUM_ROOT . '/app_resources/includes/cacher.php';
-		cache_common_words();
+		CacheEngine::CacheCommonWords();
 	}
 	include FORUM_ROOT . '/app_config/cache/commonwords.php';
 	

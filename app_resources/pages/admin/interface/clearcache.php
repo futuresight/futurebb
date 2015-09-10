@@ -6,5 +6,6 @@ CacheEngine::CacheHeader();
 CacheEngine::CacheLanguage();
 CacheEngine::CacheAdminPages();
 CacheEngine::CachePages();
+CacheEngine::CacheCommonWords();
 
 redirect($base_config['baseurl'] . '/admin/interface');
