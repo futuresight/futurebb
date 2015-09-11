@@ -21,11 +21,10 @@ function split_into_words($text, $idx = false) {
 	// Fill an array with all the words
 	$words = explode(' ', $text);
 	
-	foreach ($words as $key => $word) {
-		if (in_array(strtolower($word), $common_words)) {
-			unset($words[$key]);
-		}
-	}
+	//filter out common words
+	$words = array_filter($words, function ($word) use($common_words) {
+		return !in_array(strtolower($word), $common_words);
+	});
 
 	return $words;
 }
