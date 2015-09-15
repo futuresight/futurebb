@@ -567,7 +567,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['search_cache']->add_field($new_fld);
 		$new_fld = new DBField('time','INT');
 		$new_fld->add_extra('NOT NULL');
-		$table->add_field($new_fld);
+		$tables['search_cache']->add_field($new_fld);
 		$tables['search_cache']->commit();
 		
 		$tables['search_index'] = new DBTable('search_index');
