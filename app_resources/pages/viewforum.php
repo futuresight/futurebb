@@ -26,6 +26,11 @@ list($num_topics) = $db->fetch_row($result);
 
 //get the topics (if any)
 $result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.closed,t.sticky,t.redirect_id,t.num_replies,t.deleted,lpa.username AS last_post_author,rt.id AS tracker_id,fpa.username AS author,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^posts` AS lp ON lp.id=t.last_post_id LEFT JOIN `#^users` AS lpa ON lpa.id=lp.poster LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^posts` AS fp ON fp.id=t.first_post_id LEFT JOIN `#^users` AS fpa ON fpa.id=fp.poster LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE t.forum_id=' . $cur_forum['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND t.deleted IS NULL') . ' AND (t.redirect_id IS NULL OR t.show_redirect=1) ORDER BY t.sticky DESC,t.last_post DESC LIMIT ' . (($page - 1) * intval($futurebb_config['topics_per_page'])) . ',' . intval($futurebb_config['topics_per_page'])) or error('Failed to get topics', __FILE__, __LINE__, $db->error());
+if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
+?>
+<form action="<?php echo $base_config['baseurl']; ?>/admin/postactions" method="post" enctype="multipart/form-data">
+<?php
+}
 ?>
 <div class="forum_content noleftmargin">
 	<h2 class="cat_header<?php if ($cur_forum['archived']) echo ' archived"'; ?>"><?php echo htmlspecialchars($cur_forum['name']);
@@ -50,6 +55,9 @@ $result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.c
 		?>
 	<table border="0" class="forumtable">
 		<tr>
+			<?php if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) { //add extra column for admin checkboxes ?>
+			<th style="width: 20px;">&nbsp;</th>
+			<?php } ?>
 			<th style="width: 20px;">&nbsp;</th>
 			<th><?php echo translate('subject'); ?></th>
 			<th><?php echo translate('author'); ?></th>
@@ -67,6 +75,11 @@ $result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.c
 				}
 		?>
 		<tr>
+			<?php if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) { //add extra column for admin checkboxes ?>
+			<td style="text-align:center">
+				<input type="checkbox" name="topic_action[<?php echo $cur_topic['id']; ?>]" value="<?php echo $cur_topic['id']; ?>" />
+			</td>
+			<?php } ?>
 			<td style="text-align:center">
 			<?php // add status icon before topic title
 			if ($cur_topic['deleted']) {
@@ -145,3 +158,16 @@ $result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.c
 	$rss_url = 'rss/' . htmlspecialchars($dirs[1]);
 	?>
 </div>
+<?php
+if (($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) && $num_topics > 0) { ?>
+	<p>
+		<input type="hidden" name="type" value="topics" />
+		<input type="submit" name="form_sent_delete" value="<?php echo translate('delete'); ?>" />
+		<input type="submit" name="form_sent_undelete" value="<?php echo translate('undelete'); ?>" />
+		<input type="submit" name="form_sent_close" value="<?php echo translate('closetopic'); ?>" />
+		<input type="submit" name="form_sent_open" value="<?php echo translate('opentopic'); ?>" />
+	</p>
+</form>
+<?php
+}
+?>

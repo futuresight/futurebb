@@ -152,6 +152,13 @@ $pages = array (
     'mod' => false,
     'nocontentbox' => true,
   ),
+  '/admin/postactions' => 
+  array (
+    'file' => 'admin/postactions.php',
+    'template' => true,
+    'admin' => false,
+    'mod' => true,
+  ),
 );
 $pagessubdirs = array (
   '/users' => 
