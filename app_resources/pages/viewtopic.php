@@ -111,7 +111,11 @@ list($num_posts) = $db->fetch_row($result);
 
 //get all of the posts
 $result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_edited,p.deleted AS deleted,u.username AS author,u.id AS author_id,u.parsed_signature AS signature,u.last_page_load,u.num_posts,u.avatar_extension,g.g_title AS user_title,leu.username AS last_edited_by,du.username AS deleted_by FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by LEFT JOIN `#^users` AS du ON du.id=p.deleted_by WHERE p.topic_id=' . $cur_topic['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND p.deleted IS NULL') . ' ORDER BY p.posted ASC LIMIT ' . (($page - 1) * intval($futurebb_config['posts_per_page'])) . ',' . intval($futurebb_config['posts_per_page'])) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
-
+if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
+?>
+<form action="<?php echo $base_config['baseurl']; ?>/admin/postactions" method="post" enctype="multipart/form-data">
+<?php
+}
 ?>
 <p><?php echo translate('pages');
 echo paginate('<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '?page=$page$" $bold$>$page$</a>', $page, ceil($num_posts / $futurebb_config['posts_per_page']));
@@ -187,6 +191,9 @@ while ($cur_post = $db->fetch_assoc($result)) {
 				if ($futurebb_user['g_mod_privs'] && $cur_topic['deleted'] && $cur_post['id'] == $cur_topic['first_post_id']) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/admin/trash_bin/undelete/topic/' . $cur_topic['id'] . '">' . translate('undelete') . ' ' . strtolower(translate('topic')) . '</a>';
 				}
+				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
+					$actions[] = '<label for="post_action_' . $cur_post['id'] . '">' . translate('select') . '</label> <input type="checkbox" id="post_action_' . $cur_post['id'] . '" name="post_action[' . $cur_post['id'] . ']" value="' . $cur_post['id'] . '" />';
+				}
 				?>
 			</div>
 			<div class="postright">
@@ -221,6 +228,15 @@ while ($cur_post = $db->fetch_assoc($result)) {
 echo paginate('<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '?page=$page$" $bold$>$page$</a>', $page, ceil($num_posts / $futurebb_config['posts_per_page']));
 ?></p>
 <?php
+if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) { ?>
+	<p>
+		<input type="hidden" name="type" value="posts" />
+		<input type="submit" name="form_sent_delete" value="<?php echo translate('delete'); ?>" />
+		<input type="submit" name="form_sent_undelete" value="<?php echo translate('undelete'); ?>" />
+	</p>
+</form>
+<?php
+}
 if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && ((!$cur_topic['closed'] && !$cur_topic['forum_archived']) || $futurebb_user['g_mod_privs'])) {
 	?>
 	<div class="cat_wrap">

@@ -324,4 +324,9 @@ $lang = array (
   'tables' => 'Tables',
   'colrow' => 'Col $1, Row $2',
   'tableintro' => 'You use the <code>[table][/table]</code> tags to start and end a table. You use <code>[tr][/tr]</code> to indicate a row, and <code>[td][/td]</code> to indicate a cell. The <code>[tr]</code> tag must go directly inside the <code>[table]</code> tag, and the <code>[td]</code> tag must go inside the <code>[tr]</code> tag.',
+  'topicsp' => 'topic<PLURAL $1>(,s)',
+  'postsp' => 'post<PLURAL $1>(,s)',
+  'select' => 'Select: ',
+  'stick' => 'Stick',
+  'unstick' => 'Unstick',
 );
