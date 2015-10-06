@@ -329,4 +329,6 @@ $lang = array (
   'select' => 'Select: ',
   'stick' => 'Stick',
   'unstick' => 'Unstick',
+  'close' => 'Close',
+  'open' => 'Open',
 );

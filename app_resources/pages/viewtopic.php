@@ -191,10 +191,10 @@ while ($cur_post = $db->fetch_assoc($result)) {
 				if ($futurebb_user['g_mod_privs'] && $cur_topic['deleted'] && $cur_post['id'] == $cur_topic['first_post_id']) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/admin/trash_bin/undelete/topic/' . $cur_topic['id'] . '">' . translate('undelete') . ' ' . strtolower(translate('topic')) . '</a>';
 				}
-				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
+				if (($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) && $count > 1) {
 					$actions[] = '<label for="post_action_' . $cur_post['id'] . '">' . translate('select') . '</label> <input type="checkbox" id="post_action_' . $cur_post['id'] . '" name="post_action[' . $cur_post['id'] . ']" value="' . $cur_post['id'] . '" />';
 				}
-				?>
+			?>
 			</div>
 			<div class="postright">
 				<p><?php echo $cur_post['parsed_content']; ?></p>

@@ -164,8 +164,8 @@ if (($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) && $num_t
 		<input type="hidden" name="type" value="topics" />
 		<input type="submit" name="form_sent_delete" value="<?php echo translate('delete'); ?>" />
 		<input type="submit" name="form_sent_undelete" value="<?php echo translate('undelete'); ?>" />
-		<input type="submit" name="form_sent_close" value="<?php echo translate('closetopic'); ?>" />
-		<input type="submit" name="form_sent_open" value="<?php echo translate('opentopic'); ?>" />
+		<input type="submit" name="form_sent_close" value="<?php echo translate('close'); ?>" />
+		<input type="submit" name="form_sent_open" value="<?php echo translate('open'); ?>" />
 		<input type="submit" name="form_sent_stick" value="<?php echo translate('stick'); ?>" />
 		<input type="submit" name="form_sent_unstick" value="<?php echo translate('unstick'); ?>" />
 	</p>
