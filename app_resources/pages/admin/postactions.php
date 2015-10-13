@@ -15,6 +15,10 @@ if (isset($_POST['form_sent'])) {
 	}
 	if ($_POST['type'] == 'topics') {
 		//working with topics
+		$result = $db->query('SELECT f.url FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . intval(array_keys($_POST['items'])[0])) or enhanced_error('Failed to get forum info', true);
+		if (!$db->num_rows($result)) {
+			httperror(404);
+		}
 		switch ($_POST['action']) {
 			case 'delete':
 				break;
@@ -33,16 +37,35 @@ if (isset($_POST['form_sent'])) {
 		}
 	} else {
 		//working with posts
+		$result = $db->query('SELECT t.url AS turl,t.id AS id,f.url AS furl,f.id AS fid FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE p.id=' . intval(array_keys($_POST['items'])[0])) or enhanced_error('Failed to get first post info', true);
+		if (!$db->num_rows($result)) {
+			httperror(404);
+		}
+		$topic_info = $db->fetch_assoc($result);
 		switch ($_POST['action']) {
 			case 'delete':
 				$db->query('UPDATE `#^posts` SET deleted=' . time() . ',deleted_by=' . $futurebb_user['id'] . ' WHERE id IN(' . implode(',', array_keys($_POST['items'])) . ')') or enhanced_error('Failed to delete posts', true);
-				//TODO: update topic information, including last post ID/date, as well as reply counts and such
+				$db->query('UPDATE `#^topics` SET num_replies=num_replies-' . sizeof($_POST['items']) . ' WHERE id=' . $topic_info['id']) or error('Failed to delete post', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE `#^forums` SET num_posts=num_posts-' . sizeof($_POST['items']) . ' WHERE id=' . $topic_info['fid']) or error('Failed to update topic count', __FILE__, __LINE__, $db->error());
 				break;
 			case 'undelete':
+				$db->query('UPDATE `#^posts` SET deleted=NULL,deleted_by=NULL WHERE id IN(' . implode(',', array_keys($_POST['items'])) . ')') or enhanced_error('Failed to delete posts', true);
+				$db->query('UPDATE `#^topics` SET num_replies=num_replies+' . sizeof($_POST['items']) . ' WHERE id=' . $topic_info['id']) or error('Failed to delete post', __FILE__, __LINE__, $db->error());
+				$db->query('UPDATE `#^forums` SET num_posts=num_posts+' . sizeof($_POST['items']) . ' WHERE id=' . $topic_info['fid']) or error('Failed to update topic count', __FILE__, __LINE__, $db->error());
 				break;
 			default:
 				httperror(404);
 		}
+		//update topic last post data
+		$result = $db->query('SELECT id,posted FROM `#^posts` WHERE topic_id=' . $topic_info['id'] . ' AND deleted IS NULL ORDER BY posted DESC') or error('Failed to get new last post', __FILE__, __LINE__, $db->error());
+		if ($db->num_rows($result)) {
+			list ($last_post_id,$last_post_time) = $db->fetch_row($result);
+		} else {
+			$last_post_id = 0;
+			$last_post_time = 0;
+		}
+		update_last_post($topic_info['id'], $topic_info['fid']);
+		redirect($base_config['baseurl'] . '/' . rawurlencode($topic_info['furl']) . '/' . rawurlencode($topic_info['turl']));
 	}
 } else {
 	//show a confirmation
@@ -64,7 +87,7 @@ if (isset($_POST['form_sent'])) {
 	if (isset($_POST['form_sent_stick']))
 		$action = 'stick';
 	if (isset($_POST['form_sent_unstick']))
-		$action = 'undelete';
+		$action = 'unstick';
 	?>
 	<form action="<?php echo $base_config['baseurl']; ?>/admin/postactions" method="post" enctype="multipart/form-data">
 		<h3>Confirm</h3>
