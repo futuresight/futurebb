@@ -15,14 +15,27 @@ if (isset($_POST['form_sent'])) {
 	}
 	if ($_POST['type'] == 'topics') {
 		//working with topics
-		$result = $db->query('SELECT f.url FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . intval(array_keys($_POST['items'])[0])) or enhanced_error('Failed to get forum info', true);
+		$result = $db->query('SELECT f.url,f.id AS fid FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . intval(array_keys($_POST['items'])[0])) or enhanced_error('Failed to get forum info', true);
 		if (!$db->num_rows($result)) {
 			httperror(404);
 		}
+		$forum_info = $db->fetch_assoc($result);
 		switch ($_POST['action']) {
 			case 'delete':
+				$db->query('UPDATE `#^topics` SET deleted=' . time() . ',deleted_by=' . $futurebb_user['id'] . ' WHERE id IN(' . implode(',', $_POST['items']) . ')') or error('Failed to delete post', __FILE__, __LINE__, $db->error());	
+				//update post counts
+				$result = $db->query('SELECT 1 FROM `#^posts` WHERE topic_id IN(' . implode(',', $_POST['items']) . ') AND deleted IS NULL') or error('Failed to get number of replies', __FILE__, __LINE__, $db->error());
+				$num_replies = $db->num_rows($result);
+				$db->query('UPDATE `#^forums` SET num_posts=num_posts-' . $num_replies . ',num_topics=num_topics-' . sizeof($_POST['items']) . ' WHERE id=' . $forum_info['fid']) or error('Failed to update post count<br />' . $q, __FILE__, __LINE__, $db->error());
+				update_last_post(-1, $forum_info['fid']);
 				break;
 			case 'undelete':
+				$db->query('UPDATE `#^topics` SET deleted=NULL,deleted_by=NULL WHERE id IN(' . implode(',', $_POST['items']) . ')') or error('Failed to delete post', __FILE__, __LINE__, $db->error());	
+				//update post counts
+				$result = $db->query('SELECT 1 FROM `#^posts` WHERE topic_id IN(' . implode(',', $_POST['items']) . ') AND deleted IS NULL') or error('Failed to get number of replies', __FILE__, __LINE__, $db->error());
+				$num_replies = $db->num_rows($result);
+				$db->query('UPDATE `#^forums` SET num_posts=num_posts+' . $num_replies . ',num_topics=num_topics+' . sizeof($_POST['items']) . ' WHERE id=' . $forum_info['fid']) or error('Failed to update post count<br />' . $q, __FILE__, __LINE__, $db->error());
+				update_last_post(-1, $forum_info['fid']);
 				break;
 			case 'close':
 				break;
@@ -35,8 +48,10 @@ if (isset($_POST['form_sent'])) {
 			default:
 				httperror(404);
 		}
+		redirect($base_config['baseurl'] . '/' . $forum_info['url']);
 	} else {
 		//working with posts
+		//TODO: make sure that the posts selected to be deleted haven't already been deleted, and the opposite for undeletion
 		$result = $db->query('SELECT t.url AS turl,t.id AS id,f.url AS furl,f.id AS fid FROM `#^posts` AS p LEFT JOIN `#^topics` AS t ON t.id=p.topic_id LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE p.id=' . intval(array_keys($_POST['items'])[0])) or enhanced_error('Failed to get first post info', true);
 		if (!$db->num_rows($result)) {
 			httperror(404);
