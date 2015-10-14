@@ -45,11 +45,13 @@ if (isset($_POST['form_sent'])) {
 		switch ($_POST['action']) {
 			case 'delete':
 				$db->query('UPDATE `#^posts` SET deleted=' . time() . ',deleted_by=' . $futurebb_user['id'] . ' WHERE id IN(' . implode(',', array_keys($_POST['items'])) . ')') or enhanced_error('Failed to delete posts', true);
+				//update post counts
 				$db->query('UPDATE `#^topics` SET num_replies=num_replies-' . sizeof($_POST['items']) . ' WHERE id=' . $topic_info['id']) or error('Failed to delete post', __FILE__, __LINE__, $db->error());
 				$db->query('UPDATE `#^forums` SET num_posts=num_posts-' . sizeof($_POST['items']) . ' WHERE id=' . $topic_info['fid']) or error('Failed to update topic count', __FILE__, __LINE__, $db->error());
 				break;
 			case 'undelete':
 				$db->query('UPDATE `#^posts` SET deleted=NULL,deleted_by=NULL WHERE id IN(' . implode(',', array_keys($_POST['items'])) . ')') or enhanced_error('Failed to delete posts', true);
+				//update post counts
 				$db->query('UPDATE `#^topics` SET num_replies=num_replies+' . sizeof($_POST['items']) . ' WHERE id=' . $topic_info['id']) or error('Failed to delete post', __FILE__, __LINE__, $db->error());
 				$db->query('UPDATE `#^forums` SET num_posts=num_posts+' . sizeof($_POST['items']) . ' WHERE id=' . $topic_info['fid']) or error('Failed to update topic count', __FILE__, __LINE__, $db->error());
 				break;
@@ -58,12 +60,6 @@ if (isset($_POST['form_sent'])) {
 		}
 		//update topic last post data
 		$result = $db->query('SELECT id,posted FROM `#^posts` WHERE topic_id=' . $topic_info['id'] . ' AND deleted IS NULL ORDER BY posted DESC') or error('Failed to get new last post', __FILE__, __LINE__, $db->error());
-		if ($db->num_rows($result)) {
-			list ($last_post_id,$last_post_time) = $db->fetch_row($result);
-		} else {
-			$last_post_id = 0;
-			$last_post_time = 0;
-		}
 		update_last_post($topic_info['id'], $topic_info['fid']);
 		redirect($base_config['baseurl'] . '/' . rawurlencode($topic_info['furl']) . '/' . rawurlencode($topic_info['turl']));
 	}
