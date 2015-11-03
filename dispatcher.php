@@ -42,34 +42,30 @@ if (!file_exists(FORUM_ROOT . '/app_config/cache/pages.php')) {
 	CacheEngine::CachePages();
 }
 include FORUM_ROOT . '/app_config/cache/pages.php';
-foreach ($pages as $key => $val) {
-	$pages[$key . '/'] = $val;
-}
+
+
 $path = strtok($_SERVER['REQUEST_URI'], '?');
 $path = preg_replace('%^' . preg_quote($base_config['basepath']) . '%', '', $path);
 $dirs = explode('/', $path);
-if (array_key_exists($path, $pages)) {
-	// Does the page exist in pages.php with a trailing slash?
-	$page_info = $pages[$path];
+
+// why make life hard?
+if (array_key_exists(rtrim($path, '/'), $pages)) {
+	$page_info = $pages[rtrim($path, '/')];
 }
-if (array_key_exists($path . '/', $pages)) {
-	// Does the page exist in pages.php without trailing slash?
-	$page_info = $pages[$path . '/'];
-}
+
 if ($path == '/favicon.ico') {
 	header('Content-type: image/ico');
-	echo file_get_contents(FORUM_ROOT . '/static/favicon.ico'); die;
-}
-if (isset($dirs[1]) && $dirs[1] == 'static') {
-	switch (pathinfo($path, PATHINFO_EXTENSION)) {
-		case 'png':
-			header('Content-type: image/png'); break;
-		case 'svg':
-			header('Content-type: application/svg+xml'); break;
-	}
-	echo file_get_contents(FORUM_ROOT . $path);
+	readfile(FORUM_ROOT . '/static/favicon.ico');
 	die;
 }
+if (isset($dirs[1]) && $dirs[1] == 'static') {
+	// switch statements are evil.
+	$types = array("png" => "image/png", "svg" => "application/svg+xml");
+	header('Content-Type: '.$types[pathinfo($path, PATHINFO_EXTENSION)]);
+	readfile(FORUM_ROOT . $path);
+	die;
+}
+
 if (!$page_info) {
 	// Are there subdir pages with that name?
 	foreach ($pagessubdirs as $key => $val) {
