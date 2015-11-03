@@ -76,14 +76,6 @@ $pages = array (
     'mod' => false,
     'nocontentbox' => true,
   ),
-  '//' => 
-  array (
-    'file' => 'index.php',
-    'template' => true,
-    'admin' => false,
-    'mod' => false,
-    'nocontentbox' => true,
-  ),
   '/login/' => 
   array (
     'file' => 'login.php',

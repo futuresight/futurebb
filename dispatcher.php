@@ -48,9 +48,10 @@ $path = strtok($_SERVER['REQUEST_URI'], '?');
 $path = preg_replace('%^' . preg_quote($base_config['basepath']) . '%', '', $path);
 $dirs = explode('/', $path);
 
-// why make life hard?
 if (array_key_exists(rtrim($path, '/'), $pages)) {
 	$page_info = $pages[rtrim($path, '/')];
+} else if ($path == '/') {
+	$page_info = $pages['/'];
 }
 
 if ($path == '/favicon.ico') {
@@ -59,7 +60,6 @@ if ($path == '/favicon.ico') {
 	die;
 }
 if (isset($dirs[1]) && $dirs[1] == 'static') {
-	// switch statements are evil.
 	$types = array("png" => "image/png", "svg" => "application/svg+xml");
 	header('Content-Type: '.$types[pathinfo($path, PATHINFO_EXTENSION)]);
 	readfile(FORUM_ROOT . $path);
