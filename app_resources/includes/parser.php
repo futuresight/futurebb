@@ -363,9 +363,13 @@ abstract class BBCodeController {
 		if (empty(self::$tags)) {
 			self::$tags = array('b','i','u','s','color','colour','url','img','quote','code','list','\*', 'table', 'tr', 'td', 'th');
 		}
-		if (preg_match_all('%\[(' . implode('|', self::$tags) . ')=(.*?)(\[|\])\]%', $text, $matches)) {
-			$errors[] = translate('bracketparam', $matches[1][0]);
-			return;
+		if (preg_match_all('%\[(' . implode('|', self::$tags) . ')=(.*?)\]%', $text, $matches)) {
+			foreach ($matches[2] as $match) {
+				if (strstr($match, '[')) {
+					$errors[] = translate('bracketparam', $matches[1][0]);
+					return;
+				}
+			}
 		}
 		
 		//parsing rules
