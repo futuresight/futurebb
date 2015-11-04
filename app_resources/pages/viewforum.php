@@ -18,7 +18,7 @@ if (isset($_GET['page'])) {
 //basic header stuff
 $page_title = $cur_forum['name'];
 $breadcrumbs = array(translate('index') => '', $cur_forum['name'] => $dirs[1]);
-$other_head_stuff = array('<link rel="alternate" type="application/rss+xml" href="' . $base_config['baseurl'] . '/rss/' . htmlspecialchars($dirs[1]) . '" title="' . translate('rssfeed') . '" />');
+$other_head_stuff = array('<link rel="alternate" type="application/atom+xml" href="' . $base_config['baseurl'] . '/atom/' . htmlspecialchars($dirs[1]) . '" title="' . translate('atomfeed') . '" />');
 
 //get topic count
 $result = $db->query('SELECT COUNT(id) FROM `#^topics` WHERE forum_id=' . $cur_forum['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND deleted IS NULL')) or error('Failed to get topic count', __FILE__, __LINE__, $db->error());
@@ -154,8 +154,8 @@ if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
 		?></p></div>
 	<?php
 	}
-	//send RSS URL back to dispatcher
-	$rss_url = 'rss/' . htmlspecialchars($dirs[1]);
+	//send Atom URL back to dispatcher
+	$feed_url = 'atom/' . htmlspecialchars($dirs[1]);
 	?>
 </div>
 <?php

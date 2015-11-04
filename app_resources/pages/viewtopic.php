@@ -12,7 +12,7 @@ if (!strstr($cur_topic['view_groups'], '-' . $futurebb_user['group_id'] . '-')) 
 //page header stuff
 $breadcrumbs = array(translate('index') => '', $cur_topic['forum_name'] => $cur_topic['forum_url'], $cur_topic['subject'] => $cur_topic['forum_url'] . '/' . $cur_topic['url']);
 $page_title = $cur_topic['subject'] . ' - ' . $cur_topic['forum_name'];
-$other_head_stuff = array('<link rel="alternate" type="application/rss+xml" href="' . $base_config['baseurl'] . '/rss/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '" title="' . translate('rssfeed') . '" />');
+$other_head_stuff = array('<link rel="alternate" type="application/atom+xml" href="' . $base_config['baseurl'] . '/atom/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '" title="' . translate('atomfeed') . '" />');
 
 if ($cur_topic['redirect_id'] != null) {
 	$result = $db->query('SELECT t.url AS turl,f.url AS furl FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . $cur_topic['redirect_id']) or error('Failed to get redirect info', __FILE__, __LINE__, $db->error());
@@ -301,6 +301,6 @@ if ($futurebb_user['id'] != 0 && !$db->num_rows($result) && $cur_topic['tracker_
 	}
 }
 
-//send RSS URL back to dispatcher to put next to breadcrumbs
-$rss_url = 'rss/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]);
+//send Atom URL back to dispatcher to put next to breadcrumbs
+$feed_url = 'atom/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]);
 ?>
