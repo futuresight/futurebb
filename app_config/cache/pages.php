@@ -120,22 +120,6 @@ $pages = array (
     'mod' => false,
     'nocontentbox' => true,
   ),
-  '/admin/censoring/' => 
-  array (
-    'file' => 'admin/censoring.php',
-    'template' => true,
-    'admin' => true,
-    'mod' => false,
-    'nocontentbox' => true,
-  ),
-  '/admin/extensions/' => 
-  array (
-    'file' => 'admin/extensions.php',
-    'template' => true,
-    'admin' => true,
-    'mod' => false,
-    'nocontentbox' => true,
-  ),
   '/bbcodehelp' => 
   array (
     'file' => 'bbcodehelp.php',
@@ -304,5 +288,13 @@ $pagessubdirs = array (
     'template' => false,
     'admin' => false,
     'mod' => false,
+  ),
+  '/atom' => 
+  array (
+    'file' => 'atom.php',
+    'template' => false,
+    'admin' => false,
+    'mod' => false,
+    'nocontentbox' => true,
   ),
 );
