@@ -203,4 +203,5 @@ $lang_addl = array (
   'changecategory' => 'Change category',
   'noextdir' => 'The directory "app_config/extensions" does not exist or is not writable. Please create it and change the file permissions appropriately to fix this (if in doubt, chmod to 0777).',
   'exttoonew' => 'The extension you are installing requires FutureBB version $1, while you are currently running $2. Go to <a href="http://futurebb.futuresight.org">the FutureBB website</a> to update your forum software.',
+  'areyousureaction' => 'Are you sure you want to $1 the following $2?',
 );

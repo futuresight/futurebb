@@ -128,9 +128,9 @@ if (isset($_POST['form_sent'])) {
 		$action = 'unstick';
 	?>
 	<form action="<?php echo $base_config['baseurl']; ?>/admin/postactions" method="post" enctype="multipart/form-data">
-		<h3>Confirm</h3>
+		<h3><?php echo translate('confirm'); ?></h3>
 		<p><input type="hidden" name="type" value="<?php echo $_POST['type']; ?>" />
-		<input type="hidden" name="action" value="<?php echo $action; ?>" />Are you sure you want to <?php echo strtolower(translate($action)); ?> the following <?php echo $_POST['type'] == 'topics' ? translate('topicsp', sizeof($_POST['topic_action'])) : translate('postsp', sizeof($_POST['post_action'])); ?>?</p>
+		<input type="hidden" name="action" value="<?php echo $action; ?>" /><?php echo translate('areyousureaction', strtolower(translate($action)), $_POST['type'] == 'topics' ? translate('topicsp', sizeof($_POST['topic_action'])) : translate('postsp', sizeof($_POST['post_action']))); ?></p>
 		<?php
 		$items = $_POST['type'] == 'topics' ? $_POST['topic_action'] : $_POST['post_action'];
 		foreach ($items as $key => &$item) {

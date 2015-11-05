@@ -331,4 +331,5 @@ $lang = array (
   'unstick' => 'Unstick',
   'close' => 'Close',
   'open' => 'Open',
+  'confirm' => 'Confirm',
 );
