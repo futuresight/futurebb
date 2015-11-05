@@ -25,7 +25,7 @@ if (isset($_POST['form_sent'])) {
 		}
 	}
 	if ($password == futurebb_hash($_POST['password'])) {
-		LoginController::LogInUser($id, $password, $_SERVER['HTTP_USER_AGENT'], isset($_POST['remember']));
+		LoginController::LogInUser($id, $_SERVER['HTTP_USER_AGENT'], isset($_POST['remember']));
 		redirect($base_config['baseurl']); return;
 	} else {
 		echo '<p>' . translate('badlogin') . '</p>';
@@ -71,7 +71,7 @@ if (isset($_GET['reset_pass'])) {
 			return;
 		}
 		$db->query('UPDATE `#^users` SET password=\'' . $db->escape(futurebb_hash($_POST['pass1'])) . '\',recover_key=NULL WHERE id=' . $id) or error('Failed to update password', __FILE__, __LINE__, $db->error());
-		LoginController::LogInUser($id, futurebb_hash($_POST['pass1']), $_SERVER['HTTP_USER_AGENT'], true);
+		LoginController::LogInUser($id, $_SERVER['HTTP_USER_AGENT'], true);
 		echo '<p>' . translate('pwdresetsuccess') . '<br /><a href="' . $base_config['baseurl'] . '">' . translate('login') . '</a></p>';
 		return;
 	} else {

@@ -209,14 +209,16 @@ abstract class LoginController {
 	public static $randid;
 	
 	// Send an encoded cookie to the client using these details
-	static function LogInUser($id, $password, $useragent, $remember = false) {
-		global $base_config;
+	static function LogInUser($id, $useragent, $remember = false) {
+		global $base_config, $db;
+		$result = $db->query('SELECT login_hash FROM `#^users` WHERE id=' . intval($id)) or enhanced_error('Failed to search for login hash', true);
+		list($hash) = $db->fetch_row($result);
 		if ($remember) {
 			$expire = time() + 60 * 60 * 24 * 60;
 		} else {
 			$expire = 0;
 		}
-		$cookie = base64_encode($id . chr(1) . futurebb_hash($password . $useragent) . chr(1) . rand(1, 5000));
+		$cookie = base64_encode($id . chr(1) . futurebb_hash($hash . $useragent) . chr(1) . rand(1, 5000));
 		setcookie($base_config['cookie_name'], $cookie, $expire, '/');
 	}
 	
@@ -250,8 +252,14 @@ abstract class LoginController {
 		$result = $db->query('SELECT u.*,g.* FROM `#^users` AS u LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id WHERE u.id=' . $id) or error('Failed to check user', __FILE__, __LINE__, $db->error());
 		$user_info = $db->fetch_assoc($result);
 		if ($id != 0) {
-			if ($hash != futurebb_hash($user_info['password'] . $_SERVER['HTTP_USER_AGENT'])) {
+			if ($hash != futurebb_hash($user_info['login_hash'] . $_SERVER['HTTP_USER_AGENT'])) {
 				self::Guest(); return;
+			}
+			if ($user_info['login_hash'] == '') {
+				$new_hash = futurebb_hash(time() . rand(1, 1000) . $user_info['id']);
+				$db->query('UPDATE `#^users` SET login_hash=\'' . $db->escape($new_hash) . '\' WHERE id=' . $id) or enhanced_error('Failed to update login hash', true);
+				$user_info['login_hash'] = $new_hash;
+				self::LogInUser($id, $_SERVER['HTTP_USER_AGENT'], true);
 			}
 			$futurebb_user = $user_info;
 			$futurebb_user['notifications_count'] = $db->num_rows($db->query('SELECT type, send_time, contents FROM `#^notifications` WHERE user=' . $futurebb_user['id'] . ' AND read_time = 0'));

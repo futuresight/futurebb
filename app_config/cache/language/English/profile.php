@@ -5,4 +5,5 @@ $lang_addl = array (
   'sendas_admin' => 'Send as admin-issued warning',
   'pm_reply_header' => 'Replying to message at $1:',
   'showallposts' => 'Show all posts',
+  'signoutothersessions' => 'Sign out all other sessions',
 );

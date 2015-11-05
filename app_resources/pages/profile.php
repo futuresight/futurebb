@@ -242,12 +242,15 @@ if(isset($_POST['pm_sent'])) {
 					} elseif (in_array($_POST['pwd1'], $common)) {
 						echo '<p><b>' . translate('commonpass') . '</b></p>';
 					} else {
-						$db->query('UPDATE `#^users` SET password=\'' . futurebb_hash($_POST['pwd1']) . '\' WHERE username=\'' . $db->escape($user) . '\'') or error('Failed to update password', __FILE__, __LINE__, $db->error());
+						$db->query('UPDATE `#^users` SET password=\'' . futurebb_hash($_POST['pwd1']) . '\',login_hash=\'\' WHERE id=' . $cur_user['id']) or error('Failed to update password', __FILE__, __LINE__, $db->error());
 						if ($cur_user['id'] == $futurebb_user['id']) {
-							LoginController::LogInUser($futurebb_user['id'], futurebb_hash($_POST['pwd1']), $_SERVER['HTTP_USER_AGENT']);
+							LoginController::LogInUser($futurebb_user['id'], $_SERVER['HTTP_USER_AGENT']);
 						}
 						redirect($base_config['baseurl'] . '/users/' . rawurlencode($dirs[2]));
 					}
+				} else if (isset($_GET['signoutothers']) && $cur_user['id'] == $futurebb_user['id']) {
+					$db->query('UPDATE `#^users` SET login_hash=\'\' WHERE id=' . $cur_user['id']) or error('Failed to update password', __FILE__, __LINE__, $db->error());
+					LoginController::LogInUser($futurebb_user['id'], $_SERVER['HTTP_USER_AGENT']);
 				}
 				echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '/security" method="post" enctype="multipart/form-data">';
 				?>
@@ -262,6 +265,12 @@ if(isset($_POST['pm_sent'])) {
 						<td><input type="password" name="pwd2" /></td>
 					</tr>
 				</table>
+				<?php
+				if ($cur_user['id'] == $futurebb_user['id']) { ?>
+				<p><a href="?signoutothers"><?php echo translate('signoutothersessions'); ?></a></p>
+				<?php
+				}
+				?>
 				<p><input type="submit" name="form_sent" value="<?php echo translate('save'); ?>" /></p>
 				<?php
 				echo '</form>';
