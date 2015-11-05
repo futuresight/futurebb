@@ -15,13 +15,30 @@ if (isset($_POST['form_sent'])) {
 		$items[] = intval($key);
 	}
 	if ($_POST['type'] == 'topics') {
-		//TODO: check if there are any topics that aren't in the same forum as the first or disagree with the state that's trying to be imparted on them
 		//working with topics
 		$result = $db->query('SELECT f.url,f.id AS fid FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.id=t.forum_id WHERE t.id=' . $items[0]) or enhanced_error('Failed to get forum info', true);
 		if (!$db->num_rows($result)) {
 			httperror(404);
 		}
 		$forum_info = $db->fetch_assoc($result);
+		
+		//check for invalid topics (i.e. wrong forum, wrong state0
+		$statecheck = array(
+			'delete' => 'deleted IS NOT NULL',
+			'undelete' => 'deleted IS NULL',
+			'close' => 'closed=1',
+			'open' => 'closed=0',
+			'stick' => 'sticky=1',
+			'unstick' => 'sticky=0'
+		); //the state that nothing being modified should have
+		if (!isset($statecheck[$_POST['action']])) {
+			httperror(404);
+		}
+		$result = $db->query('SELECT 1 FROM `#^topics` WHERE (forum_id<>' . $forum_info['fid'] . ' OR ' . $statecheck[$_POST['action']] . ') AND id IN(' . implode(',', $items) . ')') or enhanced_error('Failed to check for invalid topics', true);
+		if ($db->num_rows($result)) {
+			httperror(404);
+		}
+		//now for the action
 		switch ($_POST['action']) {
 			case 'delete':
 				$db->query('UPDATE `#^topics` SET deleted=' . time() . ',deleted_by=' . $futurebb_user['id'] . ' WHERE id IN(' . implode(',', $items) . ')') or error('Failed to delete post', __FILE__, __LINE__, $db->error());	
