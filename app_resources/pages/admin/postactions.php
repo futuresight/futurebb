@@ -38,12 +38,16 @@ if (isset($_POST['form_sent'])) {
 				update_last_post(-1, $forum_info['fid']);
 				break;
 			case 'close':
+				$db->query('UPDATE `#^topics` SET closed=1 WHERE id IN(' . implode(',', $_POST['items']) . ')') or error('Failed to close topics', __FILE__, __LINE__, $db->error());
 				break;
 			case 'open':
+				$db->query('UPDATE `#^topics` SET closed=0 WHERE id IN(' . implode(',', $_POST['items']) . ')') or error('Failed to open topics', __FILE__, __LINE__, $db->error());
 				break;
 			case 'stick':
+				$db->query('UPDATE `#^topics` SET sticky=1 WHERE id IN(' . implode(',', $_POST['items']) . ')') or error('Failed to stick topics', __FILE__, __LINE__, $db->error());
 				break;
 			case 'unstick':
+				$db->query('UPDATE `#^topics` SET sticky=0 WHERE id IN(' . implode(',', $_POST['items']) . ')') or error('Failed to unstick topics', __FILE__, __LINE__, $db->error());
 				break;
 			default:
 				httperror(404);
