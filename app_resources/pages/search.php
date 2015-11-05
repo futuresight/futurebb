@@ -2,7 +2,7 @@
 $page_title = 'Search';
 define('BASE', 2); //the base number for scoring searches, like scoring 2^n
 define('PAGE_SIZE', 25);
-define('CACHE_SEARCHES', true); //comment to disable caching, should only be used for debugging
+//define('CACHE_SEARCHES', true); //comment to disable caching, should only be used for debugging
 define('SEARCH_EXPIRY', 60 * 15); //minutes for searches to expire
 //define('SHOW_SCORES', true); //uncomment to show the search scores when searching by relevance - this should only be used for debugging purposes
 
@@ -46,7 +46,10 @@ class SearchItem {
 					$locations = $this->keywords[$keyword]->getLocations();
 					foreach ($locations as $location) { //loop through each location of the keyword
 						$subsequent = 1;
-						while ($keykey + $subsequent < sizeof($keywords) && array_key_exists($keywords[$keykey + $subsequent], $this->keywords) && $this->keywords[$keywords[$keykey + $subsequent]]->hasLocation($location + $subsequent)) {
+						while ($keykey + $subsequent < sizeof($keywords) && 
+							array_key_exists($keykey + $subsequent, $keywords) &&
+							array_key_exists($keywords[$keykey + $subsequent], $this->keywords) &&
+							$this->keywords[$keywords[$keykey + $subsequent]]->hasLocation($location + $subsequent)) {
 							$subsequent++;
 						}
 						$this->score += pow(BASE, $subsequent);
