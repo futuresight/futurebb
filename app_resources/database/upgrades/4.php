@@ -12,6 +12,12 @@ $db->add_field('search_index', $field, 'word');
 $db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_reported) VALUES(0, \'special\',\'' . $db->escape('To complete the upgrade to FutureBB 1.4, you need to rebuild the search index on the <a href="' . $base_config['baseurl'] . '/admin/maintenance">maintenance page</a>, as the search engine has been completely overhauled.') . '\',0,' . time() . ')') or enhanced_error('Failed to alert admin to rebuild search index', true);
 echo '<li>RV4: Updating search table structure... success</li>';
 
+$field = new DBField('login_hash','VARCHAR(50)');
+$field->add_extra('NOT NULL');
+$field->set_default('\'\'');
+$db->add_field('users', $field);
+echo '<li>RV4: Updating user table structure... success</li>';
+
 $table = new DBTable('search_cache');
 $new_fld = new DBField('id','INT');
 $new_fld->add_key('PRIMARY');

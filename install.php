@@ -662,16 +662,13 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->add_key('UNIQUE');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
-		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('password','VARCHAR(100)');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
-		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('email','VARCHAR(500)');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('\'\'');
 		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('activate_key','VARCHAR(50)');
@@ -685,7 +682,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('registration_ip','VARCHAR(50)');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('\'\'');
 		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('num_posts','INT');
@@ -702,11 +698,9 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld = new DBField('signature','TEXT');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
-		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('parsed_signature','TEXT');
 		$new_fld->add_extra('NOT NULL');
-		$new_fld->set_default('\'\'');
 		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('last_visit','INT');
@@ -727,7 +721,6 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld = new DBField('restricted_privs','set(\'\',\'edit\',\'delete\')');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
-		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('block_pm','TINYINT(1)');
 		$new_fld->add_extra('NOT NULL');
@@ -745,6 +738,10 @@ if (isset($_GET['downloadconfigxml'])) {
 		$new_fld->set_default('NULL');
 		$tables['users']->add_field($new_fld);
 		$new_fld = new DBField('rss_token','VARCHAR(50)');
+		$new_fld->add_extra('NOT NULL');
+		$new_fld->set_default('\'\'');
+		$tables['users']->add_field($new_fld);
+		$new_fld = new DBField('login_hash','VARCHAR(50)');
 		$new_fld->add_extra('NOT NULL');
 		$new_fld->set_default('\'\'');
 		$tables['users']->add_field($new_fld);
