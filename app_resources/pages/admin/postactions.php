@@ -106,14 +106,43 @@ if (isset($_POST['form_sent'])) {
 	?>
 	<form action="<?php echo $base_config['baseurl']; ?>/admin/postactions" method="post" enctype="multipart/form-data">
 		<h3>Confirm</h3>
-		<p><?php
+		<p><input type="hidden" name="type" value="<?php echo $_POST['type']; ?>" />
+		<input type="hidden" name="action" value="<?php echo $action; ?>" />Are you sure you want to <?php echo strtolower(translate($action)); ?> the following <?php echo $_POST['type'] == 'topics' ? translate('topicsp', sizeof($_POST['topic_action'])) : translate('postsp', sizeof($_POST['post_action'])); ?>?</p>
+		<?php
 		$items = $_POST['type'] == 'topics' ? $_POST['topic_action'] : $_POST['post_action'];
-		foreach ($items as $item) {
-			echo '<input type="hidden" name="items[' . intval($item) . ']" value="' . intval($item) . '" />';
+		foreach ($items as $key => &$item) {
+			$item = intval($key);
+		}
+		foreach ($items as $id) {
+			echo '<input type="hidden" name="items[' . intval($id) . ']" value="' . intval($id) . '" />';
+		}
+		//show the topic list or post list
+		if ($_POST['type'] == 'topics') {
+			echo '<ul>';
+			$result = $db->query('SELECT subject,forum_id FROM `#^topics` WHERE id IN(' . implode(',', $items) . ')') or enhanced_error('Failed to fetch topic list', true);
+			$forum_id = 0;
+			while ($cur_topic = $db->fetch_assoc($result)) {
+				if ($forum_id == 0) { //make sure they're all the same forum
+					$forum_id = $cur_topic['forum_id'];
+				} else if ($forum_id != $cur_topic['forum_id']) {
+					httperror(404);
+				}
+				echo '<li>' . htmlspecialchars($cur_topic['subject']) . '</li>';
+			}
+			echo '</ul>';
+		} else {
+			$result = $db->query('SELECT parsed_content,topic_id FROM `#^posts` WHERE id IN(' . implode(',', $items) . ')') or enhanced_error('Failed to fetch post list', true);
+			$topic_id = 0;
+			while ($cur_post = $db->fetch_assoc($result)) {
+				if ($topic_id == 0) { //make sure they're all the same forum
+					$topic_id = $cur_post['topic_id'];
+				} else if ($topic_id != $cur_post['topic_id']) {
+					httperror(404);
+				}
+				echo '<div class="quotebox"><p>' . $cur_post['parsed_content'] . '</p></div>';
+			}
 		}
 		?>
-		<input type="hidden" name="type" value="<?php echo $_POST['type']; ?>" />
-		<input type="hidden" name="action" value="<?php echo $action; ?>" />Are you sure you want to <?php echo strtolower(translate($action)); ?> the following <?php echo $_POST['type'] == 'topics' ? translate('topicsp', sizeof($_POST['topic_action'])) : translate('postsp', sizeof($_POST['post_action'])); ?>?</p>
 		<p><input type="submit" name="form_sent" value="<?php echo translate('yes'); ?>" /> <a href="<?php echo $_SERVER['HTTP_REFERER']; ?>"><?php echo translate('no'); ?></a></p>
 	</form>
 	<?php
