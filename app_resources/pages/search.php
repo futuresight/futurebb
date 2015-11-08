@@ -3,7 +3,7 @@ $page_title = 'Search';
 define('BASE', 2); //the base number for scoring searches, like scoring 2^n
 define('PAGE_SIZE', 25);
 define('CACHE_SEARCHES', true); //comment to disable caching, should only be used for debugging
-define('SEARCH_EXPIRY', 60 * 15); //minutes for searches to expire
+define('SEARCH_EXPIRY', 60 * 15); //seconds for searches to expire
 //define('SHOW_SCORES', true); //uncomment to show the search scores when searching by relevance - this should only be used for debugging purposes
 
 class SearchItem {

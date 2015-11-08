@@ -25,6 +25,7 @@ Database Object	db						The object representing the database (database platform-
 $start_time = microtime();
 
 error_reporting(E_ALL);
+date_default_timezone_set('UTC'); //to prevent errors with timezone settings
 
 define('FORUM_ROOT', dirname(__FILE__));
 include FORUM_ROOT . '/app_resources/includes/startup.php';
