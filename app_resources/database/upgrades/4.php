@@ -60,6 +60,14 @@ ExtensionConfig::add_language_key('searchusername', 'Search username', 'admin');
 ExtensionConfig::add_language_key('lastused', 'Last used', 'admin');
 echo '<li>RV4: Adding new language keys... success</li>';
 
+ExtensionConfig::remove_page('/login/');
+ExtensionConfig::remove_page('/logout/');
+ExtensionConfig::remove_page('/search/');
+ExtensionConfig::remove_page('/admin/');
+ExtensionConfig::remove_page('/messages/');
+ExtensionConfig::remove_page('/online_list/');
+echo '<li>RV4: Removing unnecessary pages... success</li>';
+
 //alert the admin that the promotion operator has been changed from > to >=
 $db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_reported) VALUES(0, \'special\',\'' . $db->escape('For automatic user group promotion, the system now checks if the user\'s post count is greater than or equal to the number you enter, as opposed to strictly greater than.') . '\',0,' . time() . ')') or enhanced_error('Failed to alert admin about promotion operator change', true);
 

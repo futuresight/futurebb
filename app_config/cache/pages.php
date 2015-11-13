@@ -76,28 +76,6 @@ $pages = array (
     'mod' => false,
     'nocontentbox' => true,
   ),
-  '/login/' => 
-  array (
-    'file' => 'login.php',
-    'template' => true,
-    'admin' => false,
-    'mod' => false,
-  ),
-  '/logout/' => 
-  array (
-    'file' => 'logout.php',
-    'template' => true,
-    'admin' => false,
-    'mod' => false,
-  ),
-  '/search/' => 
-  array (
-    'file' => 'search.php',
-    'template' => true,
-    'admin' => false,
-    'mod' => false,
-    'nocontentbox' => true,
-  ),
   '/online_list/' => 
   array (
     'file' => 'online_list.php',
