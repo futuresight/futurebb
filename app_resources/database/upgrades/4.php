@@ -46,6 +46,18 @@ ExtensionConfig::add_language_key('tables', 'Tables', 'English', 'main');
 ExtensionConfig::add_language_key('colrow', 'Col $1, Row $2', 'English', 'main');
 ExtensionConfig::add_language_key('tableintro', 'You use the <code>[table][/table]</code> tags to start and end a table. You use <code>[tr][/tr]</code> to indicate a row, and <code>[td][/td]</code> to indicate a cell. The <code>[tr]</code> tag must go directly inside the <code>[table]</code> tag, and the <code>[td]</code> tag must go inside the <code>[tr]</code> tag.', 'English', 'main');
 ExtensionConfig::add_language_key('relevance', 'Relevance', 'English', 'main');
+ExtensionConfig::add_language_key('topicsp', 'topic<PLURAL $1>(,s)', 'main');
+ExtensionConfig::add_language_key('postsp', 'post<PLURAL $1>(,s)', 'main');
+ExtensionConfig::add_language_key('select', 'Select: ', 'main');
+ExtensionConfig::add_language_key('stick', 'Stick', 'main');
+ExtensionConfig::add_language_key('unstick', 'Unstick', 'main');
+ExtensionConfig::add_language_key('close', 'Close', 'main');
+ExtensionConfig::add_language_key('open', 'Open', 'main');
+ExtensionConfig::add_language_key('confirm', 'Confirm', 'main');
+ExtensionConfig::add_language_key('areyousureaction', 'Are you sure you want to $1 the following $2?', 'admin');
+ExtensionConfig::add_language_key('signoutothersessions', 'Sign out all other sessions', 'profile');
+ExtensionConfig::add_language_key('searchusername', 'Search username', 'admin');
+ExtensionConfig::add_language_key('lastused', 'Last used', 'admin');
 echo '<li>RV4: Adding new language keys... success</li>';
 
 //alert the admin that the promotion operator has been changed from > to >=
