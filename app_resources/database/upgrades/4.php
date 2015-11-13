@@ -58,6 +58,7 @@ ExtensionConfig::add_language_key('areyousureaction', 'Are you sure you want to 
 ExtensionConfig::add_language_key('signoutothersessions', 'Sign out all other sessions', 'profile');
 ExtensionConfig::add_language_key('searchusername', 'Search username', 'admin');
 ExtensionConfig::add_language_key('lastused', 'Last used', 'admin');
+ExtensionConfig::add_language_key('searchresultsfor', 'Search results for $1', 'main');
 echo '<li>RV4: Adding new language keys... success</li>';
 
 ExtensionConfig::remove_page('/login/');
