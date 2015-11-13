@@ -223,7 +223,7 @@ $lang = array (
   'silentedit' => 'Silent edit (don&apos;t update &quot;last edited&quot; data)',
   'signature' => 'Signature',
   'signatures' => 'Signatures',
-  'searchip' => 'Search IP:',
+  'searchip' => 'Search IP',
   'recentactivity' => 'Recent activity',
   'userregs' => 'User registrations',
   'unreadreports' => 'Unread reports',
@@ -332,4 +332,5 @@ $lang = array (
   'close' => 'Close',
   'open' => 'Open',
   'confirm' => 'Confirm',
+  'searchresultsfor' => 'Search results for $1',
 );
