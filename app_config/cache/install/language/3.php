@@ -1,45 +1,56 @@
 <?php
 $q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
-$lang_insert_data = array();
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('changepass') . '\',\'' . $db->escape('Change password') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newpass') . '\',\'' . $db->escape('New password') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('currentavatar') . '\',\'' . $db->escape('Current avatar:') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('noavatar') . '\',\'' . $db->escape('No avatar currently stored.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newavatar') . '\',\'' . $db->escape('Upload new avatar') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('sigtoolong') . '\',\'' . $db->escape('Your signature may only be $1 characters long, and the one you submitted was $2 characters long') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('toomanysiglines') . '\',\'' . $db->escape('Your signature may contain $1 lines, and the one you submitted contains $2 lines') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('changesig') . '\',\'' . $db->escape('Change signature') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('currentsig') . '\',\'' . $db->escape('Current signature') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newsig') . '\',\'' . $db->escape('New signature') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('changegroup') . '\',\'' . $db->escape('Change user group') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('revokeprivs') . '\',\'' . $db->escape('Revoke privileges') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('restoreuser') . '\',\'' . $db->escape('Restore user') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('deletewarning') . '\',\'' . $db->escape('Are you sure you want to delete this user? This action is reversible.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('deleteuser') . '\',\'' . $db->escape('Delete user') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('withdrawreport') . '\',\'' . $db->escape('Withdraw report') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('somebodyelse') . '\',\'' . $db->escape('Nothing to see here. This is somebody else\'s profile!') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('send') . '\',\'' . $db->escape('Send') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('blockPM') . '\',\'' . $db->escape('Disable private messaging') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('blocknotifs') . '\',\'' . $db->escape('Disable notifications') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('emailaddrnocolon') . '\',\'' . $db->escape('Email address') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('badavatarfiletype') . '\',\'' . $db->escape('Invalid file type for your avatar. Only image formats GIF, JPG/JPEG, and PNG are allowed.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('uploadfailed') . '\',\'' . $db->escape('File upload failed. Please hit the back button and try again.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('filetoobig') . '\',\'' . $db->escape('The file you uploaded is too big. The maximumum allowed filesize is $1 KiB. Please hit the back button and try again.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('imagetoobig') . '\',\'' . $db->escape('The image you uploaded is too big. The maximum allowed dimensions are $1x$2 pixels. Please hit the back button and try again.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('toobigphpini') . '\',\'' . $db->escape('Your file is larger than the allowed size on the server ($1 KiB). Please hit the back button and try again.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('partialupload') . '\',\'' . $db->escape('The file was only partially uploaded. Please hit the back button and try again.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('notmpdir') . '\',\'' . $db->escape('A temp directory for uploaded files was not defined on the server. Please contact the server administrator.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('avataruploaddesc') . '\',\'' . $db->escape('Upload a new avatar.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('avatarmaxsize') . '\',\'' . $db->escape('Maximum filesize: $1 KiB') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('avatarmaxwidth') . '\',\'' . $db->escape('Maximum width: $1 pixels') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('avatarmaxheight') . '\',\'' . $db->escape('Maximum height: $1 pixels') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('deleteavatar') . '\',\'' . $db->escape('Delete avatar') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('maxchars') . '\',\'' . $db->escape('Maximum characters: $1') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('maxlines') . '\',\'' . $db->escape('Maximum lines: $1') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('heightwarning') . '\',\'' . $db->escape('Maximum height: $1 pixels (if it is taller, it will be cut off)') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('rsstoken') . '\',\'' . $db->escape('RSS Token (used for viewing user-specific RSS feeds)<br />If you change it, a new random one will be given.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('warnings') . '\',\'' . $db->escape('Warnings') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('sentby') . '\',\'' . $db->escape('Sent by') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('sentto') . '\',\'' . $db->escape('Sent to') . '\',\'' . $db->escape('main') . '\')';
+$lang_insert_data = array(
+	('English', $db->escape('undelete'), $db->escape('Undelete'), 'main'),
+	('English', $db->escape('usergroup'), $db->escape('User group'), 'main'),
+	('English', $db->escape('sortby'), $db->escape('Sort by'), 'main'),
+	('English', $db->escape('numposts'), $db->escape('Number of posts'), 'main'),
+	('English', $db->escape('dateregistered'), $db->escape('Date registered'), 'main'),
+	('English', $db->escape('ascending'), $db->escape('Ascending'), 'main'),
+	('English', $db->escape('descending'), $db->escape('Descending'), 'main'),
+	('English', $db->escape('title'), $db->escape('Title'), 'main'),
+	('English', $db->escape('registered'), $db->escape('Registered'), 'main'),
+	('English', $db->escape('usersonline'), $db->escape('Users online'), 'main'),
+	('English', $db->escape('nobody'), $db->escape('Nobody'), 'main'),
+	('English', $db->escape('seeall'), $db->escape('See all'), 'main'),
+	('English', $db->escape('searchresults'), $db->escape('Search results'), 'main'),
+	('English', $db->escape('noresults'), $db->escape('Sorry, your search returned no results.'), 'main'),
+	('English', $db->escape('keywords'), $db->escape('Keywords'), 'main'),
+	('English', $db->escape('show'), $db->escape('Show'), 'main'),
+	('English', $db->escape('search-undeleted'), $db->escape('Posts that have not been deleted'), 'main'),
+	('English', $db->escape('search-deleted'), $db->escape('Posts that have been deleted'), 'main'),
+	('English', $db->escape('allforums'), $db->escape('All forums'), 'main'),
+	('English', $db->escape('banned'), $db->escape('Banned'), 'main'),
+	('English', $db->escape('bannedmsg1'), $db->escape('You have been banned from this forum'), 'main'),
+	('English', $db->escape('until'), $db->escape('until'), 'main'),
+	('English', $db->escape('bannedmsg2'), $db->escape('The moderator or administrator that banned you left you with the following message:'), 'main'),
+	('English', $db->escape('bannedmsg3'), $db->escape('To contact the board administrator, you may send an email to <a href="mailto:$1">$1</a>.'), 'main'),
+	('English', $db->escape('accessdenied'), $db->escape('Access denied'), 'main'),
+	('English', $db->escape('noguests'), $db->escape('You must log in to view this forum.'), 'main'),
+	('English', $db->escape('nogroupview'), $db->escape('You do not have permission to view these forums.'), 'main'),
+	('English', $db->escape('maintintro'), $db->escape('This forum is down for maintenance. The forum administrator said this:'), 'main'),
+	('English', $db->escape('maintintro2'), $db->escape('If you are an administrator and need to log in, you may do so <a href="$baseurl$/login">here</a>.'), 'main'),
+	('English', $db->escape('profile'), $db->escape('Profile'), 'main'),
+	('English', $db->escape('userlist'), $db->escape('User list'), 'main'),
+	('English', $db->escape('register'), $db->escape('Register'), 'main'),
+	('English', $db->escape('search'), $db->escape('Search'), 'main'),
+	('English', $db->escape('administration'), $db->escape('Administration'), 'main'),
+	('English', $db->escape('logout'), $db->escape('Log out'), 'main'),
+	('English', $db->escape('login'), $db->escape('Log in'), 'main'),
+	('English', $db->escape('poweredby'), $db->escape('Powered by <a href="http://futuresight.org/products/futurebb">FutureBB</a>'), 'main'),
+	('English', $db->escape('403title'), $db->escape('403 Forbidden'), 'main'),
+	('English', $db->escape('403head'), $db->escape('Ouch...'), 'main'),
+	('English', $db->escape('403body1'), $db->escape('The page "$1" is restricted and you&apos;re not allowed to see it.'), 'main'),
+	('English', $db->escape('403body2'), $db->escape('Sorry about that. Why don&apos;t you try <a href="javascript:history.go(-1);">going back to where you were</a>?'), 'main'),
+	('English', $db->escape('404title'), $db->escape('404 Not found'), 'main'),
+	('English', $db->escape('404head'), $db->escape('Oops...'), 'main'),
+	('English', $db->escape('404body1'), $db->escape('The path "$1" was not found on this forum!'), 'main'),
+	('English', $db->escape('genericerror'), $db->escape('<h2>Sorry!</h2><p>The error $1 occurred on the forums. You might want to tell someone in charge if you&apos;ve never seen this before.</p>'), 'main'),
+	('English', $db->escape('invalidxml'), $db->escape('The file you submitted was not valid XML.'), 'main'),
+	('English', $db->escape('tryagain'), $db->escape('Try again'), 'main'),
+	('English', $db->escape('nolinks'), $db->escape('You are not allowed to post links.'), 'main'),
+	('English', $db->escape('noimgs'), $db->escape('You are not allowed to post images.'), 'main'),
+	('English', $db->escape('bracketparam'), $db->escape('Brackets can not go in parameters, as happened in a <b>[$1]</b> tag'), 'main'),
+);
 $q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
 $q->commit();

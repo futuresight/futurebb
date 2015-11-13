@@ -1,45 +1,56 @@
 <?php
 $q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
-$lang_insert_data = array();
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('searchresults') . '\',\'' . $db->escape('Search results') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('noresults') . '\',\'' . $db->escape('Sorry, your search returned no results.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('keywords') . '\',\'' . $db->escape('Keywords') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('show') . '\',\'' . $db->escape('Show') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('search-undeleted') . '\',\'' . $db->escape('Posts that have not been deleted') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('search-deleted') . '\',\'' . $db->escape('Posts that have been deleted') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('allforums') . '\',\'' . $db->escape('All forums') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('banned') . '\',\'' . $db->escape('Banned') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bannedmsg1') . '\',\'' . $db->escape('You have been banned from this forum') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('until') . '\',\'' . $db->escape('until') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bannedmsg2') . '\',\'' . $db->escape('The moderator or administrator that banned you left you with the following message:') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bannedmsg3') . '\',\'' . $db->escape('To contact the board administrator, you may send an email to <a href="mailto:$1">$1</a>.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('accessdenied') . '\',\'' . $db->escape('Access denied') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('noguests') . '\',\'' . $db->escape('You must log in to view this forum.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('nogroupview') . '\',\'' . $db->escape('You do not have permission to view these forums.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('maintintro') . '\',\'' . $db->escape('This forum is down for maintenance. The forum administrator said this:') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('maintintro2') . '\',\'' . $db->escape('If you are an administrator and need to log in, you may do so <a href="$baseurl$/login">here</a>.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('profile') . '\',\'' . $db->escape('Profile') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('userlist') . '\',\'' . $db->escape('User list') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('register') . '\',\'' . $db->escape('Register') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('search') . '\',\'' . $db->escape('Search') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('administration') . '\',\'' . $db->escape('Administration') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('logout') . '\',\'' . $db->escape('Log out') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('login') . '\',\'' . $db->escape('Log in') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('poweredby') . '\',\'' . $db->escape('Powered by <a href="http://futuresight.org/products/futurebb">FutureBB</a>') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('403title') . '\',\'' . $db->escape('403 Forbidden') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('403head') . '\',\'' . $db->escape('Ouch...') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('403body1') . '\',\'' . $db->escape('The page "$1" is restricted and you&apos;re not allowed to see it.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('403body2') . '\',\'' . $db->escape('Sorry about that. Why don&apos;t you try <a href="javascript:history.go(-1);">going back to where you were</a>?') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('404title') . '\',\'' . $db->escape('404 Not found') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('404head') . '\',\'' . $db->escape('Oops...') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('404body1') . '\',\'' . $db->escape('The path "$1" was not found on this forum!') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('genericerror') . '\',\'' . $db->escape('<h2>Sorry!</h2><p>The error $1 occurred on the forums. You might want to tell someone in charge if you&apos;ve never seen this before.</p>') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('invalidxml') . '\',\'' . $db->escape('The file you submitted was not valid XML.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('tryagain') . '\',\'' . $db->escape('Try again') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('nolinks') . '\',\'' . $db->escape('You are not allowed to post links.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('noimgs') . '\',\'' . $db->escape('You are not allowed to post images.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bracketparam') . '\',\'' . $db->escape('Brackets can not go in parameters, as happened in a <b>[$1]</b> tag') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('closenoopen') . '\',\'' . $db->escape('<b>[/$1]</b> found without opening <b>[$1]</b>') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('expectedfound') . '\',\'' . $db->escape('Invalid tag structure - expected <b>[/$1]</b> and found <b>[/$2]</b>') . '\',\'' . $db->escape('main') . '\')';
+$lang_insert_data = array(
+	('English', $db->escape('reportpostreason'), $db->escape('Please enter a short reason why you are reporting this post.'), 'main'),
+	('English', $db->escape('systemreportmsg'), $db->escape('This report was automatically generated by FutureBB.'), 'main'),
+	('English', $db->escape('trashbindesc'), $db->escape('Deleted topics and posts can be recovered here.'), 'main'),
+	('English', $db->escape('deletedbyon'), $db->escape('$1 deleted by <b>$2</b> on $3'), 'main'),
+	('English', $db->escape('recentdeleted'), $db->escape('Recently deleted $1'), 'main'),
+	('English', $db->escape('deletiontime'), $db->escape('Deletion time'), 'main'),
+	('English', $db->escape('deletedby'), $db->escape('Deleted by'), 'main'),
+	('English', $db->escape('styleconflict'), $db->escape('A style set with this name already exists. Please rename your stylesheet and retry.'), 'main'),
+	('English', $db->escape('invalidfile'), $db->escape('Invalid file.'), 'main'),
+	('English', $db->escape('appearanceandstyle'), $db->escape('Appearance and style'), 'main'),
+	('English', $db->escape('stylesets'), $db->escape('Style sets'), 'main'),
+	('English', $db->escape('styleset'), $db->escape('Style set'), 'main'),
+	('English', $db->escape('installnewcss'), $db->escape('Install new style set'), 'main'),
+	('English', $db->escape('cssfile'), $db->escape('CSS File:'), 'main'),
+	('English', $db->escape('logo'), $db->escape('Logo'), 'main'),
+	('English', $db->escape('pngfile'), $db->escape('PNG File:'), 'main'),
+	('English', $db->escape('favicon'), $db->escape('Favicon'), 'main'),
+	('English', $db->escape('icofile'), $db->escape('ICO File:'), 'main'),
+	('English', $db->escape('nofileuploads'), $db->escape('Your server does not accept file uploads. Please change the "allow_file_uploads" setting in your php.ini if possible.'), 'main'),
+	('English', $db->escape('install'), $db->escape('Install'), 'main'),
+	('English', $db->escape('replace'), $db->escape('Replace'), 'main'),
+	('English', $db->escape('icon'), $db->escape('Icon'), 'main'),
+	('English', $db->escape('newreports'), $db->escape('There are new reports'), 'main'),
+	('English', $db->escape('maintenabled'), $db->escape('Maintenance mode is enabled'), 'main'),
+	('English', $db->escape('maintsched'), $db->escape('This forum will automatically go into maintenance mode at $1. At that time, all non-admin users will lose access.'), 'main'),
+	('English', $db->escape('unreadnotifications'), $db->escape('You have $1 unread notifications'), 'main'),
+	('English', $db->escape('messages'), $db->escape('Messages'), 'main'),
+	('English', $db->escape('user_sent_warning'), $db->escape('The admin or moderator $1 issued the following message to you.'), 'main'),
+	('English', $db->escape('user_sent_msg'), $db->escape('The user $1 sent the following message to you.'), 'main'),
+	('English', $db->escape('user_mentioned_you'), $db->escape('The user $1 mentioned you in a post in the topic '), 'main'),
+	('English', $db->escape('report_abuse'), $db->escape('Report abuse'), 'main'),
+	('English', $db->escape('send_appeal'), $db->escape('Send appeal'), 'main'),
+	('English', $db->escape('sent'), $db->escape('Sent'), 'main'),
+	('English', $db->escape('couldnot_display_notif'), $db->escape('The notification could not be displayed because the type of message could not be determined.'), 'main'),
+	('English', $db->escape('nonotifs'), $db->escape('You have no notifications at the moment'), 'main'),
+	('English', $db->escape('maintenance'), $db->escape('Maintenance'), 'main'),
+	('English', $db->escape('wrote'), $db->escape('wrote'), 'main'),
+	('English', $db->escape('bbcode'), $db->escape('BBCode'), 'main'),
+	('English', $db->escape('produces'), $db->escape('produces'), 'main'),
+	('English', $db->escape('bbcodehelp'), $db->escape('BBCode Help'), 'main'),
+	('English', $db->escape('bbcodehelpintro'), $db->escape('BBCode is a tool that lets you format your posts'), 'main'),
+	('English', $db->escape('basicformatting'), $db->escape('Basic formatting'), 'main'),
+	('English', $db->escape('tagssupported'), $db->escape('The following tags are supported:'), 'main'),
+	('English', $db->escape('boldtext'), $db->escape('Bold text'), 'main'),
+	('English', $db->escape('italictext'), $db->escape('Italic text'), 'main'),
+	('English', $db->escape('underlinedtext'), $db->escape('Underlined text'), 'main'),
+	('English', $db->escape('struckouttext'), $db->escape('Struckouttext'), 'main'),
+	('English', $db->escape('bluetext'), $db->escape('Blue text'), 'main'),
+	('English', $db->escape('magentatext'), $db->escape('Magenta'), 'main'),
+	('English', $db->escape('quotes'), $db->escape('Quotes'), 'main'),
+);
 $q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
 $q->commit();

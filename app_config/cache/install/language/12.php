@@ -1,45 +1,26 @@
 <?php
 $q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
-$lang_insert_data = array();
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('changesmissingkey') . '\',\'' . $db->escape('$changes[$1] is missing a key.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('invalidchangetype') . '\',\'' . $db->escape('Invalid change type: ') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('installcomplete') . '\',\'' . $db->escape('Installation complete!') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('unzipfailed') . '\',\'' . $db->escape('Something went wrong with unzipping. Not sure what. :(') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('installnewext') . '\',\'' . $db->escape('Install new extension') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('forumnotwritable') . '\',\'' . $db->escape('Your forum root directory is not writable. To fix this, you need to change the permissions. When in doubt, chmod to 0777.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('existingexts') . '\',\'' . $db->escape('Existing extensions') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('noexts') . '\',\'' . $db->escape('No extensions installed. :(') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('website') . '\',\'' . $db->escape('Website') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('supporturl') . '\',\'' . $db->escape('Support URL') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('uninstall') . '\',\'' . $db->escape('Uninstall') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('nouninstallphp') . '\',\'' . $db->escape('The uninstall.php file is not available. Please contact the extension creator.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('filenotwritable') . '\',\'' . $db->escape('The following file/directory is not writable: $1. Please change the permissions to fix this. When in doubt, chmod to 0777.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('tempdirfailed') . '\',\'' . $db->escape('Could not make the temporary directory for your extension. Please make sure that the temp directory (/temp from your forum root) exists and is writable.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('uninstallext') . '\',\'' . $db->escape('Uninstall extension') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('uninstallextintro') . '\',\'' . $db->escape('Are you sure you want to install the extension <strong>$1</strong>?') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('success') . '\',\'' . $db->escape('Success') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('uninstalled') . '\',\'' . $db->escape('The selected extension was successfully uninstalled.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('return') . '\',\'' . $db->escape('Return') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('boardsettings') . '\',\'' . $db->escape('Board settings') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('boardtitle') . '\',\'' . $db->escape('Board title') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('adminemail') . '\',\'' . $db->escape('Administrator email') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('onlinetimeout') . '\',\'' . $db->escape('Online timeout') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('allowPM') . '\',\'' . $db->escape('Allow private messaging') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('allownotifs') . '\',\'' . $db->escape('Allow notifications') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('onlinetimeoutdesc') . '\',\'' . $db->escape('If a user does not visit any page after this many seconds, they will be considered offline. Use 0 to disable online/offline display.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('verifyregs') . '\',\'' . $db->escape('Verify new registrations') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('disableregs') . '\',\'' . $db->escape('Disable new registrations') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('verifyregsdesc') . '\',\'' . $db->escape('Verify new user registrations by emailing them an access code') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('disableregsdesc') . '\',\'' . $db->escape('Do not allow new registrations') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('general') . '\',\'' . $db->escape('General') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('userstopicsposts') . '\',\'' . $db->escape('Users, topics, and posts') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('enableavatars') . '\',\'' . $db->escape('Enable avatars') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('enableavatarsdesc') . '\',\'' . $db->escape('An avatar is a user icon that will show next to all of their posts.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('rulesdesc') . '\',\'' . $db->escape('Users must agree to these rules when they register. This is not parsed as BBCode and may contain HTML.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('announcement') . '\',\'' . $db->escape('Announcement') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('announcementdesc') . '\',\'' . $db->escape('Here you may specify an announcement to appear in the top banner under the navigation bar. You may use HTML as this is not parsed as BBCode.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('enableannouncement') . '\',\'' . $db->escape('Enable announcement?') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('siteappearance') . '\',\'' . $db->escape('Site appearance') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('customfooter') . '\',\'' . $db->escape('Here you may specify custom text to appear below the &quot;Powered by FutureBB&quot; message.') . '\',\'' . $db->escape('admin') . '\')';
+$lang_insert_data = array(
+	('English', $db->escape('noextdir'), $db->escape('The directory "app_config/extensions" does not exist or is not writable. Please create it and change the file permissions appropriately to fix this (if in doubt, chmod to 0777).'), 'admin'),
+	('English', $db->escape('notextinsidetag'), $db->escape('You are not allowed to place any text directly inside the <b>[$1]</b> tag.'), 'main'),
+	('English', $db->escape('exttoonew'), $db->escape('The extension you are installing requires FutureBB version $1, while you are currently running $2. Go to <a href="http://futurebb.futuresight.org">the FutureBB website</a> to update your forum software.'), 'admin'),
+	('English', $db->escape('posttime'), $db->escape('Post time'), 'main'),
+	('English', $db->escape('relevance'), $db->escape('Relevance'), 'main'),
+	('English', $db->escape('tables'), $db->escape('Tables'), 'main'),
+	('English', $db->escape('colrow'), $db->escape('Col $1, Row $2'), 'main'),
+	('English', $db->escape('tableintro'), $db->escape('You use the <code>[table][/table]</code> tags to start and end a table. You use <code>[tr][/tr]</code> to indicate a row, and <code>[td][/td]</code> to indicate a cell. The <code>[tr]</code> tag must go directly inside the <code>[table]</code> tag, and the <code>[td]</code> tag must go inside the <code>[tr]</code> tag.'), 'main'),
+	('English', $db->escape('topicsp'), $db->escape('topic<PLURAL $1>(,s)'), 'main'),
+	('English', $db->escape('postsp'), $db->escape('post<PLURAL $1>(,s)'), 'main'),
+	('English', $db->escape('select'), $db->escape('Select: '), 'main'),
+	('English', $db->escape('stick'), $db->escape('Stick'), 'main'),
+	('English', $db->escape('unstick'), $db->escape('Unstick'), 'main'),
+	('English', $db->escape('close'), $db->escape('Close'), 'main'),
+	('English', $db->escape('open'), $db->escape('Open'), 'main'),
+	('English', $db->escape('confirm'), $db->escape('Confirm'), 'main'),
+	('English', $db->escape('areyousureaction'), $db->escape('Are you sure you want to $1 the following $2?'), 'admin'),
+	('English', $db->escape('signoutothersessions'), $db->escape('Sign out all other sessions'), 'profile'),
+	('English', $db->escape('searchusername'), $db->escape('Search username'), 'admin'),
+	('English', $db->escape('lastused'), $db->escape('Last used'), 'admin'),
+);
 $q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
 $q->commit();

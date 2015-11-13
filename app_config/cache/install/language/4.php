@@ -1,45 +1,56 @@
 <?php
 $q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
-$lang_insert_data = array();
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('dstprofile') . '\',\'' . $db->escape('Daylight Saving Time (advance one hour)') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('pages') . '\',\'' . $db->escape('Pages: ') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('author') . '\',\'' . $db->escape('Author') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('replies') . '\',\'' . $db->escape('Replies') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('topicmoved') . '\',\'' . $db->escape('(Topic moved)') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('notopics') . '\',\'' . $db->escape('There are no topics in this forum.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('rssfeed') . '\',\'' . $db->escape('RSS Feed') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('prev') . '\',\'' . $db->escape('Prev') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('next') . '\',\'' . $db->escape('Next') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newposts') . '\',\'' . $db->escape('New posts') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('edited') . '\',\'' . $db->escape('Edited') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('lastedited') . '\',\'' . $db->escape('Last edited by $1 on $2') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('movetopic') . '\',\'' . $db->escape('Move topic') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('movetoforum') . '\',\'' . $db->escape('Move to forum:') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('move') . '\',\'' . $db->escape('Move') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('leaveredirect') . '\',\'' . $db->escape('Leave redirect?') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('online') . '\',\'' . $db->escape('Online') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('offline') . '\',\'' . $db->escape('Offline') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('posts:') . '\',\'' . $db->escape('Posts: ') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('report') . '\',\'' . $db->escape('Report') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('quote') . '\',\'' . $db->escape('Quote') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('postreply') . '\',\'' . $db->escape('Post reply') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('closednoreply') . '\',\'' . $db->escape('Topic is closed. You may not post a reply.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('closetopic') . '\',\'' . $db->escape('Close topic') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('opentopic') . '\',\'' . $db->escape('Open topic') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('sticktopic') . '\',\'' . $db->escape('Stick topic') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('unsticktopic') . '\',\'' . $db->escape('Unstick topic') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('embed') . '\',\'' . $db->escape('Embed topic') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('undelete') . '\',\'' . $db->escape('Undelete') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('usergroup') . '\',\'' . $db->escape('User group') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('sortby') . '\',\'' . $db->escape('Sort by') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('numposts') . '\',\'' . $db->escape('Number of posts') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('dateregistered') . '\',\'' . $db->escape('Date registered') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('ascending') . '\',\'' . $db->escape('Ascending') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('descending') . '\',\'' . $db->escape('Descending') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('title') . '\',\'' . $db->escape('Title') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('registered') . '\',\'' . $db->escape('Registered') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('usersonline') . '\',\'' . $db->escape('Users online') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('nobody') . '\',\'' . $db->escape('Nobody') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('seeall') . '\',\'' . $db->escape('See all') . '\',\'' . $db->escape('main') . '\')';
+$lang_insert_data = array(
+	('English', $db->escape('closenoopen'), $db->escape('<b>[/$1]</b> found without opening <b>[$1]</b>'), 'main'),
+	('English', $db->escape('expectedfound'), $db->escape('Invalid tag structure - expected <b>[/$1]</b> and found <b>[/$2]</b>'), 'main'),
+	('English', $db->escape('tagsnotclosed'), $db->escape('The following tags were not closed: $1'), 'main'),
+	('English', $db->escape('blanksubject'), $db->escape('Blank subject'), 'main'),
+	('English', $db->escape('blankmsg'), $db->escape('Blank content'), 'main'),
+	('English', $db->escape('flood_wait'), $db->escape('You must wait $1 seconds between posts. Please wait $2  seconds and try again.'), 'main'),
+	('English', $db->escape('flood_hour'), $db->escape('You may only post $1  posts in one hour. Please wait $2 seconds and try again.'), 'main'),
+	('English', $db->escape('imgwhitelisterror'), $db->escape('The image URL <code>$1</code> is not allowed on this forum. You are only allowed to use images hosted on the following domains: $2.'), 'main'),
+	('English', $db->escape('imgblacklisterror'), $db->escape('The image URL <code>$1</code> is not allowed on this forum. You are not allowed to use images hosted on the following domains: $2.'), 'main'),
+	('English', $db->escape('toomanynestedquotes'), $db->escape('The [quote] tag is nested too many times. It can only be nested up to $1 times.'), 'main'),
+	('English', $db->escape('errordesc'), $db->escape('The following errors need to be fixed before continuing:'), 'main'),
+	('English', $db->escape('disablesmilies'), $db->escape('Disable smilies'), 'main'),
+	('English', $db->escape('posttopic'), $db->escape('Post new topic'), 'main'),
+	('English', $db->escape('msgtoolong'), $db->escape('Your post is more than $1 characters.'), 'main'),
+	('English', $db->escape('topicisclosed'), $db->escape('This topic is closed'), 'main'),
+	('English', $db->escape('smilies'), $db->escape('Smilies'), 'main'),
+	('English', $db->escape('imgtag'), $db->escape('[img] tag'), 'main'),
+	('English', $db->escape('urltag'), $db->escape('[url] tag'), 'main'),
+	('English', $db->escape('off'), $db->escape('Off'), 'main'),
+	('English', $db->escape('deletepost'), $db->escape('Delete post'), 'main'),
+	('English', $db->escape('deletepostwarning'), $db->escape('Are you sure you want to delete this post? If you delete it, you will not be able to recover it. Below is the message you are deleting:'), 'main'),
+	('English', $db->escape('deletetopicwarning'), $db->escape('If you delete this post, the whole topic will be permanently deleted.'), 'main'),
+	('English', $db->escape('editpost'), $db->escape('Edit post'), 'main'),
+	('English', $db->escape('silentedit'), $db->escape('Silent edit (don&apos;t update &quot;last edited&quot; data)'), 'main'),
+	('English', $db->escape('signature'), $db->escape('Signature'), 'main'),
+	('English', $db->escape('signatures'), $db->escape('Signatures'), 'main'),
+	('English', $db->escape('searchip'), $db->escape('Search IP'), 'main'),
+	('English', $db->escape('recentactivity'), $db->escape('Recent activity'), 'main'),
+	('English', $db->escape('userregs'), $db->escape('User registrations'), 'main'),
+	('English', $db->escape('unreadreports'), $db->escape('Unread reports'), 'main'),
+	('English', $db->escape('furtherreview'), $db->escape('Marked for further review by <b>$1</b>'), 'main'),
+	('English', $db->escape('reason'), $db->escape('Reason'), 'main'),
+	('English', $db->escape('donotresp'), $db->escape('Do not respond'), 'main'),
+	('English', $db->escape('accept'), $db->escape('Accept'), 'main'),
+	('English', $db->escape('reject'), $db->escape('Reject'), 'main'),
+	('English', $db->escape('markreview'), $db->escape('Mark for review'), 'main'),
+	('English', $db->escape('nonewreports'), $db->escape('Yay! There are no new reports!'), 'main'),
+	('English', $db->escape('processedreports'), $db->escape('Processed reports'), 'main'),
+	('English', $db->escape('reportedby'), $db->escape('Reported by <b>$1</b> on $2'), 'main'),
+	('English', $db->escape('markedreadby'), $db->escape('Marked as read by <b>$1</b> on $2'), 'main'),
+	('English', $db->escape('status'), $db->escape('Status'), 'main'),
+	('English', $db->escape('pending'), $db->escape('Pending'), 'main'),
+	('English', $db->escape('underreview'), $db->escape('Under review'), 'main'),
+	('English', $db->escape('rejected'), $db->escape('Rejected'), 'main'),
+	('English', $db->escape('accepted'), $db->escape('Accepted'), 'main'),
+	('English', $db->escape('noresp'), $db->escape('No response'), 'main'),
+	('English', $db->escape('withdrawnbyreporter'), $db->escape('Withdrawn by reporter'), 'main'),
+	('English', $db->escape('unknown'), $db->escape('Unknown'), 'main'),
+	('English', $db->escape('nooldreports'), $db->escape('Yay! There are no old reports!'), 'main'),
+	('English', $db->escape('reportpost'), $db->escape('Report post'), 'main'),
+);
 $q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
 $q->commit();

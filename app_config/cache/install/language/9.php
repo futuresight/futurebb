@@ -1,45 +1,56 @@
 <?php
 $q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
-$lang_insert_data = array();
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('trashbin') . '\',\'' . $db->escape('Trash bin') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('censoring') . '\',\'' . $db->escape('Censoring') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('iptracker') . '\',\'' . $db->escape('IP Tracker') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('usergroups') . '\',\'' . $db->escape('User groups') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('extensions') . '\',\'' . $db->escape('Extensions') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newban') . '\',\'' . $db->escape('Add new ban') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('editban') . '\',\'' . $db->escape('Edit ban') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('deleteban') . '\',\'' . $db->escape('Delete ban') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('expires') . '\',\'' . $db->escape('Expires') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('never') . '\',\'' . $db->escape('Never') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('deletebanconfirm') . '\',\'' . $db->escape('Are you sure you want to delete this ban?') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('jk') . '\',\'' . $db->escape('Just kidding') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('censorintro') . '\',\'' . $db->escape('You may use this page to set inappropriate words to censor.<br />This will not affect old posts unless the reparse posts function is used (available on the <a href="$baseurl$/admin/maintenance">maintenance page</a>).') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newword') . '\',\'' . $db->escape('Add new word') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('find') . '\',\'' . $db->escape('Find') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('replacewith') . '\',\'' . $db->escape('Replace with') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('importcensor1') . '\',\'' . $db->escape('Import dictionary') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('importcensor2') . '\',\'' . $db->escape('If you want, you can import a pre-defined dictionary of censored words.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('exportcensor') . '\',\'' . $db->escape('To export the censoring list so it can be used on another forum, please click the download link below.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('imghostrestriction') . '\',\'' . $db->escape('Image host restrictions') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('hostlist') . '\',\'' . $db->escape('Domain names that are allowed/disallowed (set blacklist/whitelist mode above, and put one domain per line)') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('whitelist') . '\',\'' . $db->escape('Whitelist') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('blacklist') . '\',\'' . $db->escape('Blacklist') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('none') . '\',\'' . $db->escape('None') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('forumname') . '\',\'' . $db->escape('Forum name') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('permissions') . '\',\'' . $db->escape('Permissions') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('grouptitle') . '\',\'' . $db->escape('Group title') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('viewforum') . '\',\'' . $db->escape('View forum') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('posttopics') . '\',\'' . $db->escape('Post topics') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('postreplies') . '\',\'' . $db->escape('Post replies') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('editcats') . '\',\'' . $db->escape('Edit categories') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('catname') . '\',\'' . $db->escape('Category name') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('sortpos') . '\',\'' . $db->escape('Sort position') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('delete?') . '\',\'' . $db->escape('Delete?') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updatecats') . '\',\'' . $db->escape('Update categories') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('editforums') . '\',\'' . $db->escape('Edit forums') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newforum') . '\',\'' . $db->escape('Add new forum') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newforumname') . '\',\'' . $db->escape('New forum') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updateforums') . '\',\'' . $db->escape('Update forums') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('addcat') . '\',\'' . $db->escape('Add new category') . '\',\'' . $db->escape('admin') . '\')';
+$lang_insert_data = array(
+	('English', $db->escape('onlinetimeoutdesc'), $db->escape('If a user does not visit any page after this many seconds, they will be considered offline. Use 0 to disable online/offline display.'), 'admin'),
+	('English', $db->escape('verifyregs'), $db->escape('Verify new registrations'), 'admin'),
+	('English', $db->escape('disableregs'), $db->escape('Disable new registrations'), 'admin'),
+	('English', $db->escape('verifyregsdesc'), $db->escape('Verify new user registrations by emailing them an access code'), 'admin'),
+	('English', $db->escape('disableregsdesc'), $db->escape('Do not allow new registrations'), 'admin'),
+	('English', $db->escape('general'), $db->escape('General'), 'admin'),
+	('English', $db->escape('userstopicsposts'), $db->escape('Users, topics, and posts'), 'admin'),
+	('English', $db->escape('enableavatars'), $db->escape('Enable avatars'), 'admin'),
+	('English', $db->escape('enableavatarsdesc'), $db->escape('An avatar is a user icon that will show next to all of their posts.'), 'admin'),
+	('English', $db->escape('rulesdesc'), $db->escape('Users must agree to these rules when they register. This is not parsed as BBCode and may contain HTML.'), 'admin'),
+	('English', $db->escape('announcement'), $db->escape('Announcement'), 'admin'),
+	('English', $db->escape('announcementdesc'), $db->escape('Here you may specify an announcement to appear in the top banner under the navigation bar. You may use HTML as this is not parsed as BBCode.'), 'admin'),
+	('English', $db->escape('enableannouncement'), $db->escape('Enable announcement?'), 'admin'),
+	('English', $db->escape('siteappearance'), $db->escape('Site appearance'), 'admin'),
+	('English', $db->escape('customfooter'), $db->escape('Here you may specify custom text to appear below the &quot;Powered by FutureBB&quot; message.'), 'admin'),
+	('English', $db->escape('topicsperpage'), $db->escape('Topics per page'), 'admin'),
+	('English', $db->escape('postsperpage'), $db->escape('Posts per page'), 'admin'),
+	('English', $db->escape('showpostcounts'), $db->escape('Show user post counts'), 'admin'),
+	('English', $db->escape('showpostcountsdesc'), $db->escape('Show users&apos; post counts in their posts'), 'admin'),
+	('English', $db->escape('zeronolimit'), $db->escape('Set an option to zero for no limit'), 'admin'),
+	('English', $db->escape('maxchars'), $db->escape('Maximum number of characters'), 'admin'),
+	('English', $db->escape('maxlines'), $db->escape('Maximum number of lines'), 'admin'),
+	('English', $db->escape('maintenancemode'), $db->escape('Maintenance mode'), 'admin'),
+	('English', $db->escape('maintenancemsg'), $db->escape('Maintenance message:'), 'admin'),
+	('English', $db->escape('autoactivatemaint'), $db->escape('Automatically activate maintenance mode in'), 'admin'),
+	('English', $db->escape('maintschedpanel'), $db->escape('(Maintenance mode is already scheduled to turn on at $1).'), 'admin'),
+	('English', $db->escape('autodeactivatemaint'), $db->escape('Automatically deactivate maintenance mode in '), 'admin'),
+	('English', $db->escape('maintoffschedpanel'), $db->escape('(Maintenance mode is already scheduled to turn off at $1).'), 'admin'),
+	('English', $db->escape('serverinfo'), $db->escape('Server info'), 'admin'),
+	('English', $db->escape('fbbversion'), $db->escape('FutureBB Version'), 'admin'),
+	('English', $db->escape('database'), $db->escape('Database'), 'admin'),
+	('English', $db->escape('os'), $db->escape('Operating system'), 'admin'),
+	('English', $db->escape('newversionmsg'), $db->escape('A new version of FutureBB is available! You can download it on <a href="http://futuresight.org/products/futurebb">the FutureSight Technologies website</a>.'), 'admin'),
+	('English', $db->escape('maxquotedepth'), $db->escape('Maximum quote depth'), 'admin'),
+	('English', $db->escape('quotedepth>1'), $db->escape('The maximum quote depth must be greater than 1'), 'admin'),
+	('English', $db->escape('fixerrors'), $db->escape('The following errors must be fixed before continuing:'), 'admin'),
+	('English', $db->escape('avatarmaxfilesize'), $db->escape('Maxiumum avatar file size'), 'admin'),
+	('English', $db->escape('avatarfilesizedesc'), $db->escape('The maximum allowed avatar file size (KiB)'), 'admin'),
+	('English', $db->escape('enablebbcode'), $db->escape('Enable BBCode'), 'admin'),
+	('English', $db->escape('enablebbcodedesc'), $db->escape('Allow BBCode in posts - if this box is changed, it will not affect existing posts unless the &quot;reparse posts&quot; tool is used on the maintenance page'), 'admin'),
+	('English', $db->escape('enablesmilies'), $db->escape('Enable smilies'), 'admin'),
+	('English', $db->escape('enablesmiliesdesc'), $db->escape('Enable smilies - if this box is changed, it will not affect existing posts unless the &quot;reparse posts&quot; tool is used on the maintenance page'), 'admin'),
+	('English', $db->escape('undeletepostheader'), $db->escape('Are you sure you want to undelete the post? You can view it below.'), 'admin'),
+	('English', $db->escape('undeletetopicheader'), $db->escape('Are you sure you wish to undelete this topic?'), 'admin'),
+	('English', $db->escape('headertext'), $db->escape('FutureBB Installation'), 'install'),
+	('English', $db->escape('welcome'), $db->escape('Welcome'), 'install'),
+	('English', $db->escape('dbtype'), $db->escape('Database type'), 'install'),
+	('English', $db->escape('dbsetup'), $db->escape('Database setup'), 'install'),
+	('English', $db->escape('syscfg'), $db->escape('System configuration'), 'install'),
+	('English', $db->escape('adminacct'), $db->escape('Administrator account'), 'install'),
+);
 $q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
 $q->commit();

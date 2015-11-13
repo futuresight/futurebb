@@ -1,45 +1,56 @@
 <?php
 $q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
-$lang_insert_data = array();
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('sent') . '\',\'' . $db->escape('Sent') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('couldnot_display_notif') . '\',\'' . $db->escape('The notification could not be displayed because the type of message could not be determined.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('nonotifs') . '\',\'' . $db->escape('You have no notifications at the moment') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('maintenance') . '\',\'' . $db->escape('Maintenance') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('wrote') . '\',\'' . $db->escape('wrote') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bbcode') . '\',\'' . $db->escape('BBCode') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('produces') . '\',\'' . $db->escape('produces') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bbcodehelp') . '\',\'' . $db->escape('BBCode Help') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bbcodehelpintro') . '\',\'' . $db->escape('BBCode is a tool that lets you format your posts') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('basicformatting') . '\',\'' . $db->escape('Basic formatting') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('tagssupported') . '\',\'' . $db->escape('The following tags are supported:') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('boldtext') . '\',\'' . $db->escape('Bold text') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('italictext') . '\',\'' . $db->escape('Italic text') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('underlinedtext') . '\',\'' . $db->escape('Underlined text') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('struckouttext') . '\',\'' . $db->escape('Struckouttext') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bluetext') . '\',\'' . $db->escape('Blue text') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('magentatext') . '\',\'' . $db->escape('Magenta') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('quotes') . '\',\'' . $db->escape('Quotes') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('textquoting') . '\',\'' . $db->escape('This is the text I am quoting.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('johnsmith') . '\',\'' . $db->escape('John Smith') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('linksandimages') . '\',\'' . $db->escape('Links and images') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('style') . '\',\'' . $db->escape('Style') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('notranslation') . '\',\'' . $db->escape('Unfortunately, this page does not have a translation available.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('blockininline') . '\',\'' . $db->escape('The tag <b>[$1]</b> can not be placed inside <b>[$2]</b> because block tags can not be placed inside of inline tags.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('nonesting') . '\',\'' . $db->escape('Additional BBCode tags can not go inside of a <b>[$1]</b> tag.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('shortpass') . '\',\'' . $db->escape('Your password is shorter than 8 characters') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('commonpass') . '\',\'' . $db->escape('Your password is in the list of the most commonly used passwords') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reply') . '\',\'' . $db->escape('Reply') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('lists') . '\',\'' . $db->escape('Lists') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('listsintro') . '\',\'' . $db->escape('If you wish to have items in a series, you can do so using the <code>[list]</code> tag.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('forbulletedlist') . '\',\'' . $db->escape('For a bulleted list, just use <code>[list]</code>. For example,') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('fornumberlist') . '\',\'' . $db->escape('For a numbered list, just use <code>[list=1]</code>. For example,') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('item#') . '\',\'' . $db->escape('Item #$1') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('timeformatdesc') . '\',\'' . $db->escape('The following two entries allow you to set the format used for displaying all times by the software. For items that only display the date, the date format is used, but for items that display the time, the date format and time format are joined together. The formats must follow the <a href="http://php.net/manual/en/function.date.php#refsect1-function.date-parameters">PHP guidelines</a>.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('unknown error') . '\',\'' . $db->escape('An unknown error occurred') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('specificnestingerror') . '\',\'' . $db->escape('The tag <b>[$1]</b> cannot be placed directly inside <b>[$2]</b>.') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('errorwaslocated') . '\',\'' . $db->escape('The above error was located at: ') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('tagwasopened') . '\',\'' . $db->escape('The <b>[$1]</b> tag was opened at the following location: ') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('archived') . '\',\'' . $db->escape('(Archived)') . '\',\'' . $db->escape('main') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('bans') . '\',\'' . $db->escape('Bans') . '\',\'' . $db->escape('admin') . '\')';
+$lang_insert_data = array(
+	('English', $db->escape('dontpromote'), $db->escape('[Do not promote]'), 'admin'),
+	('English', $db->escape('after'), $db->escape('after'), 'admin'),
+	('English', $db->escape('deleteusergroup'), $db->escape('Delete user group'), 'admin'),
+	('English', $db->escape('deletegroupconfirm'), $db->escape('Are you sure you want to delete the user group &quot;$1&quot;?'), 'admin'),
+	('English', $db->escape('moveallusersto'), $db->escape('Move all users in this group to: '), 'admin'),
+	('English', $db->escape('accessboard'), $db->escape('Access board'), 'admin'),
+	('English', $db->escape('accessboarddesc'), $db->escape('Access the board at all (if not enabled, users will only be able to log in and register)'), 'admin'),
+	('English', $db->escape('viewforums'), $db->escape('View forums'), 'admin'),
+	('English', $db->escape('viewforumsdesc'), $db->escape('Allow viewing of new forums by default'), 'admin'),
+	('English', $db->escape('posttopicsdesc'), $db->escape('Allow posting new topics by default when creating new forums'), 'admin'),
+	('English', $db->escape('postrepliesdesc'), $db->escape('Allow posting replies by default when creating new forums'), 'admin'),
+	('English', $db->escape('maxwidth'), $db->escape('Maximum width (pixels)'), 'admin'),
+	('English', $db->escape('maxheight'), $db->escape('Maximum height (pixels)'), 'admin'),
+	('English', $db->escape('avatarmaxwidthdesc'), $db->escape('The maxiumum width allowed (in pixels), generally between 60 and 128 is recommended'), 'admin'),
+	('English', $db->escape('avatarmaxheightdesc'), $db->escape('The maxiumum height allowed (in pixels), generally between 60 and 128 is recommended'), 'admin'),
+	('English', $db->escape('uploadfailed'), $db->escape('File upload failed.'), 'admin'),
+	('English', $db->escape('notzip'), $db->escape('The file you uploaded is not a ZIP file.'), 'admin'),
+	('English', $db->escape('noinfophp'), $db->escape('The extension did not have an info.php file'), 'admin'),
+	('English', $db->escape('badextinfo'), $db->escape('The $ext_info variable was either not set or not an array in the info.php file.'), 'admin'),
+	('English', $db->escape('extinfomissingkey'), $db->escape('The $ext_info variable was missing the following required key: <b>$1</b>'), 'admin'),
+	('English', $db->escape('extinstallation'), $db->escape('Extension installation'), 'admin'),
+	('English', $db->escape('makingdbchanges'), $db->escape('Making database changes - success'), 'admin'),
+	('English', $db->escape('runninginstallphp'), $db->escape('Running install.php - success'), 'admin'),
+	('English', $db->escape('copyingfiles'), $db->escape('Copying files - success'), 'admin'),
+	('English', $db->escape('nochangesvar'), $db->escape('The variable $changes was not set in changes.php'), 'admin'),
+	('English', $db->escape('changesmissingkey'), $db->escape('$changes[$1] is missing a key.'), 'admin'),
+	('English', $db->escape('invalidchangetype'), $db->escape('Invalid change type: '), 'admin'),
+	('English', $db->escape('installcomplete'), $db->escape('Installation complete!'), 'admin'),
+	('English', $db->escape('unzipfailed'), $db->escape('Something went wrong with unzipping. Not sure what. :('), 'admin'),
+	('English', $db->escape('installnewext'), $db->escape('Install new extension'), 'admin'),
+	('English', $db->escape('forumnotwritable'), $db->escape('Your forum root directory is not writable. To fix this, you need to change the permissions. When in doubt, chmod to 0777.'), 'admin'),
+	('English', $db->escape('existingexts'), $db->escape('Existing extensions'), 'admin'),
+	('English', $db->escape('noexts'), $db->escape('No extensions installed. :('), 'admin'),
+	('English', $db->escape('website'), $db->escape('Website'), 'admin'),
+	('English', $db->escape('supporturl'), $db->escape('Support URL'), 'admin'),
+	('English', $db->escape('uninstall'), $db->escape('Uninstall'), 'admin'),
+	('English', $db->escape('nouninstallphp'), $db->escape('The uninstall.php file is not available. Please contact the extension creator.'), 'admin'),
+	('English', $db->escape('filenotwritable'), $db->escape('The following file/directory is not writable: $1. Please change the permissions to fix this. When in doubt, chmod to 0777.'), 'admin'),
+	('English', $db->escape('tempdirfailed'), $db->escape('Could not make the temporary directory for your extension. Please make sure that the temp directory (/temp from your forum root) exists and is writable.'), 'admin'),
+	('English', $db->escape('uninstallext'), $db->escape('Uninstall extension'), 'admin'),
+	('English', $db->escape('uninstallextintro'), $db->escape('Are you sure you want to install the extension <strong>$1</strong>?'), 'admin'),
+	('English', $db->escape('success'), $db->escape('Success'), 'admin'),
+	('English', $db->escape('uninstalled'), $db->escape('The selected extension was successfully uninstalled.'), 'admin'),
+	('English', $db->escape('return'), $db->escape('Return'), 'admin'),
+	('English', $db->escape('boardsettings'), $db->escape('Board settings'), 'admin'),
+	('English', $db->escape('boardtitle'), $db->escape('Board title'), 'admin'),
+	('English', $db->escape('adminemail'), $db->escape('Administrator email'), 'admin'),
+	('English', $db->escape('onlinetimeout'), $db->escape('Online timeout'), 'admin'),
+	('English', $db->escape('allowPM'), $db->escape('Allow private messaging'), 'admin'),
+	('English', $db->escape('allownotifs'), $db->escape('Allow notifications'), 'admin'),
+);
 $q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
 $q->commit();

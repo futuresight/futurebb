@@ -1,47 +1,56 @@
 <?php
 $q = 'INSERT INTO `#^language`(language,langkey,value,category) VALUES';
-$lang_insert_data = array();
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('redirmsg') . '\',\'' . $db->escape('If you are not redirected within a few seconds, <a href="$1">click here</a> to continue.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updatingtopic') . '\',\'' . $db->escape('Updating topic #$1') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updatingforum') . '\',\'' . $db->escape('Updating forum #$1') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reparsingposts') . '\',\'' . $db->escape('Reparsing posts - now is a good time to get off the computer for a little while. :)') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reparsingpost') . '\',\'' . $db->escape('Reparsing post #$1') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reparsingsigs') . '\',\'' . $db->escape('Reparsing signatures - now is a good time to get off the computer for a little while. :)') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reparsingsig') . '\',\'' . $db->escape('Reparsing signature #$1') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('rebuildingsearch') . '\',\'' . $db->escape('Rebuilding search index - now is a good time to get off the computer for a little while. :)') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('procpost') . '\',\'' . $db->escape('Processing post #$1') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updatingpostcounts') . '\',\'' . $db->escape('Updating user post counts - now is a good time to get off the computer for a little while. :)') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('recountinguser') . '\',\'' . $db->escape('Recounting user #$1') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('recountingtopicreplies') . '\',\'' . $db->escape('Recalculating topic reply counts - now is a good time to get off the computer for a little while. :)') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('maintenancedesc') . '\',\'' . $db->escape('From this page, you can run the various maintenance utilities necessary to help keep your forum working.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('rebuildsearch') . '\',\'' . $db->escape('Rebuild search index') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('rebuildsearchdesc') . '\',\'' . $db->escape('If there are problems searching, you can rebuild the search index.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('deleteorphans') . '\',\'' . $db->escape('Delete orphaned topics') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('deleteorphansdesc') . '\',\'' . $db->escape('If you are ever getting a message saying a topic has no posts in it, run this utility to remove all of them.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updatelastpost') . '\',\'' . $db->escape('Update topic/forum last post data') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updatelastpostdesc') . '\',\'' . $db->escape('If the last post data in topics and forums appears to be invalid, run this tool to fix it.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reparse') . '\',\'' . $db->escape('Reparse') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reparsedesc') . '\',\'' . $db->escape('This forum pre-parses BBCode, meaning that the BBCode is converted into HTML at the time of posting/editing the post. This means that any changes to BBCode will not affect old posts. If you have added new BBCode and want to apply it on old posts, you should run this utility.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reparseposts') . '\',\'' . $db->escape('Reparse all posts') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('reparsesigs') . '\',\'' . $db->escape('Reparse all signatures') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updatecounts') . '\',\'' . $db->escape('Update counts') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updateuserpostcounts') . '\',\'' . $db->escape('Update user post counts') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updateforumpostcounts') . '\',\'' . $db->escape('Update forum post counts') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updateforumtopiccounts') . '\',\'' . $db->escape('Update forum topic counts') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('updatetopicpostcounts') . '\',\'' . $db->escape('Update topic post counts') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('defaultusergroup') . '\',\'' . $db->escape('Default user group:') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('newusergroup') . '\',\'' . $db->escape('Create new user group') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('groupname') . '\',\'' . $db->escape('Group name') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('groupnamedesc') . '\',\'' . $db->escape('This is the title of the group itself.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('usertitle') . '\',\'' . $db->escape('User title') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('usertitledesc') . '\',\'' . $db->escape('This will show up under a user&apos;s username in their posts.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('editpostsdesc') . '\',\'' . $db->escape('This option allows users to edit their own posts.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('deletepostsdesc') . '\',\'' . $db->escape('This option allows users to delete their own posts.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('modprivs') . '\',\'' . $db->escape('Moderator privileges') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('modprivsdesc') . '\',\'' . $db->escape('This option gives users access to the moderator tools, which include being able to edit and delete everybody&apos;s posts, ban users, and view deleted posts.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('adminprivs') . '\',\'' . $db->escape('Administrator privileges') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('adminprivsdesc') . '\',\'' . $db->escape('This option gives users access to the complete admin panel.') . '\',\'' . $db->escape('admin') . '\')';
-$lang_insert_data[] = '(\'English\',\'' . $db->escape('noextdir') . '\',\'' . $db->escape('The directory app_config/extensions does not exist or is not writable. Please fix this to enable installing extensions.') . '\',\'' . $db->escape('admin') . '\')';
-
+$lang_insert_data = array(
+	('English', $db->escape('brdtitle'), $db->escape('Board title'), 'install'),
+	('English', $db->escape('confirmation'), $db->escape('Confirmation'), 'install'),
+	('English', $db->escape('welcometofbb'), $db->escape('Welcome to FutureBB'), 'install'),
+	('English', $db->escape('intro'), $db->escape('Before you can start using your forum, you are going to need to set a few things up. This installer will make it easy for you.'), 'install'),
+	('English', $db->escape('selectlang'), $db->escape('First, please select a language:'), 'install'),
+	('English', $db->escape('continue'), $db->escape('Continue'), 'install'),
+	('English', $db->escape('back'), $db->escape('Back'), 'install'),
+	('English', $db->escape('baddb'), $db->escape('Your database information was invalid. The database reported: '), 'install'),
+	('English', $db->escape('type'), $db->escape('Type'), 'install'),
+	('English', $db->escape('host'), $db->escape('Host'), 'install'),
+	('English', $db->escape('username'), $db->escape('Username'), 'install'),
+	('English', $db->escape('pwd'), $db->escape('Password'), 'install'),
+	('English', $db->escape('name'), $db->escape('Name'), 'install'),
+	('English', $db->escape('prefix'), $db->escape('Prefix'), 'install'),
+	('English', $db->escape('MySQL'), $db->escape('MySQL'), 'install'),
+	('English', $db->escape('mysqli'), $db->escape('MySQL Improved'), 'install'),
+	('English', $db->escape('continuetest'), $db->escape('Continue and test'), 'install'),
+	('English', $db->escape('dbgood'), $db->escape('Connecting to the database was successful.'), 'install'),
+	('English', $db->escape('seturlstuff'), $db->escape('Please set the URL information below. Please note that the pre-entered values are only educated guesses. Please verify them yourself before continuing. Also please verify that there are no trailing slashes.'), 'install'),
+	('English', $db->escape('baseurl'), $db->escape('Base URL'), 'install'),
+	('English', $db->escape('baseurlpath'), $db->escape('Base URL path'), 'install'),
+	('English', $db->escape('pwdmistmatch'), $db->escape('Passwords did not match. Please try again.'), 'install'),
+	('English', $db->escape('email'), $db->escape('Email address'), 'install'),
+	('English', $db->escape('install'), $db->escape('Install'), 'install'),
+	('English', $db->escape('modify'), $db->escape('Modify'), 'install'),
+	('English', $db->escape('dbhost'), $db->escape('Database host'), 'install'),
+	('English', $db->escape('dbuser'), $db->escape('Database username'), 'install'),
+	('English', $db->escape('dbpwd'), $db->escape('Database password'), 'install'),
+	('English', $db->escape('dbname'), $db->escape('Database name'), 'install'),
+	('English', $db->escape('dbprefix'), $db->escape('Database prefix'), 'install'),
+	('English', $db->escape('adminusername'), $db->escape('Admin username'), 'install'),
+	('English', $db->escape('adminpwd'), $db->escape('Admin password'), 'install'),
+	('English', $db->escape('notdisplayed'), $db->escape('[not displayed]'), 'install'),
+	('English', $db->escape('confirmintro'), $db->escape('You are now ready to set up your forum! When you click the install button, it will prepare the database for you, and create the configuration files. If you click the modify button, it will take you back to the first page so you can modify your settings.'), 'install'),
+	('English', $db->escape('installdetails'), $db->escape('The installation details are listed below. Please review them before you finalize the installation.'), 'install'),
+	('English', $db->escape('completed'), $db->escape('Installation complete!'), 'install'),
+	('English', $db->escape('clickhere'), $db->escape('here'), 'install'),
+	('English', $db->escape('testout1'), $db->escape('Please follow the steps below to finish setting up your forum. When done, click '), 'install'),
+	('English', $db->escape('downloadxml'), $db->escape('Download the config.xml file from the link below and place it in your forum root directory'), 'install'),
+	('English', $db->escape('testout2'), $db->escape(' to test it out'), 'install'),
+	('English', $db->escape('apachemsg'), $db->escape('<li>Make sure AllowOverride is set to ON for your forum directory. If it is not, then you need to enable it.</li><li>Download the .htaccess file below and place it in your forum root directory</li>'), 'install'),
+	('English', $db->escape('noapachemsg'), $db->escape('<li>Rewrite all HTTP requests to the root directory of your forum to dispatcher.php</li>'), 'install'),
+	('English', $db->escape('xmllink'), $db->escape('Download config.xml'), 'install'),
+	('English', $db->escape('htalink'), $db->escape('Download .htaccess'), 'install'),
+	('English', $db->escape('weirderror'), $db->escape('Installation error of some sort. We don&apos;t know why. Sorry!'), 'install'),
+	('English', $db->escape('selectdbtype'), $db->escape('Select a database type: '), 'install'),
+	('English', $db->escape('baddbtype'), $db->escape('Your server does not support the database type selected. Please try again.'), 'install'),
+	('English', $db->escape('adminemail'), $db->escape('Administrator email'), 'install'),
+	('English', $db->escape('dbfile'), $db->escape('File to store SQLite'), 'install'),
+	('English', $db->escape('installcomplete'), $db->escape('Installation complete!'), 'install'),
+);
 $q = new DBMassInsert('language', array('language', 'langkey', 'value', 'category'), $lang_insert_data, 'Failed to insert language data');
 $q->commit();
