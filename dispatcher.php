@@ -30,7 +30,7 @@ date_default_timezone_set('UTC'); //to prevent errors with timezone settings
 define('FORUM_ROOT', dirname(__FILE__));
 include FORUM_ROOT . '/app_resources/includes/startup.php';
 
-if (!isset($futurebb_config['db_version']) || $futurebb_config['db_version'] < DB_VERSION) {
+if (defined('DB_UPGRADE')) {
 	//outdated database, upgrade is needed
 	include FORUM_ROOT . '/app_resources/database/upgrades/db_upgrade.php';
 	$db->close();

@@ -67,9 +67,17 @@ $db = new Database($db_info);
 $futurebb_config = array();
 load_db_config();
 
+if (!isset($futurebb_config['db_version']) || $futurebb_config['db_version'] < DB_VERSION) { //an outdated database is running, so note that when picking the page
+	define('DB_UPGRADE', true);
+}
+
 // Fire the login controller
 $futurebb_user = null;
-LoginController::CheckCookie($futurebb_user);
+if (defined('DB_UPGRADE')) {
+	LoginController::Guest();
+} else {
+	LoginController::CheckCookie($futurebb_user);
+}
 
 if ($futurebb_config['turn_on_maint'] > 0 && $futurebb_config['turn_on_maint'] < time() && !$futurebb_config['maintenance']) {
 	set_config('maintenance', 1);

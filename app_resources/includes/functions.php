@@ -213,6 +213,13 @@ abstract class LoginController {
 		global $base_config, $db;
 		$result = $db->query('SELECT login_hash FROM `#^users` WHERE id=' . intval($id)) or enhanced_error('Failed to search for login hash', true);
 		list($hash) = $db->fetch_row($result);
+		if ($hash == '') {
+			//if there is a blank hash, set a new one
+			$hash = futurebb_hash(time() . rand(1, 1000) . $user_info['id']);
+			$db->query('UPDATE `#^users` SET login_hash=\'' . $db->escape($hash) . '\' WHERE id=' . $id) or enhanced_error('Failed to update login hash', true);
+			$user_info['login_hash'] = $hash;
+			self::LogInUser($id, $_SERVER['HTTP_USER_AGENT'], true);
+		}
 		if ($remember) {
 			$expire = time() + 60 * 60 * 24 * 60;
 		} else {
