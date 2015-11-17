@@ -15,7 +15,7 @@ echo '<li>RV4: Updating search table structure... success</li>';
 $field = new DBField('login_hash','VARCHAR(50)');
 $field->add_extra('NOT NULL');
 $field->set_default('\'\'');
-$db->add_field('users', $field);
+$db->add_field('users', $field, 'password');
 echo '<li>RV4: Updating user table structure... success</li>';
 
 $table = new DBTable('search_cache');
