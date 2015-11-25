@@ -46,19 +46,22 @@ ExtensionConfig::add_language_key('tables', 'Tables', 'English', 'main');
 ExtensionConfig::add_language_key('colrow', 'Col $1, Row $2', 'English', 'main');
 ExtensionConfig::add_language_key('tableintro', 'You use the <code>[table][/table]</code> tags to start and end a table. You use <code>[tr][/tr]</code> to indicate a row, and <code>[td][/td]</code> to indicate a cell. The <code>[tr]</code> tag must go directly inside the <code>[table]</code> tag, and the <code>[td]</code> tag must go inside the <code>[tr]</code> tag.', 'English', 'main');
 ExtensionConfig::add_language_key('relevance', 'Relevance', 'English', 'main');
-ExtensionConfig::add_language_key('topicsp', 'topic<PLURAL $1>(,s)', 'main');
-ExtensionConfig::add_language_key('postsp', 'post<PLURAL $1>(,s)', 'main');
-ExtensionConfig::add_language_key('select', 'Select: ', 'main');
-ExtensionConfig::add_language_key('stick', 'Stick', 'main');
-ExtensionConfig::add_language_key('unstick', 'Unstick', 'main');
-ExtensionConfig::add_language_key('close', 'Close', 'main');
-ExtensionConfig::add_language_key('open', 'Open', 'main');
-ExtensionConfig::add_language_key('confirm', 'Confirm', 'main');
-ExtensionConfig::add_language_key('areyousureaction', 'Are you sure you want to $1 the following $2?', 'admin');
-ExtensionConfig::add_language_key('signoutothersessions', 'Sign out all other sessions', 'profile');
-ExtensionConfig::add_language_key('searchusername', 'Search username', 'admin');
-ExtensionConfig::add_language_key('lastused', 'Last used', 'admin');
-ExtensionConfig::add_language_key('searchresultsfor', 'Search results for $1', 'main');
+ExtensionConfig::add_language_key('topicsp', 'topic<PLURAL $1>(,s)','English',  'main');
+ExtensionConfig::add_language_key('postsp', 'post<PLURAL $1>(,s)','English',  'main');
+ExtensionConfig::add_language_key('select', 'Select: ', 'English', 'main');
+ExtensionConfig::add_language_key('stick', 'Stick', 'English', 'main');
+ExtensionConfig::add_language_key('unstick', 'Unstick', 'English', 'main');
+ExtensionConfig::add_language_key('close', 'Close', 'English', 'main');
+ExtensionConfig::add_language_key('open', 'Open', 'English', 'main');
+ExtensionConfig::add_language_key('confirm', 'Confirm', 'English', 'main');
+ExtensionConfig::add_language_key('areyousureaction', 'Are you sure you want to $1 the following $2?', 'English', 'admin');
+ExtensionConfig::add_language_key('signoutothersessions', 'Sign out all other sessions', 'English', 'profile');
+ExtensionConfig::add_language_key('searchusername', 'Search username', 'English', 'admin');
+ExtensionConfig::add_language_key('lastused', 'Last used', 'English', 'admin');
+ExtensionConfig::add_language_key('searchresultsfor', 'Search results for $1', 'English', 'main');
+ExtensionConfig::add_language_key('atomfeed', 'Atom feed', 'English', 'main');
+ExtensionConfig::add_language_key('tables', 'Tables', 'English', 'main');
+
 echo '<li>RV4: Adding new language keys... success</li>';
 
 ExtensionConfig::remove_page('/login/');
@@ -74,6 +77,13 @@ $db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_re
 
 //welcome the admin to FutureBB 1.4
 $db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_reported) VALUES(0, \'special\',\'' . $db->escape('Welcome to FutureBB 1.4! Once you follow the steps explained in the other automatic notifications, your upgrade will be complete. We hope you enjoy it!') . '\',0,' . time() . ')') or enhanced_error('Failed to alert admin to rebuild search index', true);
+
+CacheEngine::CacheHeader();
+CacheEngine::CacheLanguage();
+CacheEngine::CacheAdminPages();
+CacheEngine::CachePages();
+CacheEngine::CacheCommonWords();
+echo '<li>RV4: Clearing cache... success</li>';
 
 set_config('db_version', 4);
 set_config('new_version', 0);
