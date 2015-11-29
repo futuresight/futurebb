@@ -575,7 +575,7 @@ if(isset($_POST['pm_sent'])) {
 				if (!$futurebb_user['g_admin_privs']) {
 					httperror(403);
 				}
-				$result = $db->query('SELECT send_time,contents,arguments FROM `#^notifications` WHERE type=\'warning\' AND user=' . $cur_user['id'] . ' ORDER BY send_time DESC LIMIT 20') or error('Failed to get warnings', __FILE__, __LINE__, $db->error());
+				$result = $db->query('SELECT id,send_time,contents,arguments FROM `#^notifications` WHERE type=\'warning\' AND user=' . $cur_user['id'] . ' ORDER BY send_time DESC LIMIT 20') or error('Failed to get warnings', __FILE__, __LINE__, $db->error());
 				if (!$db->num_rows($result)) {
 					echo '<p>' . translate('none') . '</p>';
 				} else {
@@ -584,15 +584,21 @@ if(isset($_POST['pm_sent'])) {
 							<th>' . translate('time') . '</th>
 							<th>' . translate('sentby') . '</th>
 							<th>' . translate('message') . '</th>
+							<th>' . translate('actions') . '</th>
 						</tr>';
 					while ($msg = $db->fetch_assoc($result)) {
-						echo '<tr><td>' . user_date($msg['send_time']) . '</td><td>' . htmlspecialchars($msg['arguments']) . '</td><td>' . $msg['contents'] . '</td></tr>';
+						echo '<tr>
+							<td>' . user_date($msg['send_time']) . '</td>
+							<td>' . htmlspecialchars($msg['arguments']) . '</td>
+							<td>' . $msg['contents'] . '</td>
+							<td><a href="' . $base_config['baseurl'] . '/report/message/' . $msg['id'] . '">' . translate('send_appeal') . '</a></td>
+						</tr>';
 					}
 					echo '</table>';
 				}
 				break;
 			case 'msgs':
-				$result = $db->query('SELECT n.send_time,n.contents,n.arguments,u.username AS recipient FROM `#^notifications` AS n LEFT JOIN `#^users` AS u ON u.id=n.user WHERE type=\'msg\' AND (arguments=\'' . $db->escape($cur_user['username']) . '\' OR user=' . $cur_user['id'] . ') ORDER BY send_time DESC LIMIT 20') or error('Failed to get message', __FILE__, __LINE__, $db->error());
+				$result = $db->query('SELECT n.send_time,n.contents,n.arguments,u.username AS recipient,n.id FROM `#^notifications` AS n LEFT JOIN `#^users` AS u ON u.id=n.user WHERE type=\'msg\' AND (arguments=\'' . $db->escape($cur_user['username']) . '\' OR user=' . $cur_user['id'] . ') ORDER BY send_time DESC LIMIT 20') or error('Failed to get message', __FILE__, __LINE__, $db->error());
 				if (!$db->num_rows($result)) {
 					echo '<p>' . translate('none') . '</p>';
 				} else {
@@ -602,9 +608,16 @@ if(isset($_POST['pm_sent'])) {
 							<th>' . translate('sentby') . '</th>
 							<th>' . translate('sentto') . '</th>
 							<th>' . translate('message') . '</th>
+							<th>' . translate('actions') . '</th>
 						</tr>';
 					while ($msg = $db->fetch_assoc($result)) {
-						echo '<tr><td>' . user_date($msg['send_time']) . '</td><td>' . htmlspecialchars($msg['arguments']) . '</td><td>' . htmlspecialchars($msg['recipient']) . '</td><td>' . $msg['contents'] . '</td></tr>';
+						echo '<tr>
+							<td>' . user_date($msg['send_time']) . '</td>
+							<td>' . htmlspecialchars($msg['arguments']) . '</td>
+							<td>' . htmlspecialchars($msg['recipient']) . '</td>
+							<td>' . $msg['contents'] . '</td>
+							<td><a href="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($msg['arguments']) . '/pm_reply?id=' . $msg['id'] . '">' . translate('reply') . '</a> &bull; <a href="' . $base_config['baseurl'] . '/report/message/' . $msg['id'] . '">' . translate('report') . '</a></td>
+						</tr>';
 					}
 					echo '</table>';
 				}
