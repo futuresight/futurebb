@@ -62,6 +62,9 @@ ExtensionConfig::add_language_key('searchresultsfor', 'Search results for $1', '
 ExtensionConfig::add_language_key('atomfeed', 'Atom feed', 'English', 'main');
 ExtensionConfig::add_language_key('tables', 'Tables', 'English', 'main');
 
+ExtensionConfig::remove_language_key('reportpostreason');
+ExtensionConfig::add_language_ley('reportpostreason', 'Please enter a short reason why you are reporting this post.', 'English', 'main');
+
 echo '<li>RV4: Adding new language keys... success</li>';
 
 ExtensionConfig::remove_page('/login/');

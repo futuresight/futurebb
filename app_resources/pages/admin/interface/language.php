@@ -157,13 +157,42 @@ if (!isset($_GET['language']) || !isset($_GET['category'])) {
 	return;
 }
 
+//get total number of language keys for pagination
+$pagecaptions = array();
+$result = $db->query('SELECT COUNT(langkey) FROM `#^language` WHERE language=\'' . $db->escape($_GET['language']) . '\' AND category=\'' . $db->escape($_GET['category']) . '\'') or enhanced_error('Failed to get the number of language keys', true);
+list($num_lang_keys) = $db->fetch_row($result);
+
+//get the first and last number on each page
+$result = $db->query('SELECT *
+FROM (
+    SELECT
+        @row := @row +1 AS rownum, langkey
+    FROM (
+        SELECT @row :=0) r, `#^language` WHERE language=\'' . $db->escape($_GET['language']) . '\' AND category=\'' . $db->escape($_GET['category']) . '\' ORDER BY langkey ASC
+    ) ranked
+WHERE rownum % 25 IN(0,1) OR rownum=' . ($num_lang_keys)) or enhanced_error('Failed to get entry count', true);
+while (list($id,$langkey) = $db->fetch_row($result)) {
+	$pagecaptions[floor(($id - 1) / 25) + 1][$id == $num_lang_keys ? 1 : 1 - ($id % 25)] = $langkey;
+}
+
+//get the actual language keys
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $q = new DBSelect('language', array('id', 'langkey', 'value', 'category'), 'language=\'' . $db->escape($_GET['language']) . '\' AND category=\'' . $db->escape($_GET['category']) . '\'', 'Failed to get language keys');
 $q->set_order('langkey ASC');
+$q->set_limit((($page - 1) * 25) . ',25');
 $result = $q->commit();
 
 $last_category = '';
 ?>
 <form action="<?php echo $base_config['baseurl']; ?>/admin/interface/language" method="post" enctype="multipart/form-data">
+	<p><strong><?php echo translate('pages'); ?></strong> <?php
+	//pagination
+	$pagelinks = array();
+	foreach ($pagecaptions as $key => $val) {
+		$pagelinks[] = '<a href="?language=' . htmlspecialchars(rawurlencode($_GET['language'])) . '&amp;category=' . htmlspecialchars(rawurlencode($_GET['category'])) . '&amp;page=' . $key . '" title="&quot;' . $val[0] . '&quot; to &quot;' . $val[1] . '&quot;">' . $key . '</a>';
+	}
+	echo implode(' ', $pagelinks);
+	?></p>
 	<table border="0">
 		<tr>
 			<th>Key</th>
