@@ -23,32 +23,32 @@ if ($cur_topic['redirect_id'] != null) {
 
 if ($futurebb_user['g_mod_privs'] && isset($dirs[3]) && $dirs[3] == 'move') {
 	if (isset($_POST['form_sent'])) {
-		if (isset($_POST['redirect'])) {
-			$name = URLEngine::make_friendly($cur_topic['subject']);
-			$base_name = $name;
-			//check for forums with the same URL
-			$result = $db->query('SELECT url FROM `#^topics` WHERE url LIKE \'' . $db->escape($name) . '%\'') or error('Failed to check for similar URLs', __FILE__, __LINE__, $db->error());
-			$urllist = array();
-			while (list($url) = $db->fetch_row($result)) {
-				$urllist[] = $url;
-			}
-			$ok = false;
-			$add_num = 0;
-			while (!$ok) {
-				$ok = true;
-				if (in_array($name, $urllist)) {
-					$add_num++;
-					$name = $base_name . '-' . $add_num;
-					$ok = false;
-				}
-			}
-			$db->query('UPDATE `#^topics` SET url=\'' . $db->escape($name) . '\' WHERE id=' . $cur_topic['id']) or error('Failed to update URL', __FILE__, __LINE__, $db->error());
-			$db->query('INSERT INTO `#^topics`(subject,url,forum_id,last_post,last_post_id,first_post_id,redirect_id,show_redirect) VALUES(\'' . $db->escape($cur_topic['subject']) . '\',\'' . $db->escape($dirs[2]) . '\',' . $cur_topic['forum_id'] . ',' . $cur_topic['last_post'] . ',' . $cur_topic['last_post_id'] . ',' . $cur_topic['first_post_id'] . ',' . $cur_topic['id'] . ',1)') or error('Failed to make redirect', __FILE__, __LINE__, $db->error());
+		//check forum permissions first
+		$result = $db->query('SELECT f.url FROM `#^forums` AS f WHERE id=' . intval($_POST['fid']) . ' AND f.view_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\' AND f.topic_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\'') or enhanced_error('Failed to search for forum info', true);
+		list($newfurl) = $db->fetch_row($result);
+		
+		$name = URLEngine::make_friendly($cur_topic['subject']);
+		$base_name = $name;
+		//check for topics with the same URL
+		$result = $db->query('SELECT url FROM `#^topics` WHERE url LIKE \'' . $db->escape($name) . '%\'') or error('Failed to check for similar URLs', __FILE__, __LINE__, $db->error());
+		$urllist = array();
+		while (list($url) = $db->fetch_row($result)) {
+			$urllist[] = $url;
 		}
+		$ok = false;
+		$add_num = 0;
+		while (!$ok) {
+			$ok = true;
+			if (in_array($name, $urllist)) {
+				$add_num++;
+				$name = $base_name . '-' . $add_num;
+				$ok = false;
+			}
+		}
+		$db->query('UPDATE `#^topics` SET url=\'' . $db->escape($name) . '\' WHERE id=' . $cur_topic['id']) or error('Failed to update URL', __FILE__, __LINE__, $db->error());
+		$db->query('INSERT INTO `#^topics`(subject,url,forum_id,last_post,last_post_id,first_post_id,redirect_id,show_redirect) VALUES(\'' . $db->escape($cur_topic['subject']) . '\',\'' . $db->escape($dirs[2]) . '\',' . $cur_topic['forum_id'] . ',' . $cur_topic['last_post'] . ',' . $cur_topic['last_post_id'] . ',' . $cur_topic['first_post_id'] . ',' . $cur_topic['id'] . ',' . (isset($_POST['redirect']) ? 1 : 0) . ')') or error('Failed to make redirect', __FILE__, __LINE__, $db->error());
 		$db->query('UPDATE `#^topics` SET forum_id=' . intval($_POST['fid']) . ' WHERE id=' . $cur_topic['id']) or error('Failed to move topic', __FILE__, __LINE__, $db->error());
-		$result = $db->query('SELECT url FROM `#^forums` WHERE id=' . intval($_POST['fid'])) or error('Failed to get new forum info', __FILE__, __LINE__, $db->error());
-		list($furl) = $db->fetch_row($result);
-		redirect($base_config['baseurl'] . '/' . $furl . '/' . $dirs[2]); return;
+		redirect($base_config['baseurl'] . '/' . $newfurl . '/' . $name); return;
 	}
 	?>
 	<div class="forum_content">

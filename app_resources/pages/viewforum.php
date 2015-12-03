@@ -129,8 +129,8 @@ if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
 			}
 			?></td>
 			<td><?php echo $cur_topic['author']; ?></td>
-			<td><?php echo $cur_topic['num_replies']; ?></td>
-			<td><?php if ($cur_topic['last_post'] != 0) { ?><a href="<?php echo $base_config['baseurl']; ?>/posts/<?php echo $cur_topic['last_post_id']; ?>"><?php echo user_date($cur_topic['last_post']) . ' ' . translate('by') .' ' . htmlspecialchars($cur_topic['last_post_author']); ?></a><?php } else { ?><?php echo translate('topicmoved'); ?><?php } ?></td>
+			<td><?php if ($cur_topic['redirect_id'] == null) echo $cur_topic['num_replies']; else echo '-'; ?></td>
+			<td><?php if ($cur_topic['redirect_id'] == null) { ?><a href="<?php echo $base_config['baseurl']; ?>/posts/<?php echo $cur_topic['last_post_id']; ?>"><?php echo user_date($cur_topic['last_post']) . ' ' . translate('by') .' ' . htmlspecialchars($cur_topic['last_post_author']); ?></a><?php } else { ?><?php echo translate('topicmoved'); ?><?php } ?></td>
 		</tr>
 		<?php
 			}
