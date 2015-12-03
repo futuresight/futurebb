@@ -99,7 +99,7 @@ if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
 					echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/R_closed.png" width="10px" alt="closed" />';
 				}
 			} elseif ($cur_topic['redirect_id'] != null) {
-				echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/moved.png" width="10px" alt="redirect" />';
+				echo '<strong>&rarr;</strong>';
 			} else {
 				if ($cur_topic['unread']) {
 					echo '<img src="' . $base_config['baseurl'] . '/static/img/posticon/U.png" width="10px" alt="unread" />';

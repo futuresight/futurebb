@@ -161,6 +161,7 @@ if (isset($_GET['quote'])) {
 ?>
 
 <form action="<?php echo $base_config['baseurl']; ?>/post/<?php echo htmlspecialchars($dirs[2]); ?>/<?php echo htmlspecialchars($dirs[3]); ?>" method="post" enctype="multipart/form-data">
+	<h2><?php if ($dirs[2] == 'forum') echo translate('posttopic'); else echo translate('postreply'); ?></h2>
 	<?php if ($dirs[2] == 'forum') { ?><p><?php echo translate('subject'); ?> <input type="text" name="subject" size="50"<?php if (isset($_POST['subject'])) echo ' value="' . htmlspecialchars($_POST['subject']) . '"'; ?> /></p><?php } ?>
 	<?php ExtensionConfig::run_hooks('bbcode_toolbar'); ?>
 	<p><?php echo translate('message'); ?><br /><textarea name="message" id="message" rows="20" cols="70"><?php if (isset($_POST['message'])) echo htmlspecialchars($_POST['message']); else if (isset($post)) echo '[quote=' . htmlspecialchars($poster) . ']' . htmlspecialchars($post) . '[/quote]' . "\n"; ?></textarea></p>
