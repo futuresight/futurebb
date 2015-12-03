@@ -55,7 +55,7 @@ if ($futurebb_user['g_mod_privs'] && isset($dirs[3]) && $dirs[3] == 'move') {
 		<h2><?php echo translate('movetopic'); ?></h2>
 		<form action="<?php echo $base_config['baseurl']; ?>/<?php echo htmlspecialchars($dirs[1]); ?>/<?php echo htmlspecialchars($dirs[2]); ?>/move" method="post" enctype="multipart/form-data">
 			<p><?php echo translate('movetoforum'); ?> <select name="fid"><?php
-			$result = $db->query('SELECT f.name,f.id,c.id AS cid,c.name AS cname FROM `#^forums` AS f LEFT JOIN `#^categories` AS c ON c.id=f.cat_id ORDER BY c.sort_position ASC,f.sort_position ASC') or error('Failed to get forums', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT f.name,f.id,c.id AS cid,c.name AS cname FROM `#^forums` AS f LEFT JOIN `#^categories` AS c ON c.id=f.cat_id WHERE c.id IS NOT NULL AND f.view_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\' AND f.topic_groups LIKE \'%-' . $futurebb_user['group_id'] . '-%\' ORDER BY c.sort_position ASC,f.sort_position ASC') or error('Failed to get forums', __FILE__, __LINE__, $db->error());
 			$last_id = 0;
 			while ($cur_forum = $db->fetch_assoc($result)) {
 				if ($last_id != $cur_forum['cid']) {
@@ -63,6 +63,7 @@ if ($futurebb_user['g_mod_privs'] && isset($dirs[3]) && $dirs[3] == 'move') {
 						echo '</optgroup>';
 					}
 					echo '<optgroup label="' . htmlspecialchars($cur_forum['cname']) . '">';
+					$last_id = $cur_forum['cid'];
 				}
 				echo '<option value="' . $cur_forum['id'] . '">' . htmlspecialchars($cur_forum['name']) . '</option>';
 			}
