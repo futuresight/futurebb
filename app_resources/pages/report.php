@@ -24,10 +24,10 @@ if($dirs[2] == 'message') {
 		$db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_reported) VALUES(' . $pid . ',\'msg\',\'' . $db->escape($_POST['reason']) . '\',' . $futurebb_user['id'] . ',' . time() . ')') or error('Failed to insert report', __FILE__, __LINE__, $db->error());
 		redirect($base_config['baseurl']);
 	}
-	echo '<h3>' . translate('report_abuse') . '</h3>';
+	echo '<h3>' . ($cur_msg['type'] == 'msg' ? translate('report_abuse') : translate('send_appeal')) . '</h3>';
 	?>
 	<form action="<?php echo $base_config['baseurl']; ?>/report/message/<?php echo $pid; ?>" method="post" enctype="multipart/form-data">
-		<p><?php echo translate('reportpostreason'); ?><br /><textarea name="reason" rows="5" cols="50"></textarea><br /><input type="submit" name="form_sent" value="Report" /></p>
+		<p><?php echo translate('reportpostreason', $cur_msg['type'] == 'msg' ? 1 : 2, $cur_msg['type'] == 'msg' ? 2 : 3); ?><br /><textarea name="reason" rows="5" cols="50"></textarea><br /><input type="submit" name="form_sent" value="Report" /></p>
 	</form>
 <?php
 } else {
@@ -43,8 +43,9 @@ if($dirs[2] == 'message') {
 	}
 	$cur_post = $db->fetch_assoc($result);
 	$breadcrumbs = array(translate('index') => '', $cur_post['fname'] => $cur_post['furl'], $cur_post['subject'] => $cur_post['furl'] . '/' . $cur_post['turl'], translate('reportpost') => '!nourl!');
+	echo '<h3>' . translate('report') . '</h3>';
 	?>
 	<form action="<?php echo $base_config['baseurl']; ?>/report/<?php echo $pid; ?>" method="post" enctype="multipart/form-data">
-		<p><?php echo translate('reportpostreason'); ?><br /><textarea name="reason" rows="5" cols="50"></textarea><br /><input type="submit" name="form_sent" value="Report" /></p>
+		<p><?php echo translate('reportpostreason', 1, 1); ?><br /><textarea name="reason" rows="5" cols="50"></textarea><br /><input type="submit" name="form_sent" value="Report" /></p>
 	</form>
 <?php } ?>

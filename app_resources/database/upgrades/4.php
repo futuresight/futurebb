@@ -63,7 +63,7 @@ ExtensionConfig::add_language_key('atomfeed', 'Atom feed', 'English', 'main');
 ExtensionConfig::add_language_key('tables', 'Tables', 'English', 'main');
 
 ExtensionConfig::remove_language_key('reportpostreason');
-ExtensionConfig::add_language_ley('reportpostreason', 'Please enter a short reason why you are reporting this post.', 'English', 'main');
+ExtensionConfig::add_language_ley('reportpostreason', 'Please enter a short reason why you are <SWITCH $1>(reporting,appealing) this <SWITCH $2>(post,message,warning).', 'English', 'main');
 
 echo '<li>RV4: Adding new language keys... success</li>';
 
