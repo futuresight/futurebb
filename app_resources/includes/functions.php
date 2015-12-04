@@ -215,7 +215,7 @@ abstract class LoginController {
 		list($hash) = $db->fetch_row($result);
 		if ($hash == '') {
 			//if there is a blank hash, set a new one
-			$hash = futurebb_hash(time() . rand(1, 1000) . $user_info['id']);
+			$hash = futurebb_hash(time() . rand(1, 1000) . $id);
 			$db->query('UPDATE `#^users` SET login_hash=\'' . $db->escape($hash) . '\' WHERE id=' . $id) or enhanced_error('Failed to update login hash', true);
 			$user_info['login_hash'] = $hash;
 			self::LogInUser($id, $_SERVER['HTTP_USER_AGENT'], true);
