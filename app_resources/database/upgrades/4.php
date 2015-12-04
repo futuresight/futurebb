@@ -61,11 +61,24 @@ ExtensionConfig::add_language_key('lastused', 'Last used', 'English', 'admin');
 ExtensionConfig::add_language_key('searchresultsfor', 'Search results for $1', 'English', 'main');
 ExtensionConfig::add_language_key('atomfeed', 'Atom feed', 'English', 'main');
 ExtensionConfig::add_language_key('tables', 'Tables', 'English', 'main');
+echo '<li>RV4: Adding new language keys... success</li>';
 
+//a few language keys changed
 ExtensionConfig::remove_language_key('reportpostreason');
 ExtensionConfig::add_language_ley('reportpostreason', 'Please enter a short reason why you are <SWITCH $1>(reporting,appealing) this <SWITCH $2>(post,message,warning).', 'English', 'main');
-
-echo '<li>RV4: Adding new language keys... success</li>';
+ExtensionConfig::remove_language_key('noextdir');
+ExtensionConfig::add_language_key('noextdir', 'The directory "app_config/extensions" does not exist or is not writable. Please create it and change the file permissions appropriately to fix this (if in doubt, chmod to 0777).', 'English', 'admin');
+ExtensionConfig::remove_language_key('bademail');
+ExtensionConfig::add_language_key('bademail', 'You entered an invalid email address.', 'English', 'register');
+ExtensionConfig::remove_language_key('uploadfailed');
+ExtensionConfig::add_language_key('uploadfailed', 'File upload failed. Please hit the back button and try again.', 'English', 'main');
+ExtensionConfig::remove_language_key('maxchars');
+ExtensionConfig::add_language_key('maxchars', 'Maximum characters: $1', 'English', 'main');
+ExtensionConfig::remove_language_key('maxlines');
+ExtensionConfig::add_language_key('maxlines', 'Maximum lines: $1', 'English', 'main');
+ExtensionConfig::remove_language_key('searchip');
+ExtensionConfig::add_language_key('searchip', 'Search IP', 'English', 'admin');
+echo '<li>RV4: Changing updated language keys... success</li>';
 
 ExtensionConfig::remove_page('/login/');
 ExtensionConfig::remove_page('/logout/');
