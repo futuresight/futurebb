@@ -65,7 +65,7 @@ echo '<li>RV4: Adding new language keys... success</li>';
 
 //a few language keys changed
 ExtensionConfig::remove_language_key('reportpostreason');
-ExtensionConfig::add_language_ley('reportpostreason', 'Please enter a short reason why you are <SWITCH $1>(reporting,appealing) this <SWITCH $2>(post,message,warning).', 'English', 'main');
+ExtensionConfig::add_language_key('reportpostreason', 'Please enter a short reason why you are <SWITCH $1>(reporting,appealing) this <SWITCH $2>(post,message,warning).', 'English', 'main');
 ExtensionConfig::remove_language_key('noextdir');
 ExtensionConfig::add_language_key('noextdir', 'The directory "app_config/extensions" does not exist or is not writable. Please create it and change the file permissions appropriately to fix this (if in doubt, chmod to 0777).', 'English', 'admin');
 ExtensionConfig::remove_language_key('bademail');
