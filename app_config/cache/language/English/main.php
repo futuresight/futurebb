@@ -333,4 +333,5 @@ $lang = array (
   'open' => 'Open',
   'confirm' => 'Confirm',
   'searchresultsfor' => 'Search results for $1',
+  'parentrequired' => 'You must place the <b>[$1]</b> tag inside<PLURAL $3>(, one of) the following tag<PLURAL $3>(,s): $2',
 );

@@ -46,6 +46,7 @@ abstract class BBCodeController {
 			$text = preg_replace_callback('%\s{0,}\[quote\](.*?)\[/quote\]\s{0,}%ms', 'self::handle_quote_tag', $text);
 			$text = preg_replace_callback('%\s{0,}\[quote=(.*?)\](.*?)\[/quote\]\s{0,}%ms', 'self::handle_quote_tag', $text);
 		}
+		$text = preg_replace('%\s{0,}(\[/?(list)(=.*?)?\])\s{0,}%s', '$1', $text); //remove whitespace
 		
 		//links and images (these can't be grouped with the rest because they use a different function
 		$text = preg_replace_callback('%\[url=?(.*?)\](.*?)\[/url\]%s', 'self::handle_url_tag', $text);
@@ -379,6 +380,7 @@ abstract class BBCodeController {
 		$nest_only = array('table' => array('tr'), 'tr' => array('td', 'th'), 'list' => array('*')); //tags that can only have a specific set of subtags
 		$nest_forbid = array('td' => array('td', 'th'), 'th' => array('td', 'th'));
 		$no_body = array('table', 'tr', 'list'); //tags that can't have text inside them
+		$parent_required = array('tr' => array('table'), 'th' => array('tr'), 'td' => array('tr'), '*' => array('list')); //tags that require a parent
 		
 		$bbcode_parts = preg_split('%(\[[\*a-zA-Z0-9-/]*?(?:=.*?)?\])%', $text, -1, PREG_SPLIT_DELIM_CAPTURE|PREG_SPLIT_NO_EMPTY); //this regular expression was copied from FluxBB. However, everything used to parse it is completely original
 		//split the message into tags and check syntax
@@ -427,6 +429,11 @@ abstract class BBCodeController {
 				//check if there is any bbcode inside a tag which can't nest
 				if ($last_key > 0 && in_array($open_tags[$last_key - 1], $no_nest_tags)) {
 					$errors[] = translate('nonesting', $open_tags[$last_key - 1]);
+					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
+				}
+				//check if there is a relevant parent
+				if (array_key_exists($open_tags[$last_key], $parent_required) && ($last_key == 0 || !in_array($open_tags[$last_key - 1], $parent_required[$open_tags[$last_key]]))) {
+					$errors[] = translate('parentrequired', $open_tags[$last_key], '<b>[' . implode(translate(']</b>, <b>['), $parent_required[$open_tags[$last_key]]) . ']</b>', sizeof($parent_required[$open_tags[$last_key]]));
 					$errors[] = self::highlight_error($text, $matches[0], $bbcode_parts, $key);
 				}
 				if ($open_tags[$last_key] == 'quote') {
