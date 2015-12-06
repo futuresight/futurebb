@@ -22,6 +22,7 @@ $lang_insert_data = array(
 	array('English', $db->escape('searchusername'), $db->escape('Search username'), 'admin'),
 	array('English', $db->escape('lastused'), $db->escape('Last used'), 'admin'),
 	array('English', $db->escape('searchresultsfor'), $db->escape('Search results for $1'), 'main'),
+	array('English', $db->escape('parentrequired'), $db->escape('You must place the <b>[$1]</b> tag inside<PLURAL $3>(, one of) the following tag<PLURAL $3>(,s): $2'), 'main'),
 );
 foreach ($lang_insert_data as &$entry) {
 	$entry = '(\'' . implode('\',\'', $entry) . '\')';
