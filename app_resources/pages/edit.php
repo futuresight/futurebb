@@ -59,7 +59,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		$db->query('UPDATE `#^posts` SET content=\'' . $db->escape($_POST['content']) . '\',parsed_content=\'' . $db->escape(BBCodeController::parse_msg($_POST['content'], !isset($_POST['hidesmilies']))) . '\',' . $last_edited_sql . 'disable_smilies=' . intval(isset($_POST['hidesmilies'])) . ' WHERE id=' . $pid) or error('Failed to update post', __FILE__, __LINE__, $db->error());
 		redirect($base_config['baseurl'] . '/posts/' . $pid); return;
 	} else if (isset($_POST['preview']) && empty($errors)) {
-		echo '<div class="quotebox preview">' . BBCodeController::parse_msg($_POST['content'], !isset($_POST['hidesmilies'])) . '</div>';
+		echo '<div class="quotebox preview"><p>' . BBCodeController::parse_msg($_POST['content'], !isset($_POST['hidesmilies'])) . '</p></div>';
 	} else {
 		echo '<p>' . translate('errordesc') . '<ul>';
 		foreach ($errors as $val) {

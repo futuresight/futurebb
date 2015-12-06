@@ -254,7 +254,7 @@ if(isset($_POST['pm_sent'])) {
 				}
 				echo '<form action="' . $base_config['baseurl'] . '/users/' . htmlspecialchars($dirs[2]) . '/security" method="post" enctype="multipart/form-data">';
 				?>
-				<h2><?php echo translate('changepass'); ?></h2>
+				<h3><?php echo translate('changepass'); ?></h3>
 				<table border="0">
 					<tr>
 						<td><?php echo translate('newpass'); ?></td>

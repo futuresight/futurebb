@@ -141,7 +141,7 @@ if (isset($_POST['form_sent']) || isset($_POST['preview'])) {
 		
 		redirect($base_config['baseurl'] . '/posts/' . $pid); return;
 	} else if (isset($_POST['preview']) && empty($errors)) {
-		echo '<div class="quotebox preview">' . BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), true, $futurebb_config['enable_bbcode']) . '</div>';
+		echo '<div class="quotebox preview"><p>' . BBCodeController::parse_msg($_POST['message'], !isset($_POST['hidesmilies']), true, $futurebb_config['enable_bbcode']) . '</p></div>';
 	}
 }
 if (isset($errors) && !empty($errors)) {

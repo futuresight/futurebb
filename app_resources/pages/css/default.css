@@ -450,6 +450,11 @@ div.leftmenu {
 	background-color: #F9F9F9;
 }
 
+#futurebb .quotebox.codebox pre {
+	margin:0px;
+	padding:2px;
+}
+
 #futurebb div.preview {
 	margin:5px;
 	padding:3px

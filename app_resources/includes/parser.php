@@ -41,10 +41,10 @@ abstract class BBCodeController {
 		
 		$text = htmlspecialchars($text); //clear out any funny business
 		
-		$text = preg_replace_callback('%\s?\[code\](.*?)\[/code\]\s?%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
+		$text = preg_replace_callback('%\s{0,}\[code\](.*?)\[/code\]\s{0,}%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
 		while (preg_match('%\[quote(=.*?)?\](.*?)\[/quote\]%ms', $text)) {
-			$text = preg_replace_callback('%\[quote\](.*?)\[/quote\]%ms', 'self::handle_quote_tag', $text);
-			$text = preg_replace_callback('%\[quote=(.*?)\](.*?)\[/quote\]%ms', 'self::handle_quote_tag', $text);
+			$text = preg_replace_callback('%\s{0,}\[quote\](.*?)\[/quote\]\s{0,}%ms', 'self::handle_quote_tag', $text);
+			$text = preg_replace_callback('%\s{0,}\[quote=(.*?)\](.*?)\[/quote\]\s{0,}%ms', 'self::handle_quote_tag', $text);
 		}
 		
 		//links and images (these can't be grouped with the rest because they use a different function
@@ -255,7 +255,7 @@ abstract class BBCodeController {
 				$i2 = 0;
 			}
 			$i2++;
-			return '</p><pre class="quotebox" style="font-family:Courier">' . $code_matches[$i2] . '</pre><p>';
+			return '</p><div class="quotebox codebox"><pre style="font-family:Courier">' . $code_matches[$i2] . '</pre></div><p>';
 		} else {
 			return '';
 		}
