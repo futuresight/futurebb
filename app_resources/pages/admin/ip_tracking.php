@@ -16,6 +16,7 @@ if (!isset($dirs[3])) {
 		<?php
 		if (isset($_GET['ip']) && $_GET['ip'] != '') {
 			echo '<h3>' . translate('searchresultsfor', translate('ipaddr') . ' &quot;' . htmlspecialchars($_GET['ip']) . '&quot;') . '</h3>';
+			echo '<p><a href="' . $base_config['baseurl'] . '/admin/bans/new?ip=' . rawurlencode(htmlspecialchars($_GET['ip'])) . '">' . translate('ban') . '</a></p>';
 			$regs = array();
 			$result = $db->query('SELECT username FROM `#^users` WHERE registration_ip=\'' . $db->escape($_GET['ip']) . '\' ORDER BY registered DESC LIMIT 10') or error('Failed to find users registered from that IP', __FILE__, __LINE__, $db->error());
 			while ($u = $db->fetch_assoc($result)) {
@@ -51,7 +52,7 @@ if (!isset($dirs[3])) {
 			while (list($ip_addr, $date) = $db->fetch_row($result)) {
 				$ips[$ip_addr] = isset($ips[$ip_addr]) ? max($date, $ips[$ip_addr]): $date;
 			}
-			$result = $db->query('SELECT p.poster_ip,p.posted AS poster FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE u.username=\'' . $db->escape($_GET['username']) . '\' ORDER BY p.posted DESC LIMIT 30') or error('Failed to find posts', __FILE__, __LINE__, $db->error());
+			$result = $db->query('SELECT p.poster_ip,p.posted FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster WHERE u.username=\'' . $db->escape($_GET['username']) . '\' ORDER BY p.posted DESC LIMIT 30') or error('Failed to find posts', __FILE__, __LINE__, $db->error());
 			while (list($ip_addr, $date) = $db->fetch_row($result)) {
 				$ips[$ip_addr] = isset($ips[$ip_addr]) ? max($date, $ips[$ip_addr]): $date;
 			}

@@ -38,6 +38,9 @@ $table->add_field($new_fld);
 $table->commit();
 echo '<li>RV4: Adding search cache table... success</li>';
 
+drop_index('bans', 'unique');
+echo '<li>RV4: Updating bans table... success</li>';
+
 //insert new language keys
 ExtensionConfig::add_language_key('exttoonew', 'The extension you are installing requires FutureBB version $1, while you are currently running $2. Go to <a href="http://futurebb.futuresight.org">the FutureBB website</a> to update your forum software.', 'English', 'admin');
 ExtensionConfig::add_language_key('notextinsidetag', 'You are not allowed to place any text directly inside the <b>[$1]</b> tag.', 'English', 'main');

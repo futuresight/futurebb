@@ -206,4 +206,7 @@ $lang_addl = array (
   'areyousureaction' => 'Are you sure you want to $1 the following $2?',
   'searchusername' => 'Search username',
   'lastused' => 'Last used',
+  'banuser' => 'Ban user',
+  'unbanuser' => 'Unban user',
+  'ban' => 'Ban',
 );

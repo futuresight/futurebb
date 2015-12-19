@@ -97,11 +97,29 @@ if (!$page_info) {
 	}
 }
 
-//check if user is banned
-$result = $db->query('SELECT 1 FROM `#^bans` WHERE (username=\'' . $db->escape($futurebb_user['username']) . '\' OR ip=\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\') AND (expires>' . time() . ' OR expires IS NULL)') or error('Failed to check for bans', __FILE__, __LINE__, $db->error());
-if ($db->num_rows($result) && isset($dirs[1]) && $dirs[1] != 'styles' && $dirs[1] != 'login' && $dirs[1] != 'logout') {
-	$ban_type = 'ban';
-	$page_info = array('file' => 'banned.php', 'template' => true);
+//check if user is banned, this comes from the cache TODO: update to new ban system
+if (!file_exists(FORUM_ROOT . '/app_config/cache/bans.php')) {
+	CacheEngine::CacheBans();
+}
+include FORUM_ROOT . '/app_config/cache/bans.php';
+if ((isset($banned_usernames[$futurebb_user['username']]) || isset($banned_ips[$_SERVER['REMOTE_ADDR']])) && (!isset($dirs[1]) || (isset($dirs[1]) && $dirs[1] != 'styles' && $dirs[1] != 'login' && $dirs[1] != 'logout'))) {
+	//check that the ban hasn't expired
+	if (isset($banned_usernames[$futurebb_user['username']])) {
+		$ban_id = $banned_usernames[$futurebb_user['username']];
+	} else if (isset($banned_ips[$_SERVER['REMOTE_ADDR']])) {
+		$ban_id = $banned_ips[$_SERVER['REMOTE_ADDR']];
+	}
+	$expires = $ban_expires[$ban_id];
+	if ($expires > time()) {
+		$ban_type = 'ban';
+		$page_info = array('file' => 'banned.php', 'template' => true);
+	} else {
+		CacheEngine::CacheBans();
+	}
+} else {
+	unset($banned_usernames);
+	unset($banned_ips);
+	unset($ban_info);
 }
 
 //check if user is in a group not allowed to access the board

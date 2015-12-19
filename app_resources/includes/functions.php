@@ -717,6 +717,11 @@ abstract class CacheEngine {
 		include_once FORUM_ROOT . '/app_resources/includes/cacher/interface.php';
 		cache_common_words();
 	}
+	
+	static function CacheBans() {
+		include_once FORUM_ROOT . '/app_resources/includes/cacher/bans.php';
+		cache_bans();
+	}
 }
 
 function update_last_post($topic_id, $forum_id = -1) {
