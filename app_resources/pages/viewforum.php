@@ -67,7 +67,7 @@ if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
 		<?php while ($cur_topic = $db->fetch_assoc($result)) {
 				if (!in_array($cur_topic['id'], $topic_list)) {
 				$topic_list[] = $cur_topic['id'];
-				// prepare a handy boolean
+				// prepare a handy boolean that can automatically mark the topic as read if necessary
 				$cur_topic['unread'] = ($futurebb_user['id'] != 0 && $cur_topic['tracker_id'] == null);
 				if ($futurebb_user['last_visit'] > $cur_topic['last_post'] && $cur_topic['unread']) {
 					$db->query('INSERT INTO `#^read_tracker`(user_id,topic_id) VALUES(' . $futurebb_user['id'] . ',' . $cur_topic['id'] . ')') or error('Failed to mark topic as read', __FILE__, __LINE__, $db->error());

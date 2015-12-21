@@ -296,7 +296,7 @@ if ($futurebb_user['id'] != 0) { ?>
 //should we mark the forum as read?
 $result = $db->query('SELECT 1 FROM `#^read_tracker` WHERE user_id=' . $futurebb_user['id'] . ' AND forum_id=' . $cur_topic['forum_id']) or error('Failed to check if forum is read');
 if ($futurebb_user['id'] != 0 && !$db->num_rows($result) && $cur_topic['tracker_id'] == null) {
-	$result = $db->query('SELECT 1 FROM `#^topics` AS t LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL WHERE t.forum_id=' . $cur_topic['forum_id'] . ' AND rt.id IS NULL AND t.deleted IS NULL') or error('Failed to check if there are any unread posts in the forum', __FILE__, __LINE__, $db->error());
+	$result = $db->query('SELECT 1 FROM `#^topics` AS t LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL WHERE t.forum_id=' . $cur_topic['forum_id'] . ' AND rt.id IS NULL AND t.redirect_id IS NULL AND t.deleted IS NULL') or error('Failed to check if there are any unread posts in the forum', __FILE__, __LINE__, $db->error());
 	if (!$db->num_rows($result)) {
 		$db->query('INSERT INTO `#^read_tracker`(user_id,forum_id) VALUES(' . $futurebb_user['id'] . ',' . $cur_topic['forum_id'] . ')') or error('Failed to mark forum as read', __FILE__, __LINE__, $db->error());
 	}
