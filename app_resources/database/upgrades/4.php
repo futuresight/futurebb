@@ -65,6 +65,9 @@ ExtensionConfig::add_language_key('searchresultsfor', 'Search results for $1', '
 ExtensionConfig::add_language_key('atomfeed', 'Atom feed', 'English', 'main');
 ExtensionConfig::add_language_key('tables', 'Tables', 'English', 'main');
 ExtensionConfig::add_language_key('parentrequired', 'You must place the <b>[$1]</b> tag inside<PLURAL $3>(, one of) the following tag<PLURAL $3>(,s): $2', 'English', 'main');
+ExtensionConfig::add_language_key('banuser', 'Ban user', 'English', 'admin');
+ExtensionConfig::add_language_key('unbanuser', 'Unban user', 'English', 'admin');
+ExtensionConfig::add_language_key('ban', 'Ban', 'English', 'admin');
 echo '<li>RV4: Adding new language keys... success</li>';
 
 //a few language keys changed
