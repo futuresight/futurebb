@@ -171,16 +171,18 @@ class Database {
 	}
 	
 	function index_exists($table, $index) {
-		$index_exists = false;
+		$index_exists = 0;
 
 		$result = $this->query('SHOW INDEX FROM `' . $this->prefix . $table . '`');
 		while ($cur_index = $this->fetch_assoc($result)) {
 			if (strtolower($cur_index['Key_name']) == strtolower($this->prefix . $table . '_' . $index)) {
-				$index_exists = true;
+				$index_exists = 1;
+				break;
+			} else if (strtolower($cur_index['Key_name']) == strtolower($index)) {
+				$index_exists = 2;
 				break;
 			}
 		}
-		die;
 
 		return $index_exists;
 	}
@@ -196,10 +198,14 @@ class Database {
 	}
 	
 	function drop_index($table, $name) {
-		if (!$this->index_exists($table, $name)) {
+		if (!($index_type = $this->index_exists($table, $name))) {
 			return;
 		}
 		
-		return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` DROP INDEX \'' . $table . '_' . $name , '\'') or enhanced_error('Failed to drop index'));
+		if ($index_type == 1) { //some indexes have special formatting but some don't
+			return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` DROP INDEX `' . $this->prefix . $table . '_' . $name . '`') or enhanced_error('Failed to drop index', true));
+		} else if ($index_type == 2) {
+			return ($this->query('ALTER TABLE `' . $this->prefix . $table . '` DROP INDEX `' . $name . '`') or enhanced_error('Failed to drop index', true));
+		}
 	}
 }

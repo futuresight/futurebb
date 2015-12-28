@@ -38,11 +38,12 @@ $table->add_field($new_fld);
 $table->commit();
 echo '<li>RV4: Adding search cache table... success</li>';
 
-$new_username_fld = new DBField('username','VARCHAR(50)');
-$new_username_fld->add_extra('NOT NULL');
-$new_username_fld->set_default('\'\'');
-$db->alter_field('bans', $new_username_fld);
-drop_index('bans', 'unique');
+$new_ip_fld = new DBField('ip','TEXT');
+$new_ip_fld->add_extra('NOT NULL');
+$new_ip_fld->set_default('\'\'');
+$db->alter_field('bans', $new_ip_fld);
+echo '<li>RV4: Updated Ip field</li>';
+$db->drop_index('bans', 'username');
 echo '<li>RV4: Updating bans table... success</li>';
 
 //insert new language keys
