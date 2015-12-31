@@ -1523,10 +1523,9 @@ location /<?php echo substr(get_cookie_data('basepath'), 1); ?>/static {
 	rewrite ^/<?php echo substr(get_cookie_data('basepath'), 1); ?>/static/(.*?)$ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/static/$1 break;
 }
 location /<?php echo substr(get_cookie_data('basepath'), 1); ?>/ {
-	fastcgi_pass 127.0.0.1:;
-	fastcgi_param SCRIPT_FILENAME /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php;
-	include fastcgi_params;
+	rewrite ^(.*)$ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php;
 }
+
                       </pre>
                             <?php
 						}
