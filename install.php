@@ -1519,15 +1519,13 @@ ob_start();
 							?>
                             <p><?php echo translate('addtonginx'); ?></p>
           					<pre>
-location /<?php echo substr(get_cookie_data('basepath'), 1); ?> {
-    rewrite ^(.*)$ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php;
-    location ~ (install\.php|app_resources.*|app_config.*|doc.*|temp.*)$ {
-        error_page 566 = @futurebb_rewrite;
-        return 566;
-    }
+location /<?php echo substr(get_cookie_data('basepath'), 1); ?>/static {
+	rewrite ^/<?php echo substr(get_cookie_data('basepath'), 1); ?>/static/(.*?)$ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/static/$1 break;
 }
-location @futurebb_rewrite {
-    rewrite ^(.*)$ /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php last;
+location /<?php echo substr(get_cookie_data('basepath'), 1); ?>/ {
+	fastcgi_pass 127.0.0.1:;
+	fastcgi_param SCRIPT_FILENAME /<?php echo substr(get_cookie_data('basepath'), 1); ?>/dispatcher.php;
+	include fastcgi_params;
 }
                       </pre>
                             <?php
