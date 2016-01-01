@@ -3,7 +3,7 @@ if (!$futurebb_user['g_admin_privs']) {
 	httperror(403);
 }
 translate('<addfile>', 'admin');
-$page_title = 'Censoring';
+$page_title = translate('censoring');
 include FORUM_ROOT . '/app_resources/includes/admin.php';
 
 if (isset($_GET['download'])) {
