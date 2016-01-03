@@ -37,11 +37,18 @@ abstract class BBCodeController {
 			self::add_bbcode('%\[u\](.*?)\[/u\]%ms', '<u>$1</u>');
 			self::add_bbcode('%\[s\](.*?)\[/s\]%ms', '<del>$1</del>');
 			self::add_bbcode('%\[colou?r=(white|black|red|green|blue|orange|yellow|pink|gray|magenta|#[0-9a-fA-F]{6}|\#[0-9a-fA-F]{3})\](.*?)\[/colou?r\]%m', '<span style="color:$1">$2</span>');
+			$pattern = array();
+			$replace = array();
+			ExtensionConfig::run_hooks('add_bbcode', array('pattern' => $pattern, 'replace' => $replace));
+			foreach ($pattern as $key => $p) {
+				self::add_bbcode($p, $replace[$key]);
+			}
 		}
 		
 		$text = htmlspecialchars($text); //clear out any funny business
 		
 		$text = preg_replace_callback('%\s{0,}\[code\](.*?)\[/code\]\s{0,}%msi', 'self::handle_code_tag_remove', $text); //remove content of code tags prior to parsing
+		ExtensionConfig::run_hooks('bbcode_preparse', array());
 		while (preg_match('%\[quote(=.*?)?\](.*?)\[/quote\]%ms', $text)) {
 			$text = preg_replace_callback('%\s{0,}\[quote\](.*?)\[/quote\]\s{0,}%ms', 'self::handle_quote_tag', $text);
 			$text = preg_replace_callback('%\s{0,}\[quote=(.*?)\](.*?)\[/quote\]\s{0,}%ms', 'self::handle_quote_tag', $text);
@@ -105,6 +112,7 @@ abstract class BBCodeController {
 		$text = self::handle_list_tags($text);
 		$text = self::handle_table_tags($text);
 		
+		ExtensionConfig::run_hooks('bbcode_postparse', array());
 		$text = preg_replace_callback('%\s?\[code\](.*?)\[/code\]\s?%msi', 'self::handle_code_tag_replace', $text); //put [code] tags back
 		
 		$text = censor($text);
@@ -326,6 +334,7 @@ abstract class BBCodeController {
 		if (!$futurebb_user['g_post_images'] && preg_match('%\[img.*?\]%', $text)) {
 			$errors[] = translate('noimgs');
 		}
+		ExtensionConfig::run_hooks('bbcode_error_check', array());
 		if (!isset($filter_data)) {
 			$filter_data = explode('|', $futurebb_config['imghostrestriction']);
 		}
