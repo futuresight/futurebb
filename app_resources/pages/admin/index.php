@@ -198,11 +198,11 @@ if(isset($_POST['form_sent'])) {
 		<p><?php echo translate('zeronolimit'); ?></p>
 		<table border="0" class="optionstable">
 			<tr>
-				<th><?php echo translate('maxchars'); ?></th>
+				<th><?php echo translate('maxnumchars'); ?></th>
 				<td><input type="text" name="config[sig_max_length]" value="<?php echo htmlspecialchars($futurebb_config['sig_max_length']); ?>" size="5" /></td>
 			</tr>
 			<tr>
-				<th><?php echo translate('maxlines'); ?></th>
+				<th><?php echo translate('maxnumlines'); ?></th>
 				<td><input type="text" name="config[sig_max_lines]" value="<?php echo htmlspecialchars($futurebb_config['sig_max_lines']); ?>" size="5" /></td>
 			</tr>
 			<tr>
