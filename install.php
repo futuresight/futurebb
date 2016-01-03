@@ -1093,7 +1093,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		$page = 'syscfg';
 		$install_pages['adminacct'] = false;
 		$install_pages['brdtitle'] = false;
-	} else if ($_POST['basepath']{0} != '/' || !check_input($_POST['basepath'], array('/', '.'))) {
+	} else if ($_POST['basepath']{0} != '/' || !check_input($_POST['basepath'], array('/', '.', '-'))) {
 		$error = 'invalidbasepath';
 		$install_pages['syscfg'] = true;
 		$page = 'syscfg';

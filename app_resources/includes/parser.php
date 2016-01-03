@@ -456,7 +456,7 @@ abstract class BBCodeController {
 				$last_key++;
 			} else if ($last_key > 0) {
 				//no tag, just text
-				if (!preg_match('%^\s+$%ms', $val) && in_array($open_tags[$last_key - 1], $no_body)) {
+				if (in_array($open_tags[$last_key - 1], $no_body) && !preg_match('%^\s+$%ms', $val)) {
 					$errors[] = translate('notextinsidetag', $open_tags[$last_key - 1]);
 					$errors[] = self::highlight_error($text, $val, $bbcode_parts, $key);
 				}
