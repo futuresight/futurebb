@@ -47,6 +47,8 @@ $db->drop_index('bans', 'username');
 echo '<li>RV4: Updating bans table... success</li>';
 
 //insert new language keys
+$db->query('UPDATE `#^language` SET langkey=\'maxnumchars\' WHERE category=\'admin\' AND langkey=\'maxchars\'') or enhanced_error('Failed to change language keys', true);
+$db->query('UPDATE `#^language` SET langkey=\'maxnumlines\' WHERE category=\'admin\' AND langkey=\'maxlines\'') or enhanced_error('Failed to change language keys', true);
 ExtensionConfig::add_language_key('exttoonew', 'The extension you are installing requires FutureBB version $1, while you are currently running $2. Go to <a href="http://futurebb.futuresight.org">the FutureBB website</a> to update your forum software.', 'English', 'admin');
 ExtensionConfig::add_language_key('notextinsidetag', 'You are not allowed to place any text directly inside the <b>[$1]</b> tag.', 'English', 'main');
 ExtensionConfig::add_language_key('posttime', 'Post time', 'English', 'main');
