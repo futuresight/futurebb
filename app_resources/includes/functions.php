@@ -585,7 +585,7 @@ function translate() {
 		$lang = array_merge($lang, $lang_addl);
 	}
 	if (!isset($lang[$args[0]])) {
-		return 'Translator error: ' . $args[0] . ' is not a valid language key';
+		return 'Translator error: <code>' . $args[0] . '</code> is not a valid language key';
 	}
 	$returnstr = $lang[$args[0]];
 	if (func_num_args() > 1) {

@@ -32,6 +32,10 @@ if (isset($_POST['form_sent_update'])) {
 			'g_edit_posts'			=> 'bool',
 			'g_delete_posts'		=> 'bool',
 			'g_mod_privs'			=> 'bool',
+			'g_mod_view_ip'			=> 'bool',
+			'g_mod_ban_users'		=> 'bool',
+			'g_mod_delete_posts'	=> 'bool',
+			'g_mod_edit_posts'		=> 'bool',
 			'g_admin_privs'			=> 'bool',
 			'g_signature'			=> 'bool',
 			'g_post_links'			=> 'bool',
@@ -175,6 +179,22 @@ while (list($id,$name,$perm,$guest) = $db->fetch_row($result)) {
 				<tr>
 					<td><?php echo translate('modprivs'); ?></td>
 					<td><input type="checkbox" name="config[g_mod_privs]" id="g_mod_privs" <?php if ($cur_group['g_mod_privs']) echo 'checked="checked" '; ?>/> <label for="g_mod_privs"><?php echo translate('enable?'); ?></label><br /><?php echo translate('modprivsdesc'); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo translate('modviewip'); ?></td>
+					<td><input type="checkbox" name="config[g_mod_view_ip]" id="g_mod_view_ip" <?php if ($cur_group['g_mod_view_ip']) echo 'checked="checked" '; ?>/> <label for="g_mod_view_ip"><?php echo translate('enable?'); ?></label><br /><?php echo translate('modviewipdesc'); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo translate('modbanusers'); ?></td>
+					<td><input type="checkbox" name="config[g_mod_ban_users]" id="g_mod_ban_users" <?php if ($cur_group['g_mod_ban_users']) echo 'checked="checked" '; ?>/> <label for="g_mod_ban_users"><?php echo translate('enable?'); ?></label><br /><?php echo translate('modbanusersdesc'); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo translate('moddeleteposts'); ?></td>
+					<td><input type="checkbox" name="config[g_mod_delete_posts]" id="g_mod_delete_posts" <?php if ($cur_group['g_mod_delete_posts']) echo 'checked="checked" '; ?>/> <label for="g_mod_delete_posts"><?php echo translate('enable?'); ?></label><br /><?php echo translate('moddeletepostsdesc'); ?></td>
+				</tr>
+				<tr>
+					<td><?php echo translate('modeditposts'); ?></td>
+					<td><input type="checkbox" name="config[g_mod_edit_posts]" id="g_mod_edit_posts" <?php if ($cur_group['g_mod_edit_posts']) echo 'checked="checked" '; ?>/> <label for="g_mod_edit_posts"><?php echo translate('enable?'); ?></label><br /><?php echo translate('modeditpostsdesc'); ?></td>
 				</tr>
 				<tr>
 					<td><?php echo translate('adminprivs'); ?></td>
