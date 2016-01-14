@@ -6,7 +6,7 @@ if (!$db->num_rows($result)) {
 	httperror(404);
 }
 $cur_post = $db->fetch_assoc($result);
-if (!$futurebb_user['g_admin_privs'] && !$futurebb_user['g_mod_privs'] && ($cur_post['poster'] != $futurebb_user['id'] || !$futurebb_user['g_edit_posts']) || strstr($futurebb_user['restricted_privs'], 'edit')) {
+if (!$futurebb_user['g_admin_privs'] && !($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_edit_posts']) && ($cur_post['poster'] != $futurebb_user['id'] || !$futurebb_user['g_edit_posts']) || strstr($futurebb_user['restricted_privs'], 'edit')) {
 	httperror(403);
 }
 if (($cur_post['closed'] || $cur_post['archived']) && (!$futurebb_user['g_mod_privs'] && !$futurebb_user['g_admin_privs'])) {

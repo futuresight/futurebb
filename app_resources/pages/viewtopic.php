@@ -1,6 +1,6 @@
 <?php
 //$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,rt.id AS tracker_id,rtf.id AS ftracker_id FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^read_tracker` AS rtf ON rtf.forum_id=f.id AND rtf.user_id=' . $futurebb_user['id'] . ' AND rtf.topic_id IS NULL WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.deleted IS NULL') or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
-$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,t.deleted,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,f.archived AS forum_archived,rt.id AS tracker_id,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.forum_id=f.id ' . ($futurebb_user['g_mod_privs'] ? '' : ' AND t.deleted IS NULL')) or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT t.id,t.url,t.subject,t.closed,t.sticky,t.last_post,t.last_post_id,t.first_post_id,t.redirect_id,t.deleted,f.name AS forum_name,f.id AS forum_id,f.url AS forum_url,f.view_groups,f.reply_groups,f.archived AS forum_archived,rt.id AS tracker_id,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^forums` AS f ON f.url=\'' . $db->escape($dirs[1]) . '\' LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE f.id IS NOT NULL AND t.url=\'' . $db->escape($dirs[2]) . '\' AND t.forum_id=f.id ' . (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs']  ? '' : ' AND t.deleted IS NULL')) or error('Failed to get topic info', __FILE__, __LINE__, $db->error());
 if (!$db->num_rows($result)) {
 	httperror(404);
 }
@@ -107,12 +107,12 @@ if (isset($_GET['page'])) {
 	$page = 1;
 }
 
-$result = $db->query('SELECT COUNT(id) FROM `#^posts` WHERE topic_id=' . $cur_topic['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND deleted IS NULL')) or error('Failed to get post count', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT COUNT(id) FROM `#^posts` WHERE topic_id=' . $cur_topic['id'] . (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs'] ? '' : ' AND deleted IS NULL')) or error('Failed to get post count', __FILE__, __LINE__, $db->error());
 list($num_posts) = $db->fetch_row($result);
 
 //get all of the posts
-$result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_edited,p.deleted AS deleted,u.username AS author,u.id AS author_id,u.parsed_signature AS signature,u.last_page_load,u.num_posts,u.avatar_extension,g.g_title AS user_title,leu.username AS last_edited_by,du.username AS deleted_by FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by LEFT JOIN `#^users` AS du ON du.id=p.deleted_by WHERE p.topic_id=' . $cur_topic['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND p.deleted IS NULL') . ' ORDER BY p.posted ASC LIMIT ' . (($page - 1) * intval($futurebb_config['posts_per_page'])) . ',' . intval($futurebb_config['posts_per_page'])) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
-if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
+$result = $db->query('SELECT p.id,p.parsed_content,p.posted,p.poster_ip,p.last_edited,p.deleted AS deleted,u.username AS author,u.id AS author_id,u.parsed_signature AS signature,u.last_page_load,u.num_posts,u.avatar_extension,g.g_title AS user_title,leu.username AS last_edited_by,du.username AS deleted_by FROM `#^posts` AS p LEFT JOIN `#^users` AS u ON u.id=p.poster LEFT JOIN `#^user_groups` AS g ON g.g_id=u.group_id LEFT JOIN `#^users` AS leu ON leu.id=p.last_edited_by LEFT JOIN `#^users` AS du ON du.id=p.deleted_by WHERE p.topic_id=' . $cur_topic['id'] . (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs'] ? '' : ' AND p.deleted IS NULL') . ' ORDER BY p.posted ASC LIMIT ' . (($page - 1) * intval($futurebb_config['posts_per_page'])) . ',' . intval($futurebb_config['posts_per_page'])) or error('Failed to get posts', __FILE__, __LINE__, $db->error());
+if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs']) {
 ?>
 <form action="<?php echo $base_config['baseurl']; ?>/admin/postactions" method="post" enctype="multipart/form-data">
 <?php
@@ -177,10 +177,10 @@ while ($cur_post = $db->fetch_assoc($result)) {
 				if ($futurebb_user['id'] != 0) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/report/' . $cur_post['id'] . '">' . translate('report') . '</a>';
 				}
-				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_edit_posts'] && !$cur_topic['closed'] && !$cur_topic['forum_archived'])) {
+				if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_edit_posts']) || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_edit_posts'] && !$cur_topic['closed'] && !$cur_topic['forum_archived'])) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/edit/' . $cur_post['id'] . '">' . translate('edit') . '</a>';
 				}
-				if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_delete_posts'] && !$cur_topic['closed'] && !$cur_topic['forum_archived'])) {
+				if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs'] || ($cur_post['author_id'] == $futurebb_user['id'] && $futurebb_user['g_delete_posts'] && !$cur_topic['closed'] && !$cur_topic['forum_archived'])) {
 					$actions[] = '<a href="' . $base_config['baseurl'] . '/delete/' . $cur_post['id'] . '">' . translate('delete') . '</a>';
 				}
 				if (strstr($cur_topic['reply_groups'], '-' . $futurebb_user['group_id'] . '-') && ((!$cur_topic['closed'] && !$cur_topic['forum_archived']) || $futurebb_user['g_mod_privs'])) {
@@ -229,7 +229,7 @@ while ($cur_post = $db->fetch_assoc($result)) {
 echo paginate('<a href="' . $base_config['baseurl'] . '/' . htmlspecialchars($dirs[1]) . '/' . htmlspecialchars($dirs[2]) . '?page=$page$" $bold$>$page$</a>', $page, ceil($num_posts / $futurebb_config['posts_per_page']));
 ?></p>
 <?php
-if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) { ?>
+if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs']) { ?>
 	<p>
 		<input type="hidden" name="type" value="posts" />
 		<input type="submit" name="form_sent_delete" value="<?php echo translate('delete'); ?>" />

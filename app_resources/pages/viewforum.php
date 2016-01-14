@@ -21,11 +21,11 @@ $breadcrumbs = array(translate('index') => '', $cur_forum['name'] => $dirs[1]);
 $other_head_stuff = array('<link rel="alternate" type="application/atom+xml" href="' . $base_config['baseurl'] . '/atom/' . htmlspecialchars($dirs[1]) . '" title="' . translate('atomfeed') . '" />');
 
 //get topic count
-$result = $db->query('SELECT COUNT(id) FROM `#^topics` WHERE forum_id=' . $cur_forum['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND deleted IS NULL')) or error('Failed to get topic count', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT COUNT(id) FROM `#^topics` WHERE forum_id=' . $cur_forum['id'] . (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs'] ? '' : ' AND deleted IS NULL')) or error('Failed to get topic count', __FILE__, __LINE__, $db->error());
 list($num_topics) = $db->fetch_row($result);
 
 //get the topics (if any)
-$result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.closed,t.sticky,t.redirect_id,t.num_replies,t.deleted,lpa.username AS last_post_author,rt.id AS tracker_id,fpa.username AS author,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^posts` AS lp ON lp.id=t.last_post_id LEFT JOIN `#^users` AS lpa ON lpa.id=lp.poster LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^posts` AS fp ON fp.id=t.first_post_id LEFT JOIN `#^users` AS fpa ON fpa.id=fp.poster LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE t.forum_id=' . $cur_forum['id'] . ($futurebb_user['g_mod_privs'] ? '' : ' AND t.deleted IS NULL') . ' AND (t.redirect_id IS NULL OR t.show_redirect=1) ORDER BY t.sticky DESC,t.last_post DESC LIMIT ' . (($page - 1) * intval($futurebb_config['topics_per_page'])) . ',' . intval($futurebb_config['topics_per_page'])) or error('Failed to get topics', __FILE__, __LINE__, $db->error());
+$result = $db->query('SELECT t.id,t.subject,t.url,t.last_post,t.last_post_id,t.closed,t.sticky,t.redirect_id,t.num_replies,t.deleted,lpa.username AS last_post_author,rt.id AS tracker_id,fpa.username AS author,du.username AS deleted_by FROM `#^topics` AS t LEFT JOIN `#^posts` AS lp ON lp.id=t.last_post_id LEFT JOIN `#^users` AS lpa ON lpa.id=lp.poster LEFT JOIN `#^read_tracker` AS rt ON rt.topic_id=t.id AND rt.user_id=' . $futurebb_user['id'] . ' AND rt.forum_id IS NULL LEFT JOIN `#^posts` AS fp ON fp.id=t.first_post_id LEFT JOIN `#^users` AS fpa ON fpa.id=fp.poster LEFT JOIN `#^users` AS du ON du.id=t.deleted_by WHERE t.forum_id=' . $cur_forum['id'] . (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs'] ? '' : ' AND t.deleted IS NULL') . ' AND (t.redirect_id IS NULL OR t.show_redirect=1) ORDER BY t.sticky DESC,t.last_post DESC LIMIT ' . (($page - 1) * intval($futurebb_config['topics_per_page'])) . ',' . intval($futurebb_config['topics_per_page'])) or error('Failed to get topics', __FILE__, __LINE__, $db->error());
 if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
 ?>
 <form action="<?php echo $base_config['baseurl']; ?>/admin/postactions" method="post" enctype="multipart/form-data">
@@ -162,8 +162,10 @@ if ($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) {
 if (($futurebb_user['g_mod_privs'] || $futurebb_user['g_admin_privs']) && $num_topics > 0) { ?>
 	<p>
 		<input type="hidden" name="type" value="topics" />
+		<?php if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) || $futurebb_user['g_admin_privs']) { ?>
 		<input type="submit" name="form_sent_delete" value="<?php echo translate('delete'); ?>" />
 		<input type="submit" name="form_sent_undelete" value="<?php echo translate('undelete'); ?>" />
+		<?php } ?>
 		<input type="submit" name="form_sent_close" value="<?php echo translate('close'); ?>" />
 		<input type="submit" name="form_sent_open" value="<?php echo translate('open'); ?>" />
 		<input type="submit" name="form_sent_stick" value="<?php echo translate('stick'); ?>" />
