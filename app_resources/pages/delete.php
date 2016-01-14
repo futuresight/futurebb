@@ -9,7 +9,7 @@ $cur_post = $db->fetch_assoc($result);
 if ($cur_post['closed'] && !$futurebb_user['g_mod_privs'] || strstr($futurebb_user['restricted_privs'], 'delete')) {
 	httperror(403);
 }
-if (!$futurebb_user['g_admin_privs'] && !($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_edit_posts']) && ($cur_post['poster'] != $futurebb_user['id'] || !$futurebb_user['g_edit_posts'])) {
+if (!$futurebb_user['g_admin_privs'] && !($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_delete_posts']) && ($cur_post['poster'] != $futurebb_user['id'] || !$futurebb_user['g_edit_posts'])) {
 	httperror(403);
 }
 if (isset($_POST['form_sent'])) {
