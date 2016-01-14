@@ -102,6 +102,17 @@ ExtensionConfig::remove_page('/messages/');
 ExtensionConfig::remove_page('/online_list/');
 echo '<li>RV4: Removing unnecessary pages... success</li>';
 
+//change moderator admin link to reports
+load_db_config(true);
+$xml = new SimpleXMLElement($futurebb_config['header_links']);
+foreach ($xml->link as $link) {
+	if ((string)$link->attributes()->path == 'admin/bans' && (string)$link->attributes()->perm == 'g_mod_privs ~g_admin_privs' && (string)$link == 'administration') {
+		$link->attributes()->path = 'admin/reports';
+	}
+}
+set_config('header_links', $xml->asXML());
+echo '<li>RV4: Updating header links... success</li>';
+
 //alert the admin that the promotion operator has been changed from > to >=
 $db->query('INSERT INTO `#^reports`(post_id,post_type,reason,reported_by,time_reported) VALUES(0, \'special\',\'' . $db->escape('For automatic user group promotion, the system now checks if the user\'s post count is greater than or equal to the number you enter, as opposed to strictly greater than.') . '\',0,' . time() . ')') or enhanced_error('Failed to alert admin about promotion operator change', true);
 

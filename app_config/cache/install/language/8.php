@@ -33,7 +33,7 @@ $lang_insert_data = array(
 	array('English', $db->escape('editpostsdesc'), $db->escape('This option allows users to edit their own posts.'), 'admin'),
 	array('English', $db->escape('deletepostsdesc'), $db->escape('This option allows users to delete their own posts.'), 'admin'),
 	array('English', $db->escape('modprivs'), $db->escape('Moderator privileges'), 'admin'),
-	array('English', $db->escape('modprivsdesc'), $db->escape('This option gives users access to the moderator tools, which include being able to edit and delete everybody&apos;s posts, ban users, and view deleted posts.'), 'admin'),
+	array('English', $db->escape('modprivsdesc'), $db->escape('This option gives users access to the moderator tools. You may choose which specific tools to allow with the options below.'), 'admin'),
 	array('English', $db->escape('adminprivs'), $db->escape('Administrator privileges'), 'admin'),
 	array('English', $db->escape('adminprivsdesc'), $db->escape('This option gives users access to the complete admin panel.'), 'admin'),
 	array('English', $db->escape('allowsig'), $db->escape('Allow signature'), 'admin'),
