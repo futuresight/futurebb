@@ -75,6 +75,14 @@ ExtensionConfig::add_language_key('parentrequired', 'You must place the <b>[$1]<
 ExtensionConfig::add_language_key('banuser', 'Ban user', 'English', 'admin');
 ExtensionConfig::add_language_key('unbanuser', 'Unban user', 'English', 'admin');
 ExtensionConfig::add_language_key('ban', 'Ban', 'English', 'admin');
+ExensionConfig::add_language_key('modviewip', 'View IP addresses', 'English', 'admin');
+ExensionConfig::add_language_key('modbanusers', 'Ban users', 'English', 'admin');
+ExensionConfig::add_language_key('moddeleteposts', 'Delete other&apos; posts', 'English', 'admin');
+ExensionConfig::add_language_key('modeditposts', 'Edit other&apos; posts', 'English', 'admin');
+ExensionConfig::add_language_key('modviewipdesc', 'Allow the user to view IP addresses of users when they post and register, and also allow use of the IP Tracker.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
+ExensionConfig::add_language_key('modbanusersdesc', 'Allow users to ban other users by username. Also allows banning by IP if the "View IP addresses" option is enabled.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
+ExensionConfig::add_language_key('moddeletepostsdesc', 'Allow users of this group to delete all posts. Also grants access to the trash bin.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
+ExensionConfig::add_language_key('modeditpostsdesc', 'Allow users of this group to edit all posts.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
 echo '<li>RV4: Adding new language keys... success</li>';
 
 //a few language keys changed
