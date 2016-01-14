@@ -1,5 +1,5 @@
 <?php
-if (!$futurebb_user['g_mod_privs'] && !$futurebb_user['g_admin_privs']) {
+if (!$futurebb_user['g_admin_privs'] && !$futurebb_user['g_mod_ban_users']) {
 	httperror(403);
 }
 translate('<addfile>', 'admin');
@@ -38,6 +38,9 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 				break;
 			case 'new':
 				if (isset($_POST['form_sent'])) {
+					if ($futurebb_user['g_mod_privs'] && !$futurebb_user['g_mod_view_ip'] && !$futurebb_user['g_admin_privs'] && isset($_POST['ip'])) {
+						$_POST['ip'] = '';
+					}
 					$db->query('INSERT INTO `#^bans`(username,ip,message,expires) VALUES(\'' . $db->escape($_POST['username']) . '\',\'' . $db->escape($_POST['ip']) . '\',\'' . $db->escape($_POST['message']) . '\',' . ($_POST['expires'] == '' ? 'NULL' : strtotime($_POST['expires'])) . ')') or error('Failed to insert ban', __FILE__, __LINE__, $db->error());
 					CacheEngine::CacheBans();
 					redirect($base_config['baseurl'] . '/admin/bans');
@@ -71,10 +74,12 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 								<td><?php echo translate('username'); ?></td>
 								<td><input type="text" name="username"<?php if (isset($username)) echo ' value="' . htmlspecialchars($username) . '"'; ?> /></td>
 							</tr>
+							<?php if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_view_ip']) || $futurebb_user['g_admin_privs']) { ?>
 							<tr>
 								<td><?php echo translate('ipaddr'); ?></td>
 								<td><input type="text" name="ip"<?php if (isset($ips)) echo ' value="' . htmlspecialchars(implode(',', $ips)) . '"'; ?> /></td>
 							</tr>
+							<?php } ?>
 							<tr>
 								<td><?php echo translate('message'); ?></td>
 								<td><input type="text" name="message" size="50" /></td>
@@ -96,6 +101,9 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 				}
 				$cur_ban = $db->fetch_assoc($result);
 				if (isset($_POST['form_sent'])) {
+					if ($futurebb_user['g_mod_privs'] && !$futurebb_user['g_mod_view_ip'] && !$futurebb_user['g_admin_privs'] && isset($_POST['ip'])) {
+						$_POST['ip'] = '';
+					}
 					$db->query('UPDATE `#^bans` SET username=\'' . $db->escape($_POST['username']) . '\',ip=\'' . $db->escape($_POST['ip']) . '\',message=\'' . $db->escape($_POST['message']) . '\',expires=' . ($_POST['expires'] == '' ? 'NULL' : strtotime($_POST['expires'])) . ' WHERE id=' . intval($dirs[4])) or error('Failed to update ban', __FILE__, __LINE__, $db->error());
 					CacheEngine::CacheBans();
 					redirect($base_config['baseurl'] . '/admin/bans');
@@ -109,10 +117,12 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 								<td><?php echo translate('username'); ?></td>
 								<td><input type="text" name="username" value="<?php echo htmlspecialchars($cur_ban['username']); ?>" /></td>
 							</tr>
+							<?php if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_view_ip']) || $futurebb_user['g_admin_privs']) { ?>
 							<tr>
 								<td><?php echo translate('ipaddr'); ?></td>
 								<td><input type="text" name="ip" value="<?php echo htmlspecialchars($cur_ban['ip']); ?>" /></td>
 							</tr>
+							<?php } ?>
 							<tr>
 								<td><?php echo translate('message'); ?></td>
 								<td><input type="text" name="message" size="50" value="<?php echo htmlspecialchars($cur_ban['message']); ?>" /></td>
@@ -147,10 +157,12 @@ include FORUM_ROOT . '/app_resources/includes/admin.php';
 							<td><?php echo translate('username'); ?></td>
 							<td><?php echo htmlspecialchars($cur_ban['username']); ?></td>
 						</tr>
+						<?php if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_view_ip']) || $futurebb_user['g_admin_privs']) { ?>
 						<tr>
 							<td><?php echo translate('ipaddr'); ?></td>
 							<td><?php echo htmlspecialchars($cur_ban['ip']); ?></td>
 						</tr>
+						<?php } ?>
 						<tr>
 							<td><?php echo translate('message'); ?></td>
 							<td><?php echo htmlspecialchars($cur_ban['message']); ?></td>

@@ -223,11 +223,16 @@ if(isset($_POST['pm_sent'])) {
 						<td><input type="checkbox" name="block_notif"<?php if ($cur_user['block_notif']) echo ' checked="checked"'; ?> /></td>
 					</tr>
 				</table>
-				<p><?php echo translate('dateregistered'); ?>: <?php echo user_date($cur_user['registered']); ?> (IP: <a href="<?php echo $base_config['baseurl']; ?>/admin/ip_tracker/?ip=<?php echo $cur_user['registration_ip']; ?>"><?php echo $cur_user['registration_ip']; ?></a>)</p>
+				<p><?php echo translate('dateregistered'); ?>: <?php echo user_date($cur_user['registered']); ?><?php
+				if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_view_ip']) || $futurebb_user['g_admin_privs'] || $futurebb_user['id'] == $cur_user['id']) { ?>
+				 (IP: <a href="<?php echo $base_config['baseurl']; ?>/admin/ip_tracker/?ip=<?php echo $cur_user['registration_ip']; ?>"><?php echo $cur_user['registration_ip']; ?></a>)
+				<?php
+				}
+				?></p>
 				<?php
 				echo '<p><a href="' . $base_config['baseurl'] . '/search?query=&author=' . rawurlencode(htmlspecialchars($cur_user['username'])) . '&forum=0&sortby=posttime&direction=desc">' . translate('showallposts') . '</a>';
 				//show the "ban user" link if the current user is a moderator
-				if ($futurebb_user['g_mod_privs']) {
+				if (($futurebb_user['g_mod_privs'] && $futurebb_user['g_mod_ban_users']) || $futurebb_user['g_admin_privs']) {
 					translate('<addfile>', 'admin');
 					echo ' &bull; ';
 					if (!file_exists(FORUM_ROOT . '/app_config/cache/bans.php')) {

@@ -1,5 +1,5 @@
 <?php
-if (!$futurebb_user['g_mod_privs'] && !$futurebb_user['g_admin_privs']) {
+if ((!$futurebb_user['g_mod_privs'] && !$futurebb_user['g_admin_privs']) || ($futurebb_user['g_mod_privs'] && !$futurebb_user['g_mod_view_ip'] && !$futurebb_user['g_admin_privs'])) {
 	httperror(403);
 }
 translate('<addfile>', 'admin');
