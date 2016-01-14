@@ -42,9 +42,26 @@ $new_ip_fld = new DBField('ip','TEXT');
 $new_ip_fld->add_extra('NOT NULL');
 $new_ip_fld->set_default('\'\'');
 $db->alter_field('bans', $new_ip_fld);
-echo '<li>RV4: Updated Ip field</li>';
 $db->drop_index('bans', 'username');
 echo '<li>RV4: Updating bans table... success</li>';
+
+$new_fld = new DBField('g_mod_view_ip','TINYINT(1)');
+$new_fld->add_extra('NOT NULL');
+$new_fld->set_default('0');
+$db->add_field('user_groups', $new_fld, 'g_mod_privs');
+$new_fld = new DBField('g_mod_ban_users','TINYINT(1)');
+$new_fld->add_extra('NOT NULL');
+$new_fld->set_default('0');
+$db->add_field('user_groups', $new_fld, 'g_mod_view_ip');
+$new_fld = new DBField('g_mod_delete_posts','TINYINT(1)');
+$new_fld->add_extra('NOT NULL');
+$new_fld->set_default('0');
+$db->add_field('user_groups', $new_fld, 'g_mod_ban_users');
+$new_fld = new DBField('g_mod_edit_posts','TINYINT(1)');
+$new_fld->add_extra('NOT NULL');
+$new_fld->set_default('0');
+$db->add_field('user_groups', $new_fld, 'g_mod_delete_posts');
+echo '<li>RV4: Updating user groups table... success</li>';
 
 //insert new language keys
 $db->query('UPDATE `#^language` SET langkey=\'maxnumchars\' WHERE category=\'admin\' AND langkey=\'maxchars\'') or enhanced_error('Failed to change language keys', true);
@@ -75,14 +92,14 @@ ExtensionConfig::add_language_key('parentrequired', 'You must place the <b>[$1]<
 ExtensionConfig::add_language_key('banuser', 'Ban user', 'English', 'admin');
 ExtensionConfig::add_language_key('unbanuser', 'Unban user', 'English', 'admin');
 ExtensionConfig::add_language_key('ban', 'Ban', 'English', 'admin');
-ExensionConfig::add_language_key('modviewip', 'View IP addresses', 'English', 'admin');
-ExensionConfig::add_language_key('modbanusers', 'Ban users', 'English', 'admin');
-ExensionConfig::add_language_key('moddeleteposts', 'Delete other&apos; posts', 'English', 'admin');
-ExensionConfig::add_language_key('modeditposts', 'Edit other&apos; posts', 'English', 'admin');
-ExensionConfig::add_language_key('modviewipdesc', 'Allow the user to view IP addresses of users when they post and register, and also allow use of the IP Tracker.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
-ExensionConfig::add_language_key('modbanusersdesc', 'Allow users to ban other users by username. Also allows banning by IP if the "View IP addresses" option is enabled.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
-ExensionConfig::add_language_key('moddeletepostsdesc', 'Allow users of this group to delete all posts. Also grants access to the trash bin.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
-ExensionConfig::add_language_key('modeditpostsdesc', 'Allow users of this group to edit all posts.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
+ExtensionConfig::add_language_key('modviewip', 'View IP addresses', 'English', 'admin');
+ExtensionConfig::add_language_key('modbanusers', 'Ban users', 'English', 'admin');
+ExtensionConfig::add_language_key('moddeleteposts', 'Delete other&apos; posts', 'English', 'admin');
+ExtensionConfig::add_language_key('modeditposts', 'Edit other&apos; posts', 'English', 'admin');
+ExtensionConfig::add_language_key('modviewipdesc', 'Allow the user to view IP addresses of users when they post and register, and also allow use of the IP Tracker.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
+ExtensionConfig::add_language_key('modbanusersdesc', 'Allow users to ban other users by username. Also allows banning by IP if the "View IP addresses" option is enabled.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
+ExtensionConfig::add_language_key('moddeletepostsdesc', 'Allow users of this group to delete all posts. Also grants access to the trash bin.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
+ExtensionConfig::add_language_key('modeditpostsdesc', 'Allow users of this group to edit all posts.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
 echo '<li>RV4: Adding new language keys... success</li>';
 
 //a few language keys changed
@@ -100,6 +117,8 @@ ExtensionConfig::remove_language_key('maxlines');
 ExtensionConfig::add_language_key('maxlines', 'Maximum lines: $1', 'English', 'main');
 ExtensionConfig::remove_language_key('searchip');
 ExtensionConfig::add_language_key('searchip', 'Search IP', 'English', 'admin');
+ExtensionConfig::remove_language_key('modprivsdesc');
+ExtensionConfig::add_language_key('modprivsdesc', 'This option gives users access to the moderator tools. You may choose which specific tools to allow with the options below.', 'English', 'admin');
 echo '<li>RV4: Changing updated language keys... success</li>';
 
 ExtensionConfig::remove_page('/login/');
