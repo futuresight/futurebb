@@ -32,6 +32,7 @@ if(isset($_POST['form_sent'])) {
 		'maintenance_message'	=> 'string',
 		'rules'					=> 'string',
 		'default_language'		=> 'string',
+		'default_style'			=> 'string',
 		'allow_privatemsg'		=> 'bool',
 		'bbcode_privatemsg'		=> 'bool',
 		'allow_notifications'	=> 'bool',
@@ -116,7 +117,7 @@ if(isset($_POST['form_sent'])) {
 				<td><input type="text" name="config[online_timeout]" value="<?php echo intval($futurebb_config['online_timeout']); ?>" size="5" /><br /><?php echo translate('onlinetimeoutdesc'); ?></td>
 			</tr>
 			<tr>
-				<th>Default language</th>
+				<th><?php echo translate('defaultlanguage'); ?></th>
 				<td><select name="config[default_language]"><?php
 				$result = $db->query('SELECT DISTINCT(language) FROM `#^language` ORDER BY language ASC') or enhanced_error('Failed to find language information', true);
 				while (list($language) = $db->fetch_row($result)) {
@@ -126,6 +127,23 @@ if(isset($_POST['form_sent'])) {
 					}
 					echo '>' . htmlspecialchars($language) . '</option>';
 				}
+				?></select></td>
+			</tr>
+			<tr>
+				<th><?php echo translate('defaultstyle'); ?></th>
+				<td><select name="config[default_style]"><?php
+				$handle = opendir(FORUM_ROOT . '/app_resources/pages/css');
+				while ($f = readdir($handle)) {
+					if (pathinfo($f, PATHINFO_EXTENSION) == 'css') {
+						$name = htmlspecialchars(basename($f, '.css'));
+						echo '<option value="' . htmlspecialchars($name) . '"';
+						if ($name == $futurebb_config['default_style']) {
+							echo ' selected="selected"';
+						}
+						echo '>' . htmlspecialchars($name) . '</option>';
+					}
+				}
+				unset($handle);
 				?></select></td>
 			</tr>
 			<tr>

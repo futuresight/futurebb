@@ -34,6 +34,8 @@ $lang_insert_data = array(
 	array('English', $db->escape('modbanusersdesc'), $db->escape('Allow users to ban other users by username. Also allows banning by IP if the "View IP addresses" option is enabled.<br /><b>Note:</b> this requires the group also to have moderator privileges.'), 'admin'),
 	array('English', $db->escape('moddeletepostsdesc'), $db->escape('Allow users of this group to delete all posts. Also grants access to the trash bin.<br /><b>Note:</b> this requires the group also to have moderator privileges.'), 'admin'),
 	array('English', $db->escape('modeditpostsdesc'), $db->escape('Allow users of this group to edit all posts.<br /><b>Note:</b> this requires the group also to have moderator privileges.'), 'admin'),
+	array('English', $db->escape('defaultlanguage'), $db->escape('Default language'), 'admin'),
+	array('English', $db->escape('defaultstyle'), $db->escape('Default style'), 'admin'),
 );
 foreach ($lang_insert_data as &$entry) {
 	$entry = '(\'' . implode('\',\'', $entry) . '\')';

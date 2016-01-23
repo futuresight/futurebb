@@ -217,4 +217,6 @@ $lang_addl = array (
   'modbanusersdesc' => 'Allow users to ban other users by username. Also allows banning by IP if the "View IP addresses" option is enabled.<br /><b>Note:</b> this requires the group also to have moderator privileges.',
   'moddeletepostsdesc' => 'Allow users of this group to delete all posts. Also grants access to the trash bin.<br /><b>Note:</b> this requires the group also to have moderator privileges.',
   'modeditpostsdesc' => 'Allow users of this group to edit all posts.<br /><b>Note:</b> this requires the group also to have moderator privileges.',
+  'defaultlanguage' => 'Default language',
+  'defaultstyle' => 'Default style',
 );

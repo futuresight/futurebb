@@ -100,6 +100,8 @@ ExtensionConfig::add_language_key('modviewipdesc', 'Allow the user to view IP ad
 ExtensionConfig::add_language_key('modbanusersdesc', 'Allow users to ban other users by username. Also allows banning by IP if the "View IP addresses" option is enabled.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
 ExtensionConfig::add_language_key('moddeletepostsdesc', 'Allow users of this group to delete all posts. Also grants access to the trash bin.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
 ExtensionConfig::add_language_key('modeditpostsdesc', 'Allow users of this group to edit all posts.<br /><b>Note:</b> this requires the group also to have moderator privileges.', 'English', 'admin');
+ExtensionConfig::add_language_key('defaultstyle', 'Default style', 'English', 'admin');
+ExtensionConfig::add_language_key('defaultlanguage', 'Default language', 'English', 'admin');
 echo '<li>RV4: Adding new language keys... success</li>';
 
 //a few language keys changed
@@ -153,5 +155,7 @@ CacheEngine::CachePages();
 CacheEngine::CacheCommonWords();
 echo '<li>RV4: Clearing cache... success</li>';
 
+set_config('default_style', 'default');
 set_config('db_version', 4);
 set_config('new_version', 0);
+echo '<li>RV4: Setting new config values... success</li>';

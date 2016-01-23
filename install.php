@@ -868,6 +868,7 @@ if (isset($_GET['downloadconfigxml'])) {
 		set_config('sig_max_lines', 0);
 		set_config('sig_max_height', 0);
 		set_config('default_language', 'English');
+		set_config('default_style', 'default');
 		set_config('default_user_group', 3);
 		set_config('topics_per_page', 25);
 		set_config('posts_per_page', 25);

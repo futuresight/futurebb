@@ -59,7 +59,7 @@ if (isset($_POST['form_sent'])) {
 			$result = $db->query('SELECT 1 FROM `#^users` WHERE rss_token=\'' . $db->escape($token) . '\'') or error('Failed to check if token exists', __FILE__, __LINE__, $db->error());
 			$token_exists = $db->num_rows($result);
 		}
-		$db->query('INSERT INTO `#^users`(username,password,registered,registration_ip,group_id,email,last_visit,timezone,activate_key,language,rss_token) VALUES(\'' . $db->escape($_POST['username']) . '\',\'' . futurebb_hash($_POST['password1']) . '\',' . time() . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',' . intval($futurebb_config['default_user_group']) . ',\'' . $db->escape($_POST['email']) . '\',' . time() . ',' . intval($_POST['timezone']) . ',' . $access_code . ',\'' . $db->escape($_POST['language']) . '\',\'' . $token . '\')') or error('Failed to create user', __FILE__, __LINE__, $db->error());
+		$db->query('INSERT INTO `#^users`(username,password,registered,registration_ip,group_id,email,last_visit,timezone,activate_key,language,rss_token,style) VALUES(\'' . $db->escape($_POST['username']) . '\',\'' . futurebb_hash($_POST['password1']) . '\',' . time() . ',\'' . $db->escape($_SERVER['REMOTE_ADDR']) . '\',' . intval($futurebb_config['default_user_group']) . ',\'' . $db->escape($_POST['email']) . '\',' . time() . ',' . intval($_POST['timezone']) . ',' . $access_code . ',\'' . $db->escape($_POST['language']) . '\',\'' . $token . '\',\'' . $db->escape($futurebb_config['default_style']) . '\')') or error('Failed to create user', __FILE__, __LINE__, $db->error());
 		LoginController::LogInUser($db->insert_id(), $_SERVER['HTTP_USER_AGENT'], true);
 		redirect($base_config['baseurl']);
 		return;
