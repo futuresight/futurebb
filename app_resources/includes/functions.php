@@ -284,7 +284,9 @@ abstract class LoginController {
 		$futurebb_user['language'] = $futurebb_config['default_language'];
 		$futurebb_user['notifications'] = array();
 		$futurebb_user['notifications_count'] = 0;
-		$futurebb_user['style'] = $futurebb_config['default_style'];
+		if (!defined('DB_UPGRADE')) {
+			$futurebb_user['style'] = $futurebb_config['default_style'];
+		}
 	}
 	
 	static function CheckPromotion() {
