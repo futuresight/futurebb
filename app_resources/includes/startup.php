@@ -67,7 +67,7 @@ $db = new Database($db_info);
 $futurebb_config = array();
 load_db_config();
 
-if (!isset($futurebb_config['db_version']) || $futurebb_config['db_version'] < DB_VERSION) { //an outdated database is running, so note that when picking the page
+if (!defined('DB_UPGRADE') && !isset($futurebb_config['db_version']) || $futurebb_config['db_version'] < DB_VERSION) { //an outdated database is running, so note that when picking the page
 	define('DB_UPGRADE', true);
 }
 
