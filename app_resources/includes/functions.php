@@ -99,13 +99,20 @@ function httperror($errorcode) {
 	switch($errorcode) {
 	  case 403:
 		include FORUM_ROOT . '/app_resources/errorpages/403.php';
+		http_response_code(403);
 		break;
 	  case 404:
 		include FORUM_ROOT . '/app_resources/errorpages/404.php';
+		http_response_code(404);
 		break;
 	  case 'maint':
 	  	$page_title = translate('maintenance');
 		echo '<h2>' . translate('maintenance') . '</h2><p>' . translate('maintintro') . '<br /><b>' . $futurebb_config['maintenance_message'] . '</b><br />' . translate('maintintro2') . '</p>';
+		http_response_code(503);
+		if($futurebb_config['turn_off_maint'])
+		{
+			header("Retry-After: ".($futurebb_config['turn_off_maint']-time()+60));	
+		}
 	  	break;
 	  default:
 		$page_title = $errorcode . ' ' . translate('Error');
