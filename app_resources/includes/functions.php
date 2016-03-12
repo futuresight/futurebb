@@ -98,16 +98,24 @@ function httperror($errorcode) {
 	include FORUM_ROOT . '/app_resources/includes/header.php';
 	switch($errorcode) {
 	  case 403:
+		header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden",true,403); 
 		include FORUM_ROOT . '/app_resources/errorpages/403.php';
 		break;
 	  case 404:
+		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found",true,404); 
 		include FORUM_ROOT . '/app_resources/errorpages/404.php';
 		break;
 	  case 'maint':
+	  	if($futurebb_config['turn_off_maint'])
+ 		{
+ 			header("Retry-After: ".($futurebb_config['turn_off_maint']-time()+60));	
+ 		}
+ 		header($_SERVER["SERVER_PROTOCOL"]." 503 Service Unavailable",true,503); 
 	  	$page_title = translate('maintenance');
 		echo '<h2>' . translate('maintenance') . '</h2><p>' . translate('maintintro') . '<br /><b>' . $futurebb_config['maintenance_message'] . '</b><br />' . translate('maintintro2') . '</p>';
 	  	break;
 	  default:
+ 		header($_SERVER["SERVER_PROTOCOL"]." 500 Internal Server Error",true,500); 
 		$page_title = $errorcode . ' ' . translate('Error');
 		echo translate('genericerror', $errorcode);
 		break;
