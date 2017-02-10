@@ -497,8 +497,8 @@ if (isset($_POST['form_sent'])) {
 		if (form.hasChildNodes) {
 			//it has children
 			var children = form.childNodes;
-			for (id in children) {
-				result = result.concat(collectFormData(children[id]));
+			for (var i = 0; i < children.length; i++) {
+				result = result.concat(collectFormData(children[i]));
 			}
 		}
 		return result;
